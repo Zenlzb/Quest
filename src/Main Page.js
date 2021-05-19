@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
         marginTop: 8
     },
     linkButton: {
-        backgroundColor: '#34ebc6',
+        backgroundColor: 'green',
         marginLeft: 5,
     },
     linkChild: {
