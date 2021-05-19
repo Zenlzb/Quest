@@ -5,40 +5,54 @@ import CustomButton from "./Button";
 const MainPage = () => {
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
+    const [linkCode, setLinkCode] = useState('')
 
     const handleNameUpdate = (text) => setName(text)
     const handlePasswordUpdate = (text) => setPassword(text)
+    const handleLinkCodeUpdate = (text) => setLinkCode(text)
 
     return(
         <View style={styles.container}>
         <Text style={styles.titleText}>Quest</Text>
         <View style={styles.loginContainer}>
-            <TextInput
-                style={styles.textInput}
-                placeholder={"Username"}
-                onChangeText={handleNameUpdate}
-                value={name}
-            />
-            <TextInput
-                style={styles.textInput}
-                placeholder={"Password"}
-                onChangeText={handlePasswordUpdate}
-                value={password}
-                secureTextEntry
-            />
+            <View style={{flexDirection: 'column', alignItems: 'center'}}>
+                <TextInput
+                    style={[styles.textInput, {marginBottom: 8}]}
+                    placeholder={"Username"}
+                    onChangeText={handleNameUpdate}
+                    value={name}
+                />
+                <TextInput
+                    style={styles.textInput}
+                    placeholder={"Password"}
+                    onChangeText={handlePasswordUpdate}
+                    value={password}
+                    secureTextEntry
+                />
+            </View>
             <CustomButton
-                style={styles.submitButton}
+                buttonStyle={styles.submitButton}
                 onPress={() => console.log("c")}
             >Submit</CustomButton>
         </View>
         <CustomButton
-            style={styles.caregiverButton}
+            buttonStyle={styles.caregiverButton}
+            textStyle={{fontSize:15}}
             onPress={() => console.log("a")}
         >Create Caregiver Account</CustomButton>
-        <CustomButton
-            style={styles.linkButton}
-            onPress={() => console.log("b")}
-        >Link New Child</CustomButton>
+        <View style={styles.linkChild}>
+            <TextInput
+                style={styles.textInput}
+                placeholder={"Link Child Account"}
+                onChangeText={handleLinkCodeUpdate}
+                value={linkCode}
+            />
+            <CustomButton
+                buttonStyle={styles.linkButton}
+                onPress={() => console.log("b")}
+            >Link</CustomButton>
+        </View>
+
     </View>
     )
 }
@@ -47,27 +61,33 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 50,
         marginBottom: 60,
-        marginTop: 50
+        marginTop: 100
     },
     textInput: {
         borderWidth: 1,
         borderColor: 'black',
         backgroundColor: '#fff',
         fontSize: 20,
-        marginBottom: 8,
         width: 200,
         height: 30,
         paddingLeft: 5
     },
     submitButton: {
-
+        justifyContent: 'center',
+        marginLeft: 10
     },
     caregiverButton: {
-        marginTop: 200
+        marginTop: 8
     },
     linkButton: {
         backgroundColor: '#34ebc6',
-        marginTop: 8
+        marginLeft: 5,
+    },
+    linkChild: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 250
     },
     container: {
         flex: 1,
@@ -77,8 +97,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     loginContainer: {
-        flexDirection: 'column',
-        alignItems: 'center',
+        flexDirection: 'row',
+
     }
 });
 
