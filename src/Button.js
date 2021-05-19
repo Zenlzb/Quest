@@ -9,7 +9,8 @@ const CustomButton = props => (
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#ff5863'
+        backgroundColor: '#ff5863',
+        borderRadius: 5
     },
     text: {
         fontSize: 20,
