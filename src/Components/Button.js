@@ -1,15 +1,19 @@
 import React from 'react'
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import {Text, StyleSheet, Pressable} from 'react-native';
+
 
 const CustomButton = props => (
-    <TouchableOpacity style={[styles.container, props.buttonStyle]} onPress={props.onPress}>
+    <Pressable
+        style={[styles.container, props.buttonStyle]}
+        onPress={props.onPress}
+        android_ripple={{color: 'white', borderless: false}}
+    >
         <Text style={[styles.text, props.textStyle]}>{props.children}</Text>
-    </TouchableOpacity>
+    </Pressable>
 )
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#ff5863',
         borderRadius: 5
     },
     text: {
