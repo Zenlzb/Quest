@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, TextInput} from 'react-native';
-import CustomButton from "./Button";
+import CustomButton from "../Components/Button";
 
-const MainPage = () => {
+const LoginPage = () => {
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
     const [linkCode, setLinkCode] = useState('')
@@ -102,4 +102,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default MainPage
+export default LoginPage
