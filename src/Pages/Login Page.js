@@ -4,7 +4,7 @@ import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
 
 
-const LoginPage = () => {
+const LoginPage = ({ navigation }) => {
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
     const [linkCode, setLinkCode] = useState('')
@@ -35,7 +35,7 @@ const LoginPage = () => {
             <CustomButton
                 buttonStyle={styles.submitButton}
                 textStyle={{fontFamily: 'balsamiq'}}
-                onPress={() => console.log("c")}
+                onPress={() => navigation.navigate("Caregiver Main")}
             >Submit</CustomButton>
         </View>
         <CustomButton
