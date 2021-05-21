@@ -39,9 +39,9 @@ const LoginPage = ({ navigation }) => {
             >Submit</CustomButton>
         </View>
         <CustomButton
-            buttonStyle={styles.caregiverButton}
+            buttonStyle={styles.createAccountButton}
             textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-            onPress={() => console.log("a")}
+            onPress={() => navigation.navigate("Create Account")}
         >Create Caregiver Account</CustomButton>
         <View style={styles.linkChild}>
             <TextInput
@@ -53,7 +53,7 @@ const LoginPage = ({ navigation }) => {
             <CustomButton
                 buttonStyle={styles.linkButton}
                 textStyle={{fontFamily: 'balsamiq'}}
-                onPress={() => console.log("b")}
+                onPress={() => navigation.navigate("Child Main")}
             >Link</CustomButton>
         </View>
 
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginLeft: 10
     },
-    caregiverButton: {
+    createAccountButton: {
         backgroundColor: colors.button1,
         marginTop: 8
     },
