@@ -1,17 +1,26 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TextInput} from 'react-native';
+import {StyleSheet, Text, View, TextInput, Keyboard} from 'react-native';
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
-
+import * as Authenticator from '../../api/auth';
 
 const LoginPage = ({ navigation }) => {
-    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [linkCode, setLinkCode] = useState('')
 
-    const handleNameUpdate = (text) => setName(text)
+    const handleEmailUpdate = (text) => setEmail(text)
     const handlePasswordUpdate = (text) => setPassword(text)
     const handleLinkCodeUpdate = (text) => setLinkCode(text)
+
+    const handleLogin = () => {
+        Keyboard.dismiss();
+        Authenticator.signIn(
+            { email, password },
+            (user) => navigation.navigate({name: 'Caregiver Main', params: {user: user}}),
+            (error) => {return console.error(error);}
+        );
+    }
 
     return(
         <View style={styles.container}>
@@ -20,9 +29,9 @@ const LoginPage = ({ navigation }) => {
             <View style={{flexDirection: 'column', alignItems: 'center'}}>
                 <TextInput
                     style={[styles.textInput, {marginBottom: 8}]}
-                    placeholder={"Username"}
-                    onChangeText={handleNameUpdate}
-                    value={name}
+                    placeholder={"Email"}
+                    onChangeText={handleEmailUpdate}
+                    value={email}
                 />
                 <TextInput
                     style={styles.textInput}
@@ -35,7 +44,7 @@ const LoginPage = ({ navigation }) => {
             <CustomButton
                 buttonStyle={styles.submitButton}
                 textStyle={{fontFamily: 'balsamiq'}}
-                onPress={() => navigation.navigate("Caregiver Main")}
+                onPress={handleLogin}
             >Submit</CustomButton>
         </View>
         <CustomButton

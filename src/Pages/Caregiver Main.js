@@ -1,10 +1,10 @@
 import React from 'react';
 import {View, Text} from "react-native";
 
-const CaregiverMain = () => {
+const CaregiverMain = ({route}) => {
     return(
         <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text>Caregiver Main</Text>
+            <Text>{route.params.user.displayName}</Text>
         </View>
     )
 }
