@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, View, TextInput, Keyboard} from 'react-native';
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
-import * as Authenticator from '../../api/auth';
+import {signIn} from "../../api/auth";
 
 const LoginPage = ({ navigation }) => {
     const [email, setEmail] = useState('')
@@ -15,11 +15,7 @@ const LoginPage = ({ navigation }) => {
 
     const handleLogin = () => {
         Keyboard.dismiss();
-        Authenticator.signIn(
-            { email, password },
-            (user) => navigation.navigate({name: 'Caregiver Main', params: {user: user}}),
-            (error) => {return console.error(error);}
-        );
+        signIn({ email, password });
     }
 
     return(

@@ -1,34 +1,34 @@
+import React from 'react';
 import firebase from "./firebase";
 
-const auth = firebase.auth()
+export const auth = firebase.auth()
 
-export const signIn = async ({ email, password }, onSuccess, onError) => {
+export const signIn = async ({ email, password }) => {
     try {
-        const { user } = await auth.signInWithEmailAndPassword(email, password);
-        return onSuccess(user);
+        await auth.signInWithEmailAndPassword(email, password);
     } catch (error) {
-        return onError(error);
+        console.error(error);
     }
 }
 
-export const createAccount = async ({ name, email, password }, onSuccess, onError) => {
+export const createAccount = async ({ name, email, password }) => {
     try {
-        const { user } = await auth.createUserWithEmailAndPassword(email, password);
+
+        const { user } = await auth.createUserWithEmailAndPassword(email, password)
         if (user) {
             await user.updateProfile({ displayName: name });
             // await user.sendEmailVerification();
-            return onSuccess(user);
         }
     } catch (error) {
-        return onError(error);
+        console.error(error);
     }
 }
 
-export const signOut = async (onSuccess, onError) => {
+export const signOut = async () => {
     try {
         await auth.signOut();
-        return onSuccess();
     } catch (error) {
-        return onError(error);
+        console.error(error);
     }
 }
+

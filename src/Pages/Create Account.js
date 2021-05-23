@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import {View, TextInput, StyleSheet} from "react-native";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
-import * as Authenticator from '../../api/auth';
+import {createAccount} from '../../api/auth';
 
-const CreateAccount = ({ navigation }) => {
+const CreateAccount = () => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -15,10 +15,7 @@ const CreateAccount = ({ navigation }) => {
     const handlePasswordUpdate = (text) => setPassword(text)
 
     const handleCreate = () => {
-        Authenticator.createAccount(
-            {name, email, password},
-            (user) => {navigation.navigate({name: 'Caregiver Main', params: {user: user}})},
-            (error) => {return console.error(error);})
+        createAccount({name, email, password})
     }
 
     return(
