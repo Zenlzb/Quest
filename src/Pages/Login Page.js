@@ -7,15 +7,16 @@ import {signIn} from "../../api/auth";
 const LoginPage = ({ navigation }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [linkCode, setLinkCode] = useState('')
+    const [childLink, setChildLink] = useState('')
 
     const handleEmailUpdate = (text) => setEmail(text)
     const handlePasswordUpdate = (text) => setPassword(text)
-    const handleLinkCodeUpdate = (text) => setLinkCode(text)
+    const handleChildLinkUpdate = (text) => setChildLink(text)
 
     const handleLogin = () => {
         Keyboard.dismiss();
-        signIn({ email, password });
+        signIn({ email, password, childLink });
+
     }
 
     return(
@@ -30,37 +31,30 @@ const LoginPage = ({ navigation }) => {
                     value={email}
                 />
                 <TextInput
-                    style={styles.textInput}
+                    style={[styles.textInput, {marginBottom: 8}]}
                     placeholder={"Password"}
                     onChangeText={handlePasswordUpdate}
                     value={password}
                     secureTextEntry
+                />
+                <TextInput
+                    style={styles.textInput}
+                    placeholder={"Link Child Account"}
+                    onChangeText={handleChildLinkUpdate}
+                    value={childLink}
                 />
             </View>
             <CustomButton
                 buttonStyle={styles.submitButton}
                 textStyle={{fontFamily: 'balsamiq'}}
                 onPress={handleLogin}
-            >Submit</CustomButton>
+            >Log-in</CustomButton>
         </View>
         <CustomButton
             buttonStyle={styles.createAccountButton}
             textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
             onPress={() => navigation.navigate("Create Account")}
         >Create Caregiver Account</CustomButton>
-        <View style={styles.linkChild}>
-            <TextInput
-                style={styles.textInput}
-                placeholder={"Link Child Account"}
-                onChangeText={handleLinkCodeUpdate}
-                value={linkCode}
-            />
-            <CustomButton
-                buttonStyle={styles.linkButton}
-                textStyle={{fontFamily: 'balsamiq'}}
-                onPress={() => navigation.navigate("Child Main")}
-            >Link</CustomButton>
-        </View>
 
     </View>
     )
@@ -70,7 +64,6 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 50,
         marginBottom: 60,
-        marginTop: 100,
         fontFamily: 'balsamiqBold'
     },
     textInput: {
@@ -95,12 +88,6 @@ const styles = StyleSheet.create({
     linkButton: {
         backgroundColor: colors.button1,
         marginLeft: 5,
-    },
-    linkChild: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 250
     },
     container: {
         flex: 1,

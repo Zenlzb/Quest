@@ -1,11 +1,14 @@
 import React from 'react';
 import firebase from "./firebase";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const auth = firebase.auth()
 
-export const signIn = async ({ email, password }) => {
+export const signIn = async ({ email, password, childLink }) => {
     try {
-        await auth.signInWithEmailAndPassword(email, password);
+        const { user } = await auth.signInWithEmailAndPassword(email, password);
+        // TODO check if child exists
+        await AsyncStorage.setItem('childName', childLink)
     } catch (error) {
         console.error(error);
     }
