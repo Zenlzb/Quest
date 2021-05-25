@@ -35,3 +35,6 @@ export const signOut = async () => {
     }
 }
 
+export const getCurrentUserId = () => auth.currentUser ? auth.currentUser.uid : null;
+
+export const getCurrentUserName = () => auth.currentUser ? auth.currentUser.displayName : null;

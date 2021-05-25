@@ -12,6 +12,7 @@ const ChildMain = ({name}) => {
     return(
         <View style={styles.container}>
             <Text style={styles.text}>Welcome, Child {name}</Text>
+
             <CustomButton
                 buttonStyle={styles.button}
                 textStyle={{fontFamily: 'balsamiq'}}
