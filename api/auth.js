@@ -6,8 +6,7 @@ export const auth = firebase.auth()
 
 export const signIn = async ({ email, password, childLink }) => {
     try {
-        const { user } = await auth.signInWithEmailAndPassword(email, password);
-        // TODO check if child exists
+        await auth.signInWithEmailAndPassword(email, password);
         await AsyncStorage.setItem('childName', childLink)
     } catch (error) {
         console.error(error);

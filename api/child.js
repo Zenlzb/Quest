@@ -6,7 +6,7 @@ const newChild = (key, name) => ({key, name});
 
 export const createChild = async (userId, name) => {
     try {
-        const child = db.ref(`users/${userId}`).push()
+        const child = db.ref(`users/${userId}/${name}`)
         await child.set(newChild(child.key, name))
     } catch (e) {
         console.error(e)
@@ -15,7 +15,15 @@ export const createChild = async (userId, name) => {
 
 export const deleteChild = async  (userId, child) => {
     try {
-        await db.ref(`users/${userId}/${child.key}`).remove()
+        await db.ref(`users/${userId}/${child.name}`).remove()
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+export const checkChildExists = async (userId, childName) => {
+    try {
+        return (await db.ref(`users/${userId}/${childName}`).get()).exists()
     } catch (e) {
         console.error(e)
     }

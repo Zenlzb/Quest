@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from "@react-navigation/native";
 import AuthStack from "./AuthStack";
-import {auth} from "../../api/auth";
+import {auth, getCurrentUserId} from "../../api/auth";
 import CaregiverMain from "../Pages/Caregiver Main";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ChildMain from "../Pages/Child Main";
+import {checkChildExists} from "../../api/child";
 
 
 const AuthHandler = () => {
@@ -14,11 +15,31 @@ const AuthHandler = () => {
 
     function onAuthStateChanged(user) {
         try{
-            setTimeout(async () => {
-                setUser(user);
-                setChildName(await AsyncStorage.getItem('childName'))
-                if (initializing) setInitializing(false);
-            },700)
+            if (user) {
+                setTimeout(async () => {
+                    const name = await AsyncStorage.getItem('childName')
+                    if(name != null) {
+                        const childExists = await checkChildExists(getCurrentUserId(), name)
+                        if (childExists) {
+                            setChildName(name)
+                            console.log('exists')
+                        } else {
+                            console.log('doesnt exist')
+                        }
+                    }
+
+                    setUser(user)
+                    if (initializing) setInitializing(false);
+                },700)
+            } else {
+                setTimeout( async () => {
+
+                    setUser(user)
+                    await AsyncStorage.removeItem('childName')
+                    setChildName('')
+                    if (initializing) setInitializing(false);
+                }, 500)
+            }
         } catch (e) {
             console.log(e)
         }
@@ -26,8 +47,7 @@ const AuthHandler = () => {
     }
 
     useEffect(() => {
-        const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-        return subscriber; // unsubscribe on unmount
+        return auth.onAuthStateChanged(onAuthStateChanged); // unsubscribe on unmount
     }, []);
 
     return(
