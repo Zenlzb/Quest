@@ -4,12 +4,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const auth = firebase.auth()
 
-export const signIn = async ({ email, password, childLink }) => {
+export const signIn = async ({ email, password, childLink }, setErrorCode) => {
     try {
         await auth.signInWithEmailAndPassword(email, password);
         await AsyncStorage.setItem('childName', childLink)
     } catch (error) {
-        console.error(error);
+        const code = error.code
+        if (code==='auth/wrong-password' ||
+            code==='auth/too-many-requests') {
+            setErrorCode(code)
+        } else {
+            console.log(code)
+            console.error(error);
+        }
     }
 }
 

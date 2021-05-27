@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, TextInput, Keyboard} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Keyboard, StyleSheet, Text, TextInput, View} from 'react-native';
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
 import {signIn} from "../../api/auth";
@@ -8,6 +8,7 @@ const LoginPage = ({ navigation }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [childLink, setChildLink] = useState('')
+    const [errorCode, setErrorCode] = useState(null)
 
     const handleEmailUpdate = (text) => setEmail(text)
     const handlePasswordUpdate = (text) => setPassword(text)
@@ -15,11 +16,25 @@ const LoginPage = ({ navigation }) => {
 
     const handleLogin = () => {
         Keyboard.dismiss();
-        signIn({ email, password, childLink });
-
+        signIn({ email, password, childLink }, setErrorCode);
     }
 
+    useEffect(() => {
+        return navigation.addListener('blur', () => {
+            setErrorCode(null)
+        });
+    }, [navigation])
+
+    const ErrorCode = () => {
+        if (errorCode === 'auth/wrong-password') {
+            return (<Text style={styles.errorText}>Username or Password is Invalid</Text>)
+        } else if (errorCode === 'auth/too-many-requests') {
+            return (<Text style={styles.errorText}>Too many tries, please try again later</Text>)
+        }
+        return null
+    }
     return(
+
         <View style={styles.container}>
         <Text style={styles.titleText}>Quest</Text>
         <View style={styles.loginContainer}>
@@ -50,6 +65,7 @@ const LoginPage = ({ navigation }) => {
                 onPress={handleLogin}
             >Log-in</CustomButton>
         </View>
+            <ErrorCode/>
         <CustomButton
             buttonStyle={styles.createAccountButton}
             textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
@@ -85,9 +101,10 @@ const styles = StyleSheet.create({
         backgroundColor: colors.button1,
         marginTop: 8
     },
-    linkButton: {
-        backgroundColor: colors.button1,
-        marginLeft: 5,
+    errorText: {
+        fontFamily:'balsamiq',
+        fontSize: 15,
+        color: colors.button1
     },
     container: {
         flex: 1,

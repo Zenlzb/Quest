@@ -6,12 +6,14 @@ import CaregiverMain from "../Pages/Caregiver Main";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ChildMain from "../Pages/Child Main";
 import {checkChildExists} from "../../api/child";
+import CustomPopup from "../Components/Popup";
 
 
 const AuthHandler = () => {
     const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState(null);
     const [childName, setChildName] = useState('')
+    const [childNotFound, setChildNotFound] = useState(false)
 
     function onAuthStateChanged(user) {
         try{
@@ -24,6 +26,7 @@ const AuthHandler = () => {
                             setChildName(name)
                             console.log('exists')
                         } else {
+                            setChildNotFound(true)
                             console.log('doesnt exist')
                         }
                     }
@@ -52,6 +55,12 @@ const AuthHandler = () => {
 
     return(
             <NavigationContainer>
+                <CustomPopup
+                    visibility={childNotFound}
+                    toggleVisibility={setChildNotFound}
+                    titleText={'Child Not Found'}
+                    bodyText={'Add a Child Using the Add Button'}
+                />
                 {user ? (childName ? <ChildMain name={childName}/> : <CaregiverMain/>) : <AuthStack />}
             </NavigationContainer>
     )
