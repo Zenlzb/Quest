@@ -15,7 +15,7 @@ After opening the app, you will be presented with the login screen
 ### On Child's Phone
 1. Login using caregiver account's email and password, and child's name in Link Child Account
 
-## Tasks
+## Quests
 To be implemented
 
 ## Rewards
