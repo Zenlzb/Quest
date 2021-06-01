@@ -1,11 +1,17 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from "react-native";
 import {getCurrentUserId, signOut} from "../../api/auth";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
+import * as Quests from "../../api/quest"
 
 const ChildMain = ({name}) => {
     const [parentUserId, setParentUserId] = useState(getCurrentUserId());
+    const [questList, setQuestList] = useState()
+
+    useEffect(() => {
+        return Quests.questListSubscribe(parentUserId, name, setQuestList)
+    }, [])
 
     const handleSignOut = () => {
         signOut();
