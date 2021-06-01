@@ -4,6 +4,7 @@ import CustomButton from "../Components/Button";
 import {auth, signOut, getCurrentUserId} from "../../api/auth";
 import colors from "../../assets/themes/colors";
 import * as Children from "../../api/child"
+import * as Quests from "../../api/quest"
 
 const CaregiverMain = () => {
     const [childList, setChildList] = useState()
@@ -11,11 +12,24 @@ const CaregiverMain = () => {
 
     const [childNameInput, setChildNameInput] = useState('')
     const handleChildNameUpdate = (text) => setChildNameInput(text)
+
+    const [questInput, setQuestInput] = useState('')
+    const [questChildInput, setQuestChildInput] = useState('')
+    const handleQuestUpdate = (text) => setQuestInput(text)
+    const handleQuestChildUpdate = (text) => setQuestChildInput(text)
+
     const handleSignOut = () => {signOut()}
     const handleAddChild = () => {Children.createChild(userId, childNameInput)}
+    const handleAddQuest = () => {
+        Children.checkChildExists(userId, questChildInput).then((childExists) => {
+            if (childExists) {
+                Quests.createQuest(userId, questChildInput, questInput, 0, 0)
+            } else { console.log('doesnt exist') }
+        })
+    }
 
     useEffect(() => {
-        return Children.childSubscribe(userId, setChildList)
+        return Children.childListSubscribe(userId, setChildList)
     }, [])
 
     const renderItem = ({ item }) => {
@@ -49,6 +63,25 @@ const CaregiverMain = () => {
                     buttonStyle={styles.button}
                     textStyle={{fontFamily: 'balsamiq'}}
                     onPress={handleAddChild}
+                >Add</CustomButton>
+            </View>
+            <View style={{marginTop: 8, flexDirection: 'row', alignItems: 'center'}}>
+                <TextInput
+                    style={[styles.textInput, {width: 150, marginRight: 8}]}
+                    placeholder={"Add Quest"}
+                    onChangeText={handleQuestUpdate}
+                    value={questInput}
+                />
+                <TextInput
+                    style={[styles.textInput, {width:100, marginRight: 8}]}
+                    placeholder={"For Child"}
+                    onChangeText={handleQuestChildUpdate}
+                    value={questChildInput}
+                />
+                <CustomButton
+                    buttonStyle={styles.button}
+                    textStyle={{fontFamily: 'balsamiq'}}
+                    onPress={handleAddQuest}
                 >Add</CustomButton>
             </View>
             <Text style={{marginTop:8, fontFamily: 'balsamiq'}}>List of Children</Text>

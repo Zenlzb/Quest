@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from "@react-navigation/native";
 import AuthStack from "./AuthStack";
 import {auth, getCurrentUserId} from "../../api/auth";
-import CaregiverMain from "../Pages/Caregiver Main";
+import CaregiverMain from "../Pages/CaregiverMain";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ChildMain from "../Pages/Child Main";
+import ChildMain from "../Pages/ChildMain";
 import {checkChildExists} from "../../api/child";
 import CustomPopup from "../Components/Popup";
 

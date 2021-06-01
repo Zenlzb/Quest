@@ -2,12 +2,12 @@ import firebase from "./firebase";
 
 const db = firebase.database();
 
-const newChild = (key, name) => ({key, name});
+const newChild = (key, name, points, quests) => ({key, name, points, quests});
 
 export const createChild = async (userId, name) => {
     try {
         const child = db.ref(`users/${userId}/${name}`)
-        await child.set(newChild(child.key, name))
+        await child.set(newChild(child.key, name, 0, null))
     } catch (e) {
         console.error(e)
     }
@@ -29,7 +29,7 @@ export const checkChildExists = async (userId, childName) => {
     }
 }
 
-export const childSubscribe = (userId, onValueChanged) => {
+export const childListSubscribe = (userId, onValueChanged) => {
     const children = db.ref(`users/${userId}`)
     children.on("value", (snapshot) => {
         const val = snapshot.val()
