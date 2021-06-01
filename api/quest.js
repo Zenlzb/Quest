@@ -14,6 +14,14 @@ export const createQuest = async (userId, childName, questTitle, questDuration, 
     }
 }
 
+export const deleteQuest = async (userId, childName, questId) => {
+    try {
+        await db.ref(`users/${userId}/${childName}/quests/${questId}`).remove()
+    } catch (e) {
+        console.error(e)
+    }
+}
+
 export const questListSubscribe = (userId, childName, onValueChanged) => {
     try {
         const quests = db.ref(`users/${userId}/${childName}/quests`)
