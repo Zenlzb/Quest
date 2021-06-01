@@ -28,8 +28,6 @@ const ChildMain = ({name}) => {
                     onPress={handleSignOut}
                 >Sign Out</CustomButton>
             </View>
-
-
         </View>
     )
 }

@@ -5,7 +5,6 @@ import {auth, signOut, getCurrentUserId} from "../../api/auth";
 import colors from "../../assets/themes/colors";
 import * as Children from "../../api/child"
 import * as Quests from "../../api/quest"
-import {checkChildExists} from "../../api/child";
 
 const CaregiverMain = () => {
     const [childList, setChildList] = useState()
@@ -22,7 +21,7 @@ const CaregiverMain = () => {
     const handleSignOut = () => {signOut()}
     const handleAddChild = () => {Children.createChild(userId, childNameInput)}
     const handleAddQuest = () => {
-        checkChildExists(userId, questChildInput).then((childExists) => {
+        Children.checkChildExists(userId, questChildInput).then((childExists) => {
             if (childExists) {
                 Quests.createQuest(userId, questChildInput, questInput, 0, 0)
             } else { console.log('doesnt exist') }
