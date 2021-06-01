@@ -15,7 +15,7 @@ const CaregiverMain = () => {
     const handleAddChild = () => {Children.createChild(userId, childNameInput)}
 
     useEffect(() => {
-        return Children.childSubscribe(userId, setChildList)
+        return Children.childListSubscribe(userId, setChildList)
     }, [])
 
     const renderItem = ({ item }) => {
