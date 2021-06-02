@@ -4,6 +4,7 @@ import colors from "../../assets/themes/colors";
 import CustomButton from "./Button";
 
 const CustomPopup = (props) => {
+
     return (
         <Modal
         transparent={true}

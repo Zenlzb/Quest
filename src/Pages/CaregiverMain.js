@@ -23,7 +23,7 @@ const CaregiverMain = () => {
     const handleAddQuest = () => {
         Children.checkChildExists(userId, questChildInput).then((childExists) => {
             if (childExists) {
-                Quests.createQuest(userId, questChildInput, questInput, 0, 0)
+                Quests.createQuest(userId, questChildInput, questInput,Date.now() + 30000, 0)
             } else { console.log('doesnt exist') }
         })
     }
