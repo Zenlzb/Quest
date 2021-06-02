@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, TextInput, StyleSheet} from "react-native";
+import {View, TextInput, StyleSheet, Text} from "react-native";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
 import {createAccount} from '../../api/auth';
@@ -15,7 +15,16 @@ const CreateAccount = () => {
     const handlePasswordUpdate = (text) => setPassword(text)
 
     const handleCreate = () => {
-        createAccount({name, email, password})
+        setErrorCode(null)
+        createAccount({name, email, password}, setErrorCode)
+    }
+
+    const [errorCode, setErrorCode] = useState(null)
+    const ErrorText = () => {
+        if (errorCode === 'auth/weak-password') {
+            return (<Text style={styles.errorText}>Password too short</Text>)
+        }
+        return null
     }
 
     return(
@@ -48,6 +57,7 @@ const CreateAccount = () => {
                     onPress={handleCreate}
                 >Create</CustomButton>
             </View>
+            <ErrorText/>
         </View>
     )
 }
@@ -77,6 +87,11 @@ const styles = StyleSheet.create({
     },
     loginContainer: {
         flexDirection: 'row',
+    },
+    errorText: {
+        fontFamily:'balsamiq',
+        fontSize: 15,
+        color: colors.button1
     }
 })
 

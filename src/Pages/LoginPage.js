@@ -25,7 +25,7 @@ const LoginPage = ({ navigation }) => {
         });
     }, [navigation])
 
-    const ErrorCode = () => {
+    const ErrorText = () => {
         if (errorCode === 'auth/wrong-password') {
             return (<Text style={styles.errorText}>Username or Password is Invalid</Text>)
         } else if (errorCode === 'auth/too-many-requests') {
@@ -65,7 +65,7 @@ const LoginPage = ({ navigation }) => {
                 onPress={handleLogin}
             >Log-in</CustomButton>
         </View>
-            <ErrorCode/>
+            <ErrorText/>
         <CustomButton
             buttonStyle={styles.createAccountButton}
             textStyle={{fontSize:15, fontFamily: 'balsamiq'}}

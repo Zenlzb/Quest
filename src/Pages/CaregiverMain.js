@@ -21,7 +21,21 @@ const CaregiverMain = () => {
     const handleQuestChildUpdate = (text) => setQuestChildInput(text)
 
     const handleSignOut = () => {signOut()}
-    const handleAddChild = () => {Children.createChild(userId, childNameInput)}
+    const handleAddChild = () => {
+        if (childNameInput === 'All' || childNameInput === 'all' ) {
+            setErrorCode('invalid')
+            return
+        }
+        Children.checkChildExists(userId, childNameInput).then((childExists) => {
+            if (!childExists) {
+                setErrorCode(null)
+                Children.createChild(userId, childNameInput)
+            } else {
+                console.log('already exists')
+                setErrorCode('alreadyExists')
+            }
+        })
+    }
     const handleAddQuest = () => {
         Children.checkChildExists(userId, questChildInput).then((childExists) => {
             if (childExists) {
@@ -44,6 +58,16 @@ const CaregiverMain = () => {
             >{item.name}</CustomButton>
 
         )
+    }
+
+    const [errorCode, setErrorCode] = useState(null)
+    const ErrorText = () => {
+        if (errorCode === 'invalid') {
+            return (<Text style={styles.errorText}>Invalid Username</Text>)
+        } else if (errorCode === 'alreadyExists') {
+            return (<Text style={styles.errorText}>Child already exists</Text>)
+        }
+        return null
     }
 
     return(
@@ -72,6 +96,7 @@ const CaregiverMain = () => {
                     onPress={handleAddChild}
                 >Add</CustomButton>
             </View>
+            <ErrorText/>
             <View style={{marginTop: 8, flexDirection: 'row', alignItems: 'center'}}>
                 <TextInput
                     style={[styles.textInput, {width: 150, marginRight: 8}]}
@@ -133,6 +158,11 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: colors.button1,
         justifyContent: 'center',
+    },
+    errorText: {
+        fontFamily:'balsamiq',
+        fontSize: 15,
+        color: colors.button1
     }
 })
 
