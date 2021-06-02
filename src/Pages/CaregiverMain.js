@@ -5,10 +5,12 @@ import {auth, signOut, getCurrentUserId} from "../../api/auth";
 import colors from "../../assets/themes/colors";
 import * as Children from "../../api/child"
 import * as Quests from "../../api/quest"
+import CreateQuestModal from "../Components/CreateQuest";
 
 const CaregiverMain = () => {
     const [childList, setChildList] = useState()
     const [userId, setUserId] = useState(getCurrentUserId());
+    const [questModalVisible, toggleQuestModal] = useState(false)
 
     const [childNameInput, setChildNameInput] = useState('')
     const handleChildNameUpdate = (text) => setChildNameInput(text)
@@ -46,6 +48,11 @@ const CaregiverMain = () => {
 
     return(
         <View style={styles.container}>
+            <CreateQuestModal
+                visibility={questModalVisible}
+                toggleVisibility={toggleQuestModal}
+                childList={childList}
+            />
             <Text style={styles.text}>Welcome, Caregiver {auth.currentUser.displayName}</Text>
             <CustomButton
                 buttonStyle={[styles.button, {marginBottom: 8}]}
@@ -84,6 +91,11 @@ const CaregiverMain = () => {
                     onPress={handleAddQuest}
                 >Add</CustomButton>
             </View>
+            <CustomButton
+                buttonStyle={[styles.button, {marginTop: 8}]}
+                textStyle={{fontFamily: 'balsamiq'}}
+                onPress={() => toggleQuestModal(true)}
+            >+ Create Quest</CustomButton>
             <Text style={{marginTop:8, fontFamily: 'balsamiq'}}>List of Children</Text>
             <View style={{marginTop:8, height:100, width: 100, alignItems: 'center'}}>
                 <FlatList
