@@ -2,12 +2,12 @@ import firebase from "./firebase";
 
 const db = firebase.database();
 
-const newQuest = (id, title, duration, points) => ({id, title, duration, points})
+const newQuest = (id, title, dueDate, points) => ({id, title, dueDate, points})
 
-export const createQuest = async (userId, childName, questTitle, questDuration, questPoints) => {
+export const createQuest = async (userId, childName, questTitle, questDueDate, questPoints) => {
     try {
         const quest = db.ref(`users/${userId}/${childName}/quests`).push()
-        await quest.set(newQuest(quest.key, questTitle, questDuration, questPoints))
+        await quest.set(newQuest(quest.key, questTitle, questDueDate, questPoints))
 
     } catch (e) {
         console.error(e)
