@@ -3,6 +3,7 @@ import {View, TextInput, StyleSheet, Text} from "react-native";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
 import {createAccount} from '../../api/auth';
+import ErrorText from "../Components/ErrorText";
 
 const CreateAccount = () => {
     const [name, setName] = useState('')
@@ -20,12 +21,9 @@ const CreateAccount = () => {
     }
 
     const [errorCode, setErrorCode] = useState(null)
-    const ErrorText = () => {
-        if (errorCode === 'auth/weak-password') {
-            return (<Text style={styles.errorText}>Password too short</Text>)
-        }
-        return null
-    }
+    const errors = [
+        {code: 'auth/weak-password', text: 'Password is too short', key:'1'},
+    ]
 
     return(
         <View style={styles.container}>
@@ -57,7 +55,11 @@ const CreateAccount = () => {
                     onPress={handleCreate}
                 >Create</CustomButton>
             </View>
-            <ErrorText/>
+            <ErrorText
+                errorCode={errorCode}
+                setErrorCode={setErrorCode}
+                errors={errors}
+            />
         </View>
     )
 }

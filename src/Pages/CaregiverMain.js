@@ -6,6 +6,7 @@ import colors from "../../assets/themes/colors";
 import * as Children from "../../api/child"
 import * as Quests from "../../api/quest"
 import CreateQuestModal from "../Components/CreateQuest";
+import ErrorText from "../Components/ErrorText";
 
 const CaregiverMain = () => {
     const [childList, setChildList] = useState()
@@ -61,14 +62,10 @@ const CaregiverMain = () => {
     }
 
     const [errorCode, setErrorCode] = useState(null)
-    const ErrorText = () => {
-        if (errorCode === 'invalid') {
-            return (<Text style={styles.errorText}>Invalid Username</Text>)
-        } else if (errorCode === 'alreadyExists') {
-            return (<Text style={styles.errorText}>Child already exists</Text>)
-        }
-        return null
-    }
+    const errors = [
+        {code: 'invalid', text: 'Invalid Username', key:'1'},
+        {code: 'alreadyExists', text: 'Child already exists', key:'2'}
+    ]
 
     return(
         <View style={styles.container}>
@@ -96,7 +93,11 @@ const CaregiverMain = () => {
                     onPress={handleAddChild}
                 >Add</CustomButton>
             </View>
-            <ErrorText/>
+            <ErrorText
+                errorCode={errorCode}
+                setErrorCode={setErrorCode}
+                errors={errors}
+            />
             <View style={{marginTop: 8, flexDirection: 'row', alignItems: 'center'}}>
                 <TextInput
                     style={[styles.textInput, {width: 150, marginRight: 8}]}
