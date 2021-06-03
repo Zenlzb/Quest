@@ -11,6 +11,22 @@ const CreateQuestModal = (props) => {
     const [points, setPoints] = useState('')
     const handlePointsUpdate = (text) => setPoints(text)
 
+    const [year, setYear] = useState(null)
+    const [month, setMonth] = useState(null)
+    const [week, setWeek] = useState(null)
+    const [day, setDay] = useState(null)
+    const [hour, setHour] = useState(null)
+    const [minute, setMinute] = useState(null)
+    const [second, setSecond] = useState(null)
+    const handleYearUpdate = (text) => setYear(text)
+    const handleMonthUpdate = (text) => setMonth(text)
+    const handleWeekUpdate = (text) => setWeek(text)
+    const handleDayUpdate = (text) => setDay(text)
+    const handleHourUpdate = (text) => setHour(text)
+    const handleMinuteUpdate = (text) => setMinute(text)
+    const handleSecondUpdate = (text) => setSecond(text)
+
+
     const [items, setItems] = useState([{name: 'a', key: 'a'}])
     const [selected, toggleSelected] = useState([false])
     const getItemIndex = (item) => {
@@ -82,6 +98,52 @@ const CreateQuestModal = (props) => {
                             value={points}
                         />
                     </View>
+                    <View style={styles.durationContainer}>
+                        <TextInput
+                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5}]}
+                            placeholder={"Yr"}
+                            onChangeText={handleYearUpdate}
+                            value={year}
+                        />
+                        <TextInput
+                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
+                            placeholder={"Mth"}
+                            onChangeText={handleMonthUpdate}
+                            value={month}
+                        />
+                        <TextInput
+                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
+                            placeholder={"Wk"}
+                            onChangeText={handleWeekUpdate}
+                            value={week}
+                        />
+                        <TextInput
+                            style={[styles.textInput, {width: '13.5%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
+                            placeholder={"Day"}
+                            onChangeText={handleDayUpdate}
+                            value={day}
+                        />
+                        <TextInput
+                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
+                            placeholder={"Hr"}
+                            onChangeText={handleHourUpdate}
+                            value={hour}
+                        />
+                        <TextInput
+                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
+                            placeholder={"M"}
+                            onChangeText={handleMinuteUpdate}
+                            value={minute}
+                        />
+                        <TextInput
+                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
+                            placeholder={"S"}
+                            onChangeText={handleSecondUpdate}
+                            value={second}
+                        />
+
+
+                    </View>
                     <View style={styles.buttonContainer}>
                         <CustomButton
                             buttonStyle={styles.button}
@@ -127,6 +189,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     pointsContainer: {
+        marginTop: 8,
+        flexDirection: 'row'
+    },
+    durationContainer: {
         marginTop: 8,
         flexDirection: 'row'
     },
