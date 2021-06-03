@@ -11,7 +11,7 @@ const colors = {
     background: palette.yellow,
     transparentBackground: palette.transparentBlack,
     button1: palette.pink,
-    button2: palette.lightGreen,
+    button2: palette.green,
 }
 
 export default colors

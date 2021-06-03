@@ -23,7 +23,7 @@ const CaregiverMain = () => {
 
     const handleSignOut = () => {signOut()}
     const handleAddChild = () => {
-        if (childNameInput === 'All' || childNameInput === 'all' ) {
+        if (childNameInput === 'All' || childNameInput === 'all' || childNameInput === '') {
             setErrorCode('invalid')
             return
         }
@@ -63,7 +63,7 @@ const CaregiverMain = () => {
 
     const [errorCode, setErrorCode] = useState(null)
     const errors = [
-        {code: 'invalid', text: 'Invalid Username', key:'1'},
+        {code: 'invalid', text: 'Invalid Name', key:'1'},
         {code: 'alreadyExists', text: 'Child already exists', key:'2'}
     ]
 
