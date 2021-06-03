@@ -2,8 +2,16 @@ import React, {useState} from 'react'
 import {StyleSheet, Modal, View, FlatList, TextInput, Text} from 'react-native';
 import colors from "../../assets/themes/colors";
 import CustomButton from "./Button";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-
+/*TODO Error handling
+    - anything is empty
+    - child not selected
+    - points is not a number
+    - duration is not a number
+    - duration and date both empty
+    - duration and date both filled
+*/
 const CreateQuestModal = (props) => {
     const [title, setTitle] = useState('')
     const handleTitleUpdate = (text) => setTitle(text)
@@ -26,6 +34,15 @@ const CreateQuestModal = (props) => {
     const handleMinuteUpdate = (text) => setMinute(text)
     const handleSecondUpdate = (text) => setSecond(text)
 
+    const [showDatePicker, setShowDatePicker] = useState(false)
+    const [selectedDate, setSelectedDate] = useState(new Date())
+    const setDate = (event, date) => {
+        const currentDate = date || selectedDate ;
+        setShowDatePicker(false)
+        setSelectedDate(currentDate)
+    }
+
+    const [dueDateMode, setDueDateMode] = useState(true)
 
     const [items, setItems] = useState([{name: 'a', key: 'a'}])
     const [selected, toggleSelected] = useState([false])
@@ -67,7 +84,6 @@ const CreateQuestModal = (props) => {
         >
             <View style={styles.container}>
                 <View style={styles.popupContainer}>
-
                     <View style={styles.childPickerContainer}>
                         <FlatList
                             horizontal={true}
@@ -98,52 +114,107 @@ const CreateQuestModal = (props) => {
                             value={points}
                         />
                     </View>
-                    <View style={styles.durationContainer}>
-                        <TextInput
-                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5}]}
-                            placeholder={"Yr"}
-                            onChangeText={handleYearUpdate}
-                            value={year}
-                        />
-                        <TextInput
-                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
-                            placeholder={"Mth"}
-                            onChangeText={handleMonthUpdate}
-                            value={month}
-                        />
-                        <TextInput
-                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
-                            placeholder={"Wk"}
-                            onChangeText={handleWeekUpdate}
-                            value={week}
-                        />
-                        <TextInput
-                            style={[styles.textInput, {width: '13.5%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
-                            placeholder={"Day"}
-                            onChangeText={handleDayUpdate}
-                            value={day}
-                        />
-                        <TextInput
-                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
-                            placeholder={"Hr"}
-                            onChangeText={handleHourUpdate}
-                            value={hour}
-                        />
-                        <TextInput
-                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
-                            placeholder={"M"}
-                            onChangeText={handleMinuteUpdate}
-                            value={minute}
-                        />
-                        <TextInput
-                            style={[styles.textInput, {width: '13%', textAlign: 'right', paddingRight: 5, marginLeft: 5}]}
-                            placeholder={"S"}
-                            onChangeText={handleSecondUpdate}
-                            value={second}
-                        />
+                    <View style={styles.dueDateContainer}>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Text style={styles.text}>
+                                Duration
+                            </Text>
+                            <CustomButton
+                                buttonStyle={[
+                                    styles.button,
+                                    dueDateMode ? {backgroundColor: colors.button2} : {backgroundColor: colors.button1},
+                                    {marginLeft: 8}
+                                ]}
+                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                onPress={() => {setDueDateMode(true)}}
+                            >Select</CustomButton>
+                        </View>
 
+                        <View style={styles.durationContainer}>
+                            <TextInput
+                                style={[styles.durationTextInput, {marginLeft: 0}]}
+                                placeholder={"Yr"}
+                                onChangeText={handleYearUpdate}
+                                value={year}
+                            />
+                            <TextInput
+                                style={styles.durationTextInput}
+                                placeholder={"Mth"}
+                                onChangeText={handleMonthUpdate}
+                                value={month}
+                            />
+                            <TextInput
+                                style={styles.durationTextInput}
+                                placeholder={"Wk"}
+                                onChangeText={handleWeekUpdate}
+                                value={week}
+                            />
+                            <TextInput
+                                style={styles.durationTextInput}
+                                placeholder={"Day"}
+                                onChangeText={handleDayUpdate}
+                                value={day}
+                            />
+                            <TextInput
+                                style={styles.durationTextInput}
+                                placeholder={"Hr"}
+                                onChangeText={handleHourUpdate}
+                                value={hour}
+                            />
+                            <TextInput
+                                style={styles.durationTextInput}
+                                placeholder={"M"}
+                                onChangeText={handleMinuteUpdate}
+                                value={minute}
+                            />
+                            <TextInput
+                                style={styles.durationTextInput}
+                                placeholder={"S"}
+                                onChangeText={handleSecondUpdate}
+                                value={second}
+                            />
+                        </View>
+                        <View style={{flexDirection: 'row', marginTop: 8, alignItems: 'center'}}>
+                            <View style={{width: '43%', height: 1, backgroundColor: 'black', marginRight: 5}}/>
+                            <Text style={styles.text}>
+                                OR
+                            </Text>
+                            <View style={{width: '43%', height: 1, backgroundColor: 'black', marginLeft: 5}}/>
+                        </View>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Text style={styles.text}>
+                                Due Date
+                            </Text>
+                            <CustomButton
+                                buttonStyle={[
+                                    styles.button,
+                                    !dueDateMode ? {backgroundColor: colors.button2} : {backgroundColor: colors.button1},
+                                    {marginLeft: 8}
+                                ]}
+                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                onPress={() => {setDueDateMode(false)}}
+                            >Select</CustomButton>
+                        </View>
+
+                        <View style={styles.datePickerContainer}>
+                            <CustomButton
+                                buttonStyle={styles.button}
+                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                onPress={() => setShowDatePicker(true)}
+                            >Choose Date</CustomButton>
+                            <Text style={[styles.text, { marginLeft: 10 }]}>
+                                {selectedDate.toDateString()}
+                            </Text>
+                        </View>
+
+                        {showDatePicker && (<DateTimePicker
+                            value={selectedDate}
+                            mode={'date'}
+                            onChange={setDate}
+                        />)}
 
                     </View>
+
                     <View style={styles.buttonContainer}>
                         <CustomButton
                             buttonStyle={styles.button}
@@ -196,6 +267,17 @@ const styles = StyleSheet.create({
         marginTop: 8,
         flexDirection: 'row'
     },
+    dueDateContainer: {
+        marginTop: 10,
+        padding: 5,
+        borderWidth: 1,
+        alignItems: 'center'
+
+    },
+    datePickerContainer: {
+        marginTop: 8,
+        flexDirection: 'row'
+    },
     button: {
         backgroundColor: colors.button1,
         justifyContent: 'center',
@@ -209,6 +291,20 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
         fontFamily: 'balsamiq'
     },
+    durationTextInput: {
+        borderWidth: 1,
+        borderColor: 'black',
+        backgroundColor: '#fff',
+        fontSize: 15,
+        height: 30,
+        paddingLeft: 5,
+        fontFamily: 'balsamiq',
+        width: '13%',
+        textAlign: 'right',
+        paddingRight: 5,
+        marginLeft: 5
+    }
+    ,
     text: {
         fontSize: 20,
         fontFamily: 'balsamiq'
