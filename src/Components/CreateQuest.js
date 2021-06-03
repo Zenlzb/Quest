@@ -87,6 +87,18 @@ const CreateQuestModal = (props) => {
             onShow={() => {
                 setItems([...props.childList])
                 toggleSelected(items.map(() => false))
+                setTitle('')
+                setPoints('')
+                setYear(null)
+                setMonth(null)
+                setWeek(null)
+                setDay(null)
+                setHour(null)
+                setMinute(null)
+                setSecond(null)
+                setDueDateMode(true)
+                setSelectedDate(new Date())
+                setSelectedTime(new Date())
             }}
         >
             <View style={styles.container}>
