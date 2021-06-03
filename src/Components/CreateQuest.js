@@ -37,9 +37,16 @@ const CreateQuestModal = (props) => {
     const [showDatePicker, setShowDatePicker] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
     const setDate = (event, date) => {
-        const currentDate = date || selectedDate ;
+        const currentDate = date || selectedDate
         setShowDatePicker(false)
         setSelectedDate(currentDate)
+    }
+    const [showTimePicker, setShowTimePicker] = useState(false)
+    const [selectedTime, setSelectedTime] = useState(new Date())
+    const setTime = (event, date) => {
+        const currentDate = date || selectedTime
+        setShowTimePicker(false)
+        setSelectedTime(currentDate)
     }
 
     const [dueDateMode, setDueDateMode] = useState(true)
@@ -94,8 +101,13 @@ const CreateQuestModal = (props) => {
                         <CustomButton
                             buttonStyle={[styles.button, {marginLeft: 8}]}
                             textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                            onPress={() => toggleSelected(selected.map(() => true))}
+                            onPress={() => toggleSelected(items.map(() => true))}
                         >All</CustomButton>
+                    </View>
+                    <View style={styles.presetContainer}>
+                        <Text style={styles.text}>
+                            Presets go here
+                        </Text>
                     </View>
                     <TextInput
                         style={[styles.textInput, {width: '100%', marginTop: 8}]}
@@ -196,7 +208,7 @@ const CreateQuestModal = (props) => {
                             >Select</CustomButton>
                         </View>
 
-                        <View style={styles.datePickerContainer}>
+                        <View style={styles.dateTimePickerContainer}>
                             <CustomButton
                                 buttonStyle={styles.button}
                                 textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
@@ -206,11 +218,26 @@ const CreateQuestModal = (props) => {
                                 {selectedDate.toDateString()}
                             </Text>
                         </View>
+                        <View style={styles.dateTimePickerContainer}>
+                            <CustomButton
+                                buttonStyle={styles.button}
+                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                onPress={() => setShowTimePicker(true)}
+                            >Choose Time</CustomButton>
+                            <Text style={[styles.text, { marginLeft: 10 }]}>
+                                {selectedTime.toTimeString().substr(0,5)}
+                            </Text>
+                        </View>
 
                         {showDatePicker && (<DateTimePicker
                             value={selectedDate}
                             mode={'date'}
                             onChange={setDate}
+                        />)}
+                        {showTimePicker && (<DateTimePicker
+                            value={selectedTime}
+                            mode={'time'}
+                            onChange={setTime}
                         />)}
 
                     </View>
@@ -252,6 +279,14 @@ const styles = StyleSheet.create({
         height: 500,
         alignItems: 'center',
     },
+    presetContainer: {
+      borderWidth: 1,
+      marginTop: 10,
+      width: '100%',
+      height: 100,
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
     childPickerContainer: {
         flexDirection: 'row',
     },
@@ -274,9 +309,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
 
     },
-    datePickerContainer: {
+    dateTimePickerContainer: {
         marginTop: 8,
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     button: {
         backgroundColor: colors.button1,
