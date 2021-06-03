@@ -1,10 +1,16 @@
 import React, {useState} from 'react'
-import {StyleSheet, Modal, View, FlatList} from 'react-native';
+import {StyleSheet, Modal, View, FlatList, TextInput, Text} from 'react-native';
 import colors from "../../assets/themes/colors";
 import CustomButton from "./Button";
 
 
 const CreateQuestModal = (props) => {
+    const [title, setTitle] = useState('')
+    const handleTitleUpdate = (text) => setTitle(text)
+
+    const [points, setPoints] = useState('')
+    const handlePointsUpdate = (text) => setPoints(text)
+
     const [items, setItems] = useState([{name: 'a', key: 'a'}])
     const [selected, toggleSelected] = useState([false])
     const getItemIndex = (item) => {
@@ -45,6 +51,7 @@ const CreateQuestModal = (props) => {
         >
             <View style={styles.container}>
                 <View style={styles.popupContainer}>
+
                     <View style={styles.childPickerContainer}>
                         <FlatList
                             horizontal={true}
@@ -58,12 +65,37 @@ const CreateQuestModal = (props) => {
                             onPress={() => toggleSelected(selected.map(() => true))}
                         >All</CustomButton>
                     </View>
+                    <TextInput
+                        style={[styles.textInput, {width: '100%', marginTop: 8}]}
+                        placeholder={"Quest title"}
+                        onChangeText={handleTitleUpdate}
+                        value={title}
+                    />
+                    <View style={styles.pointsContainer}>
+                        <Text style={[styles.text, {marginRight: 10}]}>
+                            Reward Points
+                        </Text>
+                        <TextInput
+                            style={[styles.textInput, {width: '50%'}]}
+                            placeholder={"coin icon goes ->"}
+                            onChangeText={handlePointsUpdate}
+                            value={points}
+                        />
+                    </View>
+                    <View style={styles.buttonContainer}>
+                        <CustomButton
+                            buttonStyle={styles.button}
+                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                            onPress={() => {}}
+                        >Create</CustomButton>
+                        <CustomButton
+                            buttonStyle={[styles.button, {marginLeft: 30}]}
+                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                            onPress={() => props.toggleVisibility(false)}
+                        >Cancel</CustomButton>
+                    </View>
 
-                    <CustomButton
-                        buttonStyle={styles.button}
-                        textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                        onPress={() => props.toggleVisibility(false)}
-                    >Cancel</CustomButton>
+
                 </View>
             </View>
 
@@ -83,19 +115,37 @@ const styles = StyleSheet.create({
         backgroundColor: colors.background,
         padding:10,
         borderRadius: 5,
-        width: 300,
+        width: 350,
         height: 500,
         alignItems: 'center',
-        justifyContent: 'space-between'
     },
     childPickerContainer: {
         flexDirection: 'row',
-
-
+    },
+    buttonContainer: {
+        marginTop: 8,
+        flexDirection: 'row'
+    },
+    pointsContainer: {
+        marginTop: 8,
+        flexDirection: 'row'
     },
     button: {
         backgroundColor: colors.button1,
         justifyContent: 'center',
+    },
+    textInput: {
+        borderWidth: 1,
+        borderColor: 'black',
+        backgroundColor: '#fff',
+        fontSize: 20,
+        height: 30,
+        paddingLeft: 5,
+        fontFamily: 'balsamiq'
+    },
+    text: {
+        fontSize: 20,
+        fontFamily: 'balsamiq'
     }
 })
 
