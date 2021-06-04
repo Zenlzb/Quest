@@ -1,16 +1,13 @@
 import React, {useState} from 'react'
-import {StyleSheet, Modal, View, FlatList, TextInput, Text} from 'react-native';
+import {FlatList, Modal, StyleSheet, Text, TextInput, View} from 'react-native';
 import colors from "../../assets/themes/colors";
 import CustomButton from "./Button";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import ErrorText from "./ErrorText";
 
-/*TODO Error handling
-    - anything is empty
-    - child not selected
-    - points is not a number
-    - duration is not a number
-    - duration and date both empty
-    - duration and date both filled
+/*TODO Warning
+    - points is 0
+    - date is less than 5 mins away
 */
 const CreateQuestModal = (props) => {
     const [title, setTitle] = useState('')
@@ -19,13 +16,13 @@ const CreateQuestModal = (props) => {
     const [points, setPoints] = useState('')
     const handlePointsUpdate = (text) => setPoints(text)
 
-    const [year, setYear] = useState(null)
-    const [month, setMonth] = useState(null)
-    const [week, setWeek] = useState(null)
-    const [day, setDay] = useState(null)
-    const [hour, setHour] = useState(null)
-    const [minute, setMinute] = useState(null)
-    const [second, setSecond] = useState(null)
+    const [year, setYear] = useState('')
+    const [month, setMonth] = useState('')
+    const [week, setWeek] = useState('')
+    const [day, setDay] = useState('')
+    const [hour, setHour] = useState('')
+    const [minute, setMinute] = useState('')
+    const [second, setSecond] = useState('')
     const handleYearUpdate = (text) => setYear(text)
     const handleMonthUpdate = (text) => setMonth(text)
     const handleWeekUpdate = (text) => setWeek(text)
@@ -62,6 +59,92 @@ const CreateQuestModal = (props) => {
         return null
     }
 
+    const [errorCode, setErrorCode] = useState('')
+    const errors = [
+        {code: 'emptyTitle', text: 'Please fill in a title', key:'1'},
+        {code: 'emptyDuration', text: 'Please fill in at least 1 field in duration', key:'2'},
+        {code: 'durationNaN', text: 'Please only fill numbers into duration', key:'3'},
+        {code: 'pointsNaN', text: 'Please only fill numbers into points', key:'4'},
+        {code: 'noChildSelected', text: 'Please select at least 1 child', key:'5'},
+        {code: 'decimalYMWD', text: 'Year, Month, Week and Day cannot be a decimal', key:'6'},
+    ]
+
+    const handleCreateQuest = () => {
+        setErrorCode('')
+        if (!title) {
+            setErrorCode('emptyTitle')
+            return
+        } else if (dueDateMode && !(year || month || week || day || hour || minute || second)) {
+            setErrorCode('emptyDuration')
+            return
+        } else if (dueDateMode && (isNaN(+year) || isNaN(+month) || isNaN(+week) || isNaN(+day) || isNaN(+hour) || isNaN(+minute) || isNaN(+second))) {
+            setErrorCode('durationNaN')
+            return
+        } else if (isNaN(+points)) {
+            setErrorCode('pointsNaN')
+            return
+        } else if ((+year % 1 !== 0) || (+month % 1 !== 0) || (+week % 1 !== 0) || (+day % 1 !== 0)) {
+            setErrorCode('decimalYMWD')
+            return
+        }
+
+        let selectedChildren = []
+        for(let i = 0; i < selected.length; i++) {
+            if (selected[i]) {
+                selectedChildren.push(items[i].name)
+            }
+        }
+        if (selectedChildren.length === 0) {
+            setErrorCode('noChildSelected')
+            return
+        }
+
+        let date
+        if (dueDateMode) {
+            date = convertDuration()
+        } else {
+            date = combineDateAndTime(selectedDate, selectedTime)
+        }
+        console.log(date.toDateString() + ' ' + date.toTimeString())
+    }
+
+    const combineDateAndTime = (date, time) => {
+        const timeString = time.getHours() + ':' + time.getMinutes() + ':00';
+
+        const year = date.getFullYear();
+        let month = date.getMonth() + 1; // Jan is 0, dec is 11
+        if (month.toString().length === 1) {month = '0'+ month}
+        let day = date.getDate();
+        if (day.toString().length === 1) {day = '0'+ day}
+        const dateString = '' + year + '-' + month + '-' + day;
+        let hr = -(new Date().getTimezoneOffset() / 60)
+        let timezone
+        if (hr < 0) {
+            if (Math.abs(hr) < 10) {
+                timezone = `-0${Math.abs(hr)}:00`
+            } else {
+                timezone = `-${Math.abs(hr)}:00`
+            }
+        } else {
+            if (Math.abs(hr) < 10) {
+                timezone = `+0${Math.abs(hr)}:00`
+            } else {
+                timezone = `+${Math.abs(hr)}:00`
+            }
+        }
+        console.log(dateString + 'T' + timeString + timezone)
+
+        return new Date(dateString + 'T' + timeString + timezone);
+    }
+
+    const convertDuration = () => {
+        let time = new Date()
+        time.setMonth(time.getMonth() + (+month) + (+year) * 12)
+        time.setDate(time.getDate() + (+day) + (+week) * 7)
+        time.setSeconds(time.getSeconds() + (+second) + (+minute) * 60 + (+hour) * 3600)
+        return time
+    }
+
     const childItem = ({ item, index }) => {
         return (
                 <CustomButton
@@ -89,16 +172,17 @@ const CreateQuestModal = (props) => {
                 toggleSelected(items.map(() => false))
                 setTitle('')
                 setPoints('')
-                setYear(null)
-                setMonth(null)
-                setWeek(null)
-                setDay(null)
-                setHour(null)
-                setMinute(null)
-                setSecond(null)
+                setYear('')
+                setMonth('')
+                setWeek('')
+                setDay('')
+                setHour('')
+                setMinute('')
+                setSecond('')
                 setDueDateMode(true)
                 setSelectedDate(new Date())
                 setSelectedTime(new Date())
+                setErrorCode('')
             }}
         >
             <View style={styles.container}>
@@ -222,21 +306,21 @@ const CreateQuestModal = (props) => {
 
                         <View style={styles.dateTimePickerContainer}>
                             <CustomButton
-                                buttonStyle={styles.button}
+                                buttonStyle={[styles.button, {width: '40%', marginLeft: 10}]}
                                 textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                                 onPress={() => setShowDatePicker(true)}
                             >Choose Date</CustomButton>
-                            <Text style={[styles.text, { marginLeft: 10 }]}>
+                            <Text style={[styles.text, { marginLeft: 10 , width: '50%', textAlign: 'center'}]}>
                                 {selectedDate.toDateString()}
                             </Text>
                         </View>
                         <View style={styles.dateTimePickerContainer}>
                             <CustomButton
-                                buttonStyle={styles.button}
+                                buttonStyle={[styles.button, {width: '40%', marginLeft: 10}]}
                                 textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                                 onPress={() => setShowTimePicker(true)}
                             >Choose Time</CustomButton>
-                            <Text style={[styles.text, { marginLeft: 10 }]}>
+                            <Text style={[styles.text, { marginLeft: 10 , width: '50%', textAlign: 'center'}]}>
                                 {selectedTime.toTimeString().substr(0,5)}
                             </Text>
                         </View>
@@ -253,12 +337,17 @@ const CreateQuestModal = (props) => {
                         />)}
 
                     </View>
+                    <ErrorText
+                        errorCode={errorCode}
+                        setErrorCode={setErrorCode}
+                        errors={errors}
+                    />
 
                     <View style={styles.buttonContainer}>
                         <CustomButton
                             buttonStyle={styles.button}
                             textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                            onPress={() => {}}
+                            onPress={handleCreateQuest}
                         >Create</CustomButton>
                         <CustomButton
                             buttonStyle={[styles.button, {marginLeft: 30}]}
@@ -266,11 +355,8 @@ const CreateQuestModal = (props) => {
                             onPress={() => props.toggleVisibility(false)}
                         >Cancel</CustomButton>
                     </View>
-
-
                 </View>
             </View>
-
         </Modal>
     )
 }
@@ -295,7 +381,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       marginTop: 10,
       width: '100%',
-      height: 100,
+      height: 70,
       alignItems: 'center',
       justifyContent: 'center'
     },
