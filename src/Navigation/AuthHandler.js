@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ChildMain from "../Pages/ChildMain";
 import {checkChildExists} from "../../api/child";
 import CustomPopup from "../Components/Popup";
+import CustomButton from "../Components/Button";
 
 
 const AuthHandler = () => {
@@ -57,9 +58,23 @@ const AuthHandler = () => {
             <NavigationContainer>
                 <CustomPopup
                     visibility={childNotFound}
-                    toggleVisibility={setChildNotFound}
                     titleText={'Child Not Found'}
                     bodyText={'Add a Child Using the Add Button'}
+                    buttonList={
+                        () => {
+                        return (
+                            <CustomButton
+                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                onPress={
+                                    () => {
+                                        setChildNotFound(false)
+                                        setTimeout( async () => {await AsyncStorage.removeItem('childName')}, 500)
+                                        setChildName('')
+                                    }
+                                }
+                            >OK</CustomButton>
+                        )
+                    }}
                 />
                 {user ? (childName ? <ChildMain name={childName}/> : <CaregiverMain/>) : <AuthStack />}
             </NavigationContainer>

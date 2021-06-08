@@ -4,11 +4,8 @@ import colors from "../../assets/themes/colors";
 import CustomButton from "./Button";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ErrorText from "./ErrorText";
+import CustomPopup from "./Popup";
 
-/*TODO Warning
-    - points is 0
-    - date is less than 5 mins away
-*/
 const CreateQuestModal = (props) => {
     const [title, setTitle] = useState('')
     const handleTitleUpdate = (text) => setTitle(text)
@@ -69,6 +66,9 @@ const CreateQuestModal = (props) => {
         {code: 'decimalYMWD', text: 'Year, Month, Week and Day cannot be a decimal', key:'6'},
     ]
 
+    const [warningPopup, setWarningPopup] = useState(false)
+    const [warningText, setWarningText] = useState('')
+
     const handleCreateQuest = () => {
         setErrorCode('')
         if (!title) {
@@ -106,6 +106,15 @@ const CreateQuestModal = (props) => {
             date = combineDateAndTime(selectedDate, selectedTime)
         }
         console.log(date.toDateString() + ' ' + date.toTimeString())
+
+        if (+points === 0) {
+            setWarningText('Reward points is empty or 0')
+            setWarningPopup(true)
+        } else if (date.getTime() - new Date().getTime() < 300000) {
+            setWarningText('Due date is less than 5 minutes away')
+            setWarningPopup(true)
+        }
+
     }
 
     const combineDateAndTime = (date, time) => {
@@ -185,6 +194,27 @@ const CreateQuestModal = (props) => {
                 setErrorCode('')
             }}
         >
+            <CustomPopup
+                visibility={warningPopup}
+                titleText={'Are you sure?'}
+                bodyText={warningText}
+                buttonList={
+                    () => {
+                        return (
+                            <View style={styles.buttonContainer}>
+                                <CustomButton
+                                    buttonStyle={{marginRight: 8}}
+                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                    onPress={() => {}}
+                                >Create</CustomButton>
+                                <CustomButton
+                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                    onPress={() => setWarningPopup(false)}
+                                >Cancel</CustomButton>
+                            </View>
+                        )
+                    }}
+            />
             <View style={styles.container}>
                 <View style={styles.popupContainer}>
                     <View style={styles.childPickerContainer}>
@@ -216,8 +246,8 @@ const CreateQuestModal = (props) => {
                             Reward Points
                         </Text>
                         <TextInput
-                            style={[styles.textInput, {width: '50%'}]}
-                            placeholder={"coin icon goes ->"}
+                            style={[styles.textInput, {width: '35%', paddingRight: 5}]}
+                            textAlign={'right'}
                             onChangeText={handlePointsUpdate}
                             value={points}
                         />
@@ -241,42 +271,49 @@ const CreateQuestModal = (props) => {
                         <View style={styles.durationContainer}>
                             <TextInput
                                 style={[styles.durationTextInput, {marginLeft: 0}]}
+                                keyboardType='numeric'
                                 placeholder={"Yr"}
                                 onChangeText={handleYearUpdate}
                                 value={year}
                             />
                             <TextInput
                                 style={styles.durationTextInput}
+                                keyboardType='numeric'
                                 placeholder={"Mth"}
                                 onChangeText={handleMonthUpdate}
                                 value={month}
                             />
                             <TextInput
                                 style={styles.durationTextInput}
+                                keyboardType='numeric'
                                 placeholder={"Wk"}
                                 onChangeText={handleWeekUpdate}
                                 value={week}
                             />
                             <TextInput
                                 style={styles.durationTextInput}
+                                keyboardType='numeric'
                                 placeholder={"Day"}
                                 onChangeText={handleDayUpdate}
                                 value={day}
                             />
                             <TextInput
                                 style={styles.durationTextInput}
+                                keyboardType='numeric'
                                 placeholder={"Hr"}
                                 onChangeText={handleHourUpdate}
                                 value={hour}
                             />
                             <TextInput
                                 style={styles.durationTextInput}
+                                keyboardType='numeric'
                                 placeholder={"M"}
                                 onChangeText={handleMinuteUpdate}
                                 value={minute}
                             />
                             <TextInput
                                 style={styles.durationTextInput}
+                                keyboardType='numeric'
                                 placeholder={"S"}
                                 onChangeText={handleSecondUpdate}
                                 value={second}
