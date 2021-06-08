@@ -4,7 +4,7 @@ import colors from "../../assets/themes/colors";
 import CustomButton from "./Button";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ErrorText from "./ErrorText";
-import CustomPopup from "./Popup";
+import * as Quests from '../../api/quest'
 
 const CreateQuestModal = (props) => {
     const [title, setTitle] = useState('')
@@ -59,20 +59,21 @@ const CreateQuestModal = (props) => {
     const [errorCode, setErrorCode] = useState('')
     const errors = [
         {code: 'emptyTitle', text: 'Please fill in a title', key:'1'},
-        {code: 'emptyDuration', text: 'Please fill in at least 1 field in duration', key:'2'},
-        {code: 'durationNaN', text: 'Please only fill numbers into duration', key:'3'},
-        {code: 'pointsNaN', text: 'Please only fill numbers into points', key:'4'},
-        {code: 'noChildSelected', text: 'Please select at least 1 child', key:'5'},
-        {code: 'decimalYMWD', text: 'Year, Month, Week and Day cannot be a decimal', key:'6'},
+        {code: 'emptyPoints', text: 'Points is empty or 0', key:'2'},
+        {code: 'emptyDuration', text: 'Please fill in at least 1 field in duration', key:'3'},
+        {code: 'durationNaN', text: 'Please only fill numbers into duration', key:'4'},
+        {code: 'pointsNaN', text: 'Please only fill numbers into points', key:'5'},
+        {code: 'noChildSelected', text: 'Please select at least 1 child', key:'6'},
+        {code: 'decimalYMWD', text: 'Year, Month, Week and Day cannot be a decimal', key:'7'},
     ]
-
-    const [warningPopup, setWarningPopup] = useState(false)
-    const [warningText, setWarningText] = useState('')
 
     const handleCreateQuest = () => {
         setErrorCode('')
         if (!title) {
             setErrorCode('emptyTitle')
+            return
+        } else if (+points === 0) {
+            setErrorCode('emptyPoints')
             return
         } else if (dueDateMode && !(year || month || week || day || hour || minute || second)) {
             setErrorCode('emptyDuration')
@@ -105,15 +106,11 @@ const CreateQuestModal = (props) => {
         } else {
             date = combineDateAndTime(selectedDate, selectedTime)
         }
-        console.log(date.toDateString() + ' ' + date.toTimeString())
 
-        if (+points === 0) {
-            setWarningText('Reward points is empty or 0')
-            setWarningPopup(true)
-        } else if (date.getTime() - new Date().getTime() < 300000) {
-            setWarningText('Due date is less than 5 minutes away')
-            setWarningPopup(true)
+        for(let i = 0; i < selectedChildren.length; i++) {
+            Quests.createQuest(props.userId, selectedChildren[i], title, date.toJSON(), points)
         }
+        props.toggleVisibility(false)
 
     }
 
@@ -194,27 +191,6 @@ const CreateQuestModal = (props) => {
                 setErrorCode('')
             }}
         >
-            <CustomPopup
-                visibility={warningPopup}
-                titleText={'Are you sure?'}
-                bodyText={warningText}
-                buttonList={
-                    () => {
-                        return (
-                            <View style={styles.buttonContainer}>
-                                <CustomButton
-                                    buttonStyle={{marginRight: 8}}
-                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                                    onPress={() => {}}
-                                >Create</CustomButton>
-                                <CustomButton
-                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                                    onPress={() => setWarningPopup(false)}
-                                >Cancel</CustomButton>
-                            </View>
-                        )
-                    }}
-            />
             <View style={styles.container}>
                 <View style={styles.popupContainer}>
                     <View style={styles.childPickerContainer}>
@@ -247,6 +223,7 @@ const CreateQuestModal = (props) => {
                         </Text>
                         <TextInput
                             style={[styles.textInput, {width: '35%', paddingRight: 5}]}
+                            keyboardType='numeric'
                             textAlign={'right'}
                             onChangeText={handlePointsUpdate}
                             value={points}

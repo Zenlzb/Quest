@@ -70,6 +70,7 @@ const CaregiverMain = () => {
     return(
         <View style={styles.container}>
             <CreateQuestModal
+                userId={userId}
                 visibility={questModalVisible}
                 toggleVisibility={toggleQuestModal}
                 childList={childList}
