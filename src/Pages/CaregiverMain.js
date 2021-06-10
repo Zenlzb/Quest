@@ -36,7 +36,7 @@ const CaregiverMain = () => {
             setErrorCode('noChild')
             return
         }
-
+        setErrorCode(null)
         toggleQuestModal(true)
     }
 
