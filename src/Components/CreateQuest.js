@@ -5,6 +5,8 @@ import CustomButton from "./Button";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ErrorText from "./ErrorText";
 import * as Quests from '../../api/quest'
+import * as Presets from '../../api/presets'
+import { Tooltip } from 'react-native-elements';
 
 const CreateQuestModal = (props) => {
     const [title, setTitle] = useState('')
@@ -56,6 +58,50 @@ const CreateQuestModal = (props) => {
         return null
     }
 
+    const handleClearAll = () => {
+        setTitle('')
+        setPoints('')
+        setYear('')
+        setMonth('')
+        setWeek('')
+        setDay('')
+        setHour('')
+        setMinute('')
+        setSecond('')
+        setDueDateMode(true)
+        setSelectedDate(new Date())
+        setSelectedTime(new Date())
+        setErrorCode('')
+    }
+    const handleValidQuest = () => {
+        if (!title) {
+            setErrorCode('emptyTitle')
+            return false
+        } else if (+points === 0) {
+            setErrorCode('emptyPoints')
+            return false
+        } else if (dueDateMode && !(year || month || week || day || hour || minute || second)) {
+            setErrorCode('emptyDuration')
+            return false
+        } else if (dueDateMode && (isNaN(+year) || isNaN(+month) || isNaN(+week) || isNaN(+day) || isNaN(+hour) || isNaN(+minute) || isNaN(+second))) {
+            setErrorCode('durationNaN')
+            return false
+        } else if (isNaN(+points)) {
+            setErrorCode('pointsNaN')
+            return false
+        } else if ((+year % 1 !== 0) || (+month % 1 !== 0) || (+week % 1 !== 0) || (+day % 1 !== 0)) {
+            setErrorCode('decimalYMWD')
+            return false
+        }
+        return true
+    }
+    const handleAddPreset = () => {
+        setErrorCode('')
+        if (!handleValidQuest()) { return }
+
+        Presets.createPreset(props.userId, title, points, year, month, week, day, hour, minute, second)
+    }
+
     const [errorCode, setErrorCode] = useState('')
     const errors = [
         {code: 'emptyTitle', text: 'Please fill in a title', key:'1'},
@@ -69,25 +115,7 @@ const CreateQuestModal = (props) => {
 
     const handleCreateQuest = () => {
         setErrorCode('')
-        if (!title) {
-            setErrorCode('emptyTitle')
-            return
-        } else if (+points === 0) {
-            setErrorCode('emptyPoints')
-            return
-        } else if (dueDateMode && !(year || month || week || day || hour || minute || second)) {
-            setErrorCode('emptyDuration')
-            return
-        } else if (dueDateMode && (isNaN(+year) || isNaN(+month) || isNaN(+week) || isNaN(+day) || isNaN(+hour) || isNaN(+minute) || isNaN(+second))) {
-            setErrorCode('durationNaN')
-            return
-        } else if (isNaN(+points)) {
-            setErrorCode('pointsNaN')
-            return
-        } else if ((+year % 1 !== 0) || (+month % 1 !== 0) || (+week % 1 !== 0) || (+day % 1 !== 0)) {
-            setErrorCode('decimalYMWD')
-            return
-        }
+        if (!handleValidQuest()) { return }
 
         let selectedChildren = []
         for(let i = 0; i < selected.length; i++) {
@@ -100,12 +128,7 @@ const CreateQuestModal = (props) => {
             return
         }
 
-        let date
-        if (dueDateMode) {
-            date = convertDuration()
-        } else {
-            date = combineDateAndTime(selectedDate, selectedTime)
-        }
+        let date = dueDateMode ? convertDuration() : combineDateAndTime(selectedDate, selectedTime)
 
         for(let i = 0; i < selectedChildren.length; i++) {
             Quests.createQuest(props.userId, selectedChildren[i], title, date.toJSON(), points)
@@ -176,19 +199,7 @@ const CreateQuestModal = (props) => {
             onShow={() => {
                 setItems([...props.childList])
                 toggleSelected(items.map(() => false))
-                setTitle('')
-                setPoints('')
-                setYear('')
-                setMonth('')
-                setWeek('')
-                setDay('')
-                setHour('')
-                setMinute('')
-                setSecond('')
-                setDueDateMode(true)
-                setSelectedDate(new Date())
-                setSelectedTime(new Date())
-                setErrorCode('')
+                handleClearAll()
             }}
         >
             <View style={styles.container}>
@@ -202,17 +213,31 @@ const CreateQuestModal = (props) => {
                         />
                         <CustomButton
                             buttonStyle={[styles.button, {marginLeft: 8}]}
-                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                            textStyle={{fontSize: 15, fontFamily: 'balsamiq'}}
                             onPress={() => toggleSelected(items.map(() => true))}
                         >All</CustomButton>
                     </View>
                     <View style={styles.presetContainer}>
-                        <Text style={styles.text}>
-                            Presets go here
-                        </Text>
+                        <CustomButton
+                            buttonStyle={[styles.button, {width: 35, height: 35, alignItems: 'center', justifyContent: 'center', marginRight: 5}]}
+                            textStyle={{fontSize:25, fontFamily: 'balsamiq'}}
+                            onPress={handleAddPreset}
+                        >+</CustomButton>
+                        <Tooltip
+                            popover={<Text style={{fontFamily: 'balsamiq'}}>Add a preset: Fill in the fields and click '+'{'\n'}
+                            Delete a preset: Hold down on the preset{'\n'}Presets will only save duration, not due date</Text>}
+                            height={62}
+                            width={300}
+                            backgroundColor={colors.background}
+                            skipAndroidStatusBar={true}>
+                            <View style={styles.tooltipCircle}>
+                                <Text style={[styles.text, {color: 'white'}]}>?</Text>
+                            </View>
+
+                        </Tooltip>
                     </View>
                     <TextInput
-                        style={[styles.textInput, {width: '100%', marginTop: 8}]}
+                        style={[styles.textInput, {height: 35,width: '100%', marginTop: 8}]}
                         placeholder={"Quest title"}
                         onChangeText={handleTitleUpdate}
                         value={title}
@@ -368,6 +393,11 @@ const CreateQuestModal = (props) => {
                             textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                             onPress={() => props.toggleVisibility(false)}
                         >Cancel</CustomButton>
+                        <CustomButton
+                            buttonStyle={[styles.button, {marginLeft: 30}]}
+                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                            onPress={handleClearAll}
+                        >Clear All</CustomButton>
                     </View>
                 </View>
             </View>
@@ -397,7 +427,8 @@ const styles = StyleSheet.create({
       width: '100%',
       height: 70,
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      flexDirection: 'row'
     },
     childPickerContainer: {
         flexDirection: 'row',
@@ -450,11 +481,18 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         paddingRight: 5,
         marginLeft: 5
-    }
-    ,
+    },
     text: {
         fontSize: 20,
         fontFamily: 'balsamiq'
+    },
+    tooltipCircle: {
+        width: 35,
+        height: 35,
+        borderRadius: 35,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: colors.button1
     }
 })
 
