@@ -6,7 +6,7 @@ const newChild = (key, name, points, quests) => ({key, name, points, quests});
 
 export const createChild = async (userId, name) => {
     try {
-        const child = db.ref(`users/${userId}/${name}`)
+        const child = db.ref(`users/${userId}/children/${name}`)
         await child.set(newChild(child.key, name, 0, null))
     } catch (e) {
         console.error(e)
@@ -15,7 +15,7 @@ export const createChild = async (userId, name) => {
 
 export const deleteChild = async  (userId, child) => {
     try {
-        await db.ref(`users/${userId}/${child.name}`).remove()
+        await db.ref(`users/${userId}/children/${child.name}`).remove()
     } catch (e) {
         console.error(e)
     }
@@ -23,14 +23,14 @@ export const deleteChild = async  (userId, child) => {
 
 export const checkChildExists = async (userId, childName) => {
     try {
-        return (await db.ref(`users/${userId}/${childName}`).get()).exists()
+        return (await db.ref(`users/${userId}/children/${childName}`).get()).exists()
     } catch (e) {
         console.error(e)
     }
 }
 
 export const childListSubscribe = (userId, onValueChanged) => {
-    const children = db.ref(`users/${userId}`)
+    const children = db.ref(`users/${userId}/children`)
     children.on("value", (snapshot) => {
         const val = snapshot.val()
         const retList = [];

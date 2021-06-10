@@ -6,7 +6,7 @@ const newQuest = (id, title, dueDate, points) => ({id, title, dueDate, points})
 
 export const createQuest = async (userId, childName, questTitle, questDueDate, questPoints) => {
     try {
-        const quest = db.ref(`users/${userId}/${childName}/quests`).push()
+        const quest = db.ref(`users/${userId}/children/${childName}/quests`).push()
         await quest.set(newQuest(quest.key, questTitle, questDueDate, questPoints))
 
     } catch (e) {
@@ -16,7 +16,7 @@ export const createQuest = async (userId, childName, questTitle, questDueDate, q
 
 export const deleteQuest = async (userId, childName, questId) => {
     try {
-        await db.ref(`users/${userId}/${childName}/quests/${questId}`).remove()
+        await db.ref(`users/${userId}/children/${childName}/quests/${questId}`).remove()
     } catch (e) {
         console.error(e)
     }
@@ -24,7 +24,7 @@ export const deleteQuest = async (userId, childName, questId) => {
 
 export const questListSubscribe = (userId, childName, onValueChanged) => {
     try {
-        const quests = db.ref(`users/${userId}/${childName}/quests`)
+        const quests = db.ref(`users/${userId}/children/${childName}/quests`)
         quests.on("value", (snapshot) => {
             const val = snapshot.val()
             const retList = [];
