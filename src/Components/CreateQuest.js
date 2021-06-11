@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {FlatList, Modal, StyleSheet, Text, TextInput, View} from 'react-native';
 import colors from "../../assets/themes/colors";
 import CustomButton from "./Button";
@@ -95,24 +95,6 @@ const CreateQuestModal = (props) => {
         }
         return true
     }
-    const handleAddPreset = () => {
-        setErrorCode('')
-        if (!handleValidQuest()) { return }
-
-        Presets.createPreset(props.userId, title, points, year, month, week, day, hour, minute, second)
-    }
-
-    const [errorCode, setErrorCode] = useState('')
-    const errors = [
-        {code: 'emptyTitle', text: 'Please fill in a title', key:'1'},
-        {code: 'emptyPoints', text: 'Points is empty or 0', key:'2'},
-        {code: 'emptyDuration', text: 'Please fill in at least 1 field in duration', key:'3'},
-        {code: 'durationNaN', text: 'Please only fill numbers into duration', key:'4'},
-        {code: 'pointsNaN', text: 'Please only fill numbers into points', key:'5'},
-        {code: 'noChildSelected', text: 'Please select at least 1 child', key:'6'},
-        {code: 'decimalYMWD', text: 'Year, Month, Week and Day cannot be a decimal', key:'7'},
-    ]
-
     const handleCreateQuest = () => {
         setErrorCode('')
         if (!handleValidQuest()) { return }
@@ -136,6 +118,39 @@ const CreateQuestModal = (props) => {
         props.toggleVisibility(false)
 
     }
+    const handleAddPreset = () => {
+        setErrorCode('')
+        if (!handleValidQuest()) { return }
+
+        Presets.createPreset(props.userId, title, points, year, month, week, day, hour, minute, second)
+    }
+    const handleSelectPreset = (item) => {
+        setTitle(item.title)
+        setPoints(item.points)
+        setYear(item.year)
+        setMonth(item.month)
+        setWeek(item.week)
+        setDay(item.day)
+        setHour(item.hour)
+        setMinute(item.minute)
+        setSecond(item.second)
+    }
+
+    const [presetList, setPresetList] = useState([])
+    useEffect(() => {
+        return Presets.presetListSubscribe(props.userId, setPresetList)
+    }, [])
+
+    const [errorCode, setErrorCode] = useState('')
+    const errors = [
+        {code: 'emptyTitle', text: 'Please fill in a title', key:'1'},
+        {code: 'emptyPoints', text: 'Points is empty or 0', key:'2'},
+        {code: 'emptyDuration', text: 'Please fill in at least 1 field in duration', key:'3'},
+        {code: 'durationNaN', text: 'Please only fill numbers into duration', key:'4'},
+        {code: 'pointsNaN', text: 'Please only fill numbers into points', key:'5'},
+        {code: 'noChildSelected', text: 'Please select at least 1 child', key:'6'},
+        {code: 'decimalYMWD', text: 'Year, Month, Week and Day cannot be a decimal', key:'7'},
+    ]
 
     const combineDateAndTime = (date, time) => {
         const timeString = time.getHours() + ':' + time.getMinutes() + ':00';
@@ -165,7 +180,6 @@ const CreateQuestModal = (props) => {
 
         return new Date(dateString + 'T' + timeString + timezone);
     }
-
     const convertDuration = () => {
         let time = new Date()
         time.setMonth(time.getMonth() + (+month) + (+year) * 12)
@@ -191,6 +205,22 @@ const CreateQuestModal = (props) => {
                 >{item.name}</CustomButton>
         )
     }
+    const presetItem = ({ item }) => {
+        return (
+            <CustomButton
+                buttonStyle={[
+                    styles.button,
+                    {marginBottom: 8, marginRight: 5},
+                ]}
+                textStyle={{fontFamily: 'balsamiq', fontSize:10}}
+                onPress={() => {handleSelectPreset(item)}}
+                onLongPress={() => {
+                    Presets.deletePreset(props.userId, item.id)
+                }}
+            >{item.title}</CustomButton>
+            )
+    }
+
 
     return (
         <Modal
@@ -218,9 +248,18 @@ const CreateQuestModal = (props) => {
                         >All</CustomButton>
                     </View>
                     <View style={styles.presetContainer}>
+                        <FlatList
+                            style={{marginRight: 8}}
+                            horizontal={false}
+                            columnWrapperStyle={{flexWrap: "wrap"}}
+                            numColumns={5}
+                            renderItem={presetItem}
+                            data={presetList}
+                            keyExtractor={item => item.id}
+                        />
                         <CustomButton
                             buttonStyle={[styles.button, {width: 35, height: 35, alignItems: 'center', justifyContent: 'center', marginRight: 5}]}
-                            textStyle={{fontSize:25, fontFamily: 'balsamiq'}}
+                            textStyle={{paddingBottom: 7, fontSize:25, fontFamily: 'balsamiq'}}
                             onPress={handleAddPreset}
                         >+</CustomButton>
                         <Tooltip
@@ -422,6 +461,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     presetContainer: {
+      padding: 8,
       borderWidth: 1,
       marginTop: 10,
       width: '100%',

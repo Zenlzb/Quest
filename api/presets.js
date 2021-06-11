@@ -21,3 +21,16 @@ export const deletePreset = async (userId, presetId) => {
         console.error(e)
     }
 }
+
+export const presetListSubscribe = (userId, onValueChanged) => {
+    const presets = db.ref(`users/${userId}/presets`)
+    presets .on("value", (snapshot) => {
+        const val = snapshot.val()
+        const retList = [];
+        for(let id in val) {
+            retList.push(val[id])
+        }
+        onValueChanged(retList)
+    })
+    return () => presets .off("value")
+}

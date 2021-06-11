@@ -8,6 +8,7 @@ const CustomButton = (props) => {
         <Pressable
             style={[styles.container, props.buttonStyle]}
             onPress={props.onPress}
+            onLongPress={props.onLongPress}
             android_ripple={{color: 'white', borderless: false}}
         >
             <Text style={[styles.text, props.textStyle]}>{props.children}</Text>
