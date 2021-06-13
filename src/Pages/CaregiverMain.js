@@ -77,8 +77,7 @@ const CaregiverMain = () => {
                 visibility={signOutConfirm}
                 titleText={'Sign out'}
                 bodyText={'Are you sure you want to sign out?'}
-                buttonList={
-                    () => {
+                buttonList={() => {
                         return (
                             <View style={{flexDirection: 'row',}}>
                                 <CustomButton
@@ -94,12 +93,18 @@ const CaregiverMain = () => {
                         )
                     }}
             />
-            <Text style={styles.text}>Welcome, Caregiver {auth.currentUser.displayName}</Text>
-            <CustomButton
-                buttonStyle={[styles.button, {marginBottom: 8}]}
-                textStyle={{fontFamily: 'balsamiq'}}
-                onPress={handleSignOut}
-            >Sign Out</CustomButton>
+            <View style={{marginTop: 45, marginRight: 300, marginBottom: 8}}>
+                <CustomButton
+                    buttonStyle={[styles.button, {marginLeft: 8}]}
+                    textStyle={[styles.text, {paddingVertical: 1}]}
+                    onPress={handleSignOut}
+                >Sign Out</CustomButton>
+            </View>
+
+            <View style={{position: 'absolute', marginTop: 45}}>
+                <Text style={styles.text}>Caregiver {auth.currentUser.displayName}</Text>
+            </View>
+
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TextInput
                     style={[styles.textInput, {marginRight: 8}]}
@@ -140,12 +145,12 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection: 'column',
         backgroundColor: colors.background,
-        justifyContent: 'center',
         alignItems: 'center'
     },
     text: {
         fontSize: 20,
-        fontFamily: 'balsamiq'
+        fontFamily: 'balsamiq',
+        textAlign: 'center'
     },
     textInput: {
         borderWidth: 1,
