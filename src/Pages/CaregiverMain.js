@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, FlatList} from "react-native";
+import {View, Text, StyleSheet, TextInput, FlatList, Keyboard} from "react-native";
 import CustomButton from "../Components/Button";
 import {auth, signOut, getCurrentUserId} from "../../api/auth";
 import colors from "../../assets/themes/colors";
@@ -27,6 +27,8 @@ const CaregiverMain = () => {
             if (!childExists) {
                 setErrorCode(null)
                 Children.createChild(userId, childNameInput)
+                Keyboard.dismiss()
+                setChildNameInput('')
             } else {
                 console.log('already exists')
                 setErrorCode('alreadyExists')
@@ -54,6 +56,18 @@ const CaregiverMain = () => {
                 textStyle={{fontFamily: 'balsamiq', fontSize:15}}
                 onPress={handleRemoveChild}
             >{item.name}</CustomButton>
+        )
+    }
+
+    const emptyList = () => {
+        return (
+            <Text style={{fontSize: 20, color: 'grey', textAlign: 'center', fontFamily: 'balsamiq'}}>
+                Welcome! {'\n'}
+                Getting Started: {'\n'}
+                1. Add a Child! {'\n'}
+                2. Add <Text style={{color: colors.button3}}>Rewards</Text>!{'\n'}
+                3. Create a Quest! {'\n'}
+            </Text>
         )
     }
 
@@ -145,6 +159,7 @@ const CaregiverMain = () => {
                     data={childList}
                     renderItem={renderItem}
                     keyExtractor={item => item.key}
+                    ListEmptyComponent={emptyList}
                 />
 
             </View>
