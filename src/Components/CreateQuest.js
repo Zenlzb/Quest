@@ -6,7 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import ErrorText from "./ErrorText";
 import * as Quests from '../../api/quest'
 import * as Presets from '../../api/presets'
-import { Tooltip } from 'react-native-elements';
+import CustomTooltip from "./Tooltip";
 
 const CreateQuestModal = (props) => {
     const [title, setTitle] = useState('')
@@ -262,18 +262,11 @@ const CreateQuestModal = (props) => {
                             textStyle={{paddingBottom: 7, fontSize:25, fontFamily: 'balsamiq'}}
                             onPress={handleAddPreset}
                         >+</CustomButton>
-                        <Tooltip
-                            popover={<Text style={{fontFamily: 'balsamiq'}}>Add a preset: Fill in the fields and click '+'{'\n'}
-                            Delete a preset: Hold down on the preset{'\n'}Presets will only save duration, not due date</Text>}
-                            height={62}
-                            width={300}
-                            backgroundColor={colors.background}
-                            skipAndroidStatusBar={true}>
-                            <View style={styles.tooltipCircle}>
-                                <Text style={[styles.text, {color: 'white'}]}>?</Text>
-                            </View>
-
-                        </Tooltip>
+                        <CustomTooltip>
+                            Add a preset: Fill in the fields and click '+'{'\n'}
+                            Delete a preset: Hold down on the preset{'\n'}
+                            Presets will only save duration, not due date
+                        </CustomTooltip>
                     </View>
                     <TextInput
                         style={[styles.textInput, {height: 35,width: '100%', marginTop: 8}]}
@@ -526,14 +519,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontFamily: 'balsamiq'
     },
-    tooltipCircle: {
-        width: 35,
-        height: 35,
-        borderRadius: 35,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: colors.button1
-    }
+
 })
 
 export default CreateQuestModal
