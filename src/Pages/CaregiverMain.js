@@ -6,16 +6,18 @@ import colors from "../../assets/themes/colors";
 import * as Children from "../../api/child"
 import CreateQuestModal from "../Components/CreateQuest";
 import ErrorText from "../Components/ErrorText";
+import CustomPopup from "../Components/Popup";
 
 const CaregiverMain = () => {
     const [childList, setChildList] = useState([])
     const [userId, setUserId] = useState(getCurrentUserId());
     const [questModalVisible, toggleQuestModal] = useState(false)
+    const [signOutConfirm, setSignOutConfirm] = useState(false)
 
     const [childNameInput, setChildNameInput] = useState('')
     const handleChildNameUpdate = (text) => setChildNameInput(text)
 
-    const handleSignOut = () => {signOut()}
+    const handleSignOut = () => {setSignOutConfirm(true)}
     const handleAddChild = () => {
         if (childNameInput === 'All' || childNameInput === 'all' || childNameInput === '') {
             setErrorCode('invalid')
@@ -70,6 +72,27 @@ const CaregiverMain = () => {
                 visibility={questModalVisible}
                 toggleVisibility={toggleQuestModal}
                 childList={childList}
+            />
+            <CustomPopup
+                visibility={signOutConfirm}
+                titleText={'Sign out'}
+                bodyText={'Are you sure you want to sign out?'}
+                buttonList={
+                    () => {
+                        return (
+                            <View style={{flexDirection: 'row',}}>
+                                <CustomButton
+                                    buttonStyle={{marginHorizontal: 8}}
+                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                    onPress={() => signOut()}
+                                >Yes</CustomButton>
+                                <CustomButton
+                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                    onPress={() => setSignOutConfirm(false)}
+                                >Cancel</CustomButton>
+                            </View>
+                        )
+                    }}
             />
             <Text style={styles.text}>Welcome, Caregiver {auth.currentUser.displayName}</Text>
             <CustomButton
