@@ -118,7 +118,7 @@ const CaregiverMain = ({ navigation }) => {
                 </Text>
             </View>
 
-            <View style={{flexDirection: 'row', width: '100%', height: 70, paddingHorizontal: 8, justifyContent: 'space-between'}}>
+            <View style={styles.titleContainer}>
                 <Text style={[styles.text, {fontSize: 40}]}>Children</Text>
                 <View style={{flexDirection: 'row', marginTop: 21, height: 25}}>
                     <CustomButton
@@ -136,8 +136,8 @@ const CaregiverMain = ({ navigation }) => {
                 </View>
             </View>
 
-            <View style={{width: '95%', height: '79%', borderWidth: 2, padding: 5, borderRadius: 10, alignItems: 'center'}}>
-                <View style={{width: '90%', height: 20, flexDirection: 'row', alignItems: 'center', marginVertical: 8}}>
+            <View style={styles.childContainer}>
+                <View style={styles.addChildContainer}>
                     <TextInput
                         style={[styles.textInput, {marginRight: 8}]}
                         placeholder={"Add Child"}
@@ -155,9 +155,8 @@ const CaregiverMain = ({ navigation }) => {
                     setErrorCode={setErrorCode}
                     errors={errors}
                 />
-
                 <FlatList
-                    style={{width: '90%', height: '70%', marginTop:8}}
+                    style={styles.flatList}
                     data={childList}
                     renderItem={renderItem}
                     keyExtractor={item => item.key}
@@ -185,6 +184,28 @@ const styles = StyleSheet.create({
         height: 27,
         width: '100%'
     },
+    childContainer: {
+        width: '95%',
+        height: '79%',
+        borderWidth: 2,
+        padding: 5,
+        borderRadius: 10,
+        alignItems: 'center'
+    },
+    addChildContainer: {
+        width: '90%',
+        height: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 8
+    },
+    titleContainer: {
+        flexDirection: 'row',
+        width: '100%',
+        height: 70,
+        paddingHorizontal: 8,
+        justifyContent: 'space-between'
+    },
     text: {
         fontSize: 20,
         fontFamily: 'balsamiq',
@@ -209,6 +230,11 @@ const styles = StyleSheet.create({
         fontFamily:'balsamiq',
         fontSize: 15,
         color: colors.button1
+    },
+    flatList: {
+        width: '90%',
+        height: '70%',
+        marginTop:8
     }
 })
 
