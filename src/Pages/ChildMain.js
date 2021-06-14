@@ -9,7 +9,6 @@ const ChildMain = ({name}) => {
     const [parentUserId, setParentUserId] = useState(getCurrentUserId());
     const [questList, setQuestList] = useState()
 
-
     useEffect(() => {
         return Quests.questListSubscribe(parentUserId, name, setQuestList)
     }, [])
