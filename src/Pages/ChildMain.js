@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import {getCurrentUserId, signOut} from "../../api/auth";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";

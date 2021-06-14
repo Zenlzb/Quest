@@ -1,7 +1,6 @@
 import React from 'react'
 import {Text, StyleSheet, Modal, View} from 'react-native';
 import colors from "../../assets/themes/colors";
-import CustomButton from "./Button";
 
 const CustomPopup = (props) => {
 
@@ -10,14 +9,11 @@ const CustomPopup = (props) => {
         transparent={true}
         visible={props.visibility}
         >
-            <View style={styles.container}>
+            <View style={[styles.container, props.containerStyle]}>
                 <View style={styles.popupContainer}>
                     <Text style={styles.titleText}>{props.titleText}</Text>
                     <Text style={styles.bodyText}>{props.bodyText}</Text>
-                    <CustomButton
-                        textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                        onPress={() => props.toggleVisibility(false)}
-                    >OK</CustomButton>
+                    {props.buttonList()}
                 </View>
             </View>
 

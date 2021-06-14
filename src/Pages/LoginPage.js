@@ -3,12 +3,18 @@ import {Keyboard, StyleSheet, Text, TextInput, View} from 'react-native';
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
 import {signIn} from "../../api/auth";
+import ErrorText from "../Components/ErrorText";
 
 const LoginPage = ({ navigation }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [childLink, setChildLink] = useState('')
+
     const [errorCode, setErrorCode] = useState(null)
+    const errors = [
+        {code: 'auth/wrong-password', text: 'Username or Password is Invalid', key:'1'},
+        {code: 'auth/too-many-requests', text: 'Too many tries, please try again later', key:'2'}
+    ]
 
     const handleEmailUpdate = (text) => setEmail(text)
     const handlePasswordUpdate = (text) => setPassword(text)
@@ -16,7 +22,7 @@ const LoginPage = ({ navigation }) => {
 
     const handleLogin = () => {
         Keyboard.dismiss();
-        signIn({ email, password, childLink }, setErrorCode);
+        signIn({ email, password, childLink }, setErrorCode)
     }
 
     useEffect(() => {
@@ -25,14 +31,7 @@ const LoginPage = ({ navigation }) => {
         });
     }, [navigation])
 
-    const ErrorCode = () => {
-        if (errorCode === 'auth/wrong-password') {
-            return (<Text style={styles.errorText}>Username or Password is Invalid</Text>)
-        } else if (errorCode === 'auth/too-many-requests') {
-            return (<Text style={styles.errorText}>Too many tries, please try again later</Text>)
-        }
-        return null
-    }
+
     return(
 
         <View style={styles.container}>
@@ -65,7 +64,11 @@ const LoginPage = ({ navigation }) => {
                 onPress={handleLogin}
             >Log-in</CustomButton>
         </View>
-            <ErrorCode/>
+            <ErrorText
+                errorCode={errorCode}
+                setErrorCode={setErrorCode}
+                errors={errors}
+            />
         <CustomButton
             buttonStyle={styles.createAccountButton}
             textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
@@ -100,11 +103,6 @@ const styles = StyleSheet.create({
     createAccountButton: {
         backgroundColor: colors.button1,
         marginTop: 8
-    },
-    errorText: {
-        fontFamily:'balsamiq',
-        fontSize: 15,
-        color: colors.button1
     },
     container: {
         flex: 1,

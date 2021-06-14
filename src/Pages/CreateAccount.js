@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import {View, TextInput, StyleSheet} from "react-native";
+import {View, TextInput, StyleSheet, Text} from "react-native";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
 import {createAccount} from '../../api/auth';
+import ErrorText from "../Components/ErrorText";
 
 const CreateAccount = () => {
     const [name, setName] = useState('')
@@ -15,8 +16,14 @@ const CreateAccount = () => {
     const handlePasswordUpdate = (text) => setPassword(text)
 
     const handleCreate = () => {
-        createAccount({name, email, password})
+        setErrorCode(null)
+        createAccount({name, email, password}, setErrorCode)
     }
+
+    const [errorCode, setErrorCode] = useState(null)
+    const errors = [
+        {code: 'auth/weak-password', text: 'Password is too short', key:'1'},
+    ]
 
     return(
         <View style={styles.container}>
@@ -48,6 +55,11 @@ const CreateAccount = () => {
                     onPress={handleCreate}
                 >Create</CustomButton>
             </View>
+            <ErrorText
+                errorCode={errorCode}
+                setErrorCode={setErrorCode}
+                errors={errors}
+            />
         </View>
     )
 }
@@ -77,6 +89,11 @@ const styles = StyleSheet.create({
     },
     loginContainer: {
         flexDirection: 'row',
+    },
+    errorText: {
+        fontFamily:'balsamiq',
+        fontSize: 15,
+        color: colors.button1
     }
 })
 

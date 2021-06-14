@@ -20,7 +20,7 @@ export const signIn = async ({ email, password, childLink }, setErrorCode) => {
     }
 }
 
-export const createAccount = async ({ name, email, password }) => {
+export const createAccount = async ({ name, email, password }, onError) => {
     try {
 
         const { user } = await auth.createUserWithEmailAndPassword(email, password)
@@ -29,7 +29,7 @@ export const createAccount = async ({ name, email, password }) => {
             // await user.sendEmailVerification();
         }
     } catch (error) {
-        console.error(error);
+        onError(error.code)
     }
 }
 

@@ -1,31 +1,47 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, FlatList} from "react-native";
+import {View, Text, StyleSheet, TextInput, FlatList, Keyboard} from "react-native";
 import CustomButton from "../Components/Button";
 import {auth, signOut, getCurrentUserId} from "../../api/auth";
 import colors from "../../assets/themes/colors";
 import * as Children from "../../api/child"
-import * as Quests from "../../api/quest"
+import CreateQuestModal from "../Components/CreateQuest";
+import ErrorText from "../Components/ErrorText";
+import CustomPopup from "../Components/Popup";
 
-const CaregiverMain = () => {
-    const [childList, setChildList] = useState()
+const CaregiverMain = ({ navigation }) => {
+    const [childList, setChildList] = useState([])
     const [userId, setUserId] = useState(getCurrentUserId());
+    const [questModalVisible, toggleQuestModal] = useState(false)
+    const [signOutConfirm, setSignOutConfirm] = useState(false)
 
     const [childNameInput, setChildNameInput] = useState('')
     const handleChildNameUpdate = (text) => setChildNameInput(text)
 
-    const [questInput, setQuestInput] = useState('')
-    const [questChildInput, setQuestChildInput] = useState('')
-    const handleQuestUpdate = (text) => setQuestInput(text)
-    const handleQuestChildUpdate = (text) => setQuestChildInput(text)
-
-    const handleSignOut = () => {signOut()}
-    const handleAddChild = () => {Children.createChild(userId, childNameInput)}
-    const handleAddQuest = () => {
-        Children.checkChildExists(userId, questChildInput).then((childExists) => {
-            if (childExists) {
-                Quests.createQuest(userId, questChildInput, questInput,Date.now() + 30000, 0)
-            } else { console.log('doesnt exist') }
+    const handleSignOut = () => {setSignOutConfirm(true)}
+    const handleAddChild = () => {
+        if (childNameInput === '') {
+            setErrorCode('invalid')
+            return
+        }
+        Children.checkChildExists(userId, childNameInput).then((childExists) => {
+            if (!childExists) {
+                setErrorCode(null)
+                Children.createChild(userId, childNameInput)
+                Keyboard.dismiss()
+                setChildNameInput('')
+            } else {
+                console.log('already exists')
+                setErrorCode('alreadyExists')
+            }
         })
+    }
+    const handleCreateQuest = () => {
+        if (childList.length === 0) {
+            setErrorCode('noChild')
+            return
+        }
+        setErrorCode(null)
+        toggleQuestModal(true)
     }
 
     useEffect(() => {
@@ -36,61 +52,117 @@ const CaregiverMain = () => {
         const handleRemoveChild = () => {Children.deleteChild(userId, item)}
         return (
             <CustomButton
-                buttonStyle={[styles.button, {marginBottom: 8}]}
-                textStyle={{fontFamily: 'balsamiq', fontSize:10}}
+                buttonStyle={[styles.button, {marginBottom: 8, width: '100%', height: 70}]}
+                textStyle={{fontFamily: 'balsamiq', fontSize:15}}
                 onPress={handleRemoveChild}
             >{item.name}</CustomButton>
-
         )
     }
 
+    const emptyList = () => {
+        return (
+            <Text style={{fontSize: 20, color: 'grey', textAlign: 'center', fontFamily: 'balsamiq'}}>
+                Welcome! {'\n'}
+                Getting Started: {'\n'}
+                1. Add a Child! {'\n'}
+                2. Add <Text style={{color: colors.button3}}>Rewards</Text>!{'\n'}
+                3. Create a Quest! {'\n'}
+            </Text>
+        )
+    }
+
+    const [errorCode, setErrorCode] = useState(null)
+    const errors = [
+        {code: 'invalid', text: 'Invalid Name', key:'1'},
+        {code: 'alreadyExists', text: 'Child already exists', key:'2'},
+        {code: 'noChild', text: 'No child found, add a child first', key:'3'}
+    ]
+
     return(
         <View style={styles.container}>
-            <Text style={styles.text}>Welcome, Caregiver {auth.currentUser.displayName}</Text>
-            <CustomButton
-                buttonStyle={[styles.button, {marginBottom: 8}]}
-                textStyle={{fontFamily: 'balsamiq'}}
-                onPress={handleSignOut}
-            >Sign Out</CustomButton>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TextInput
-                    style={[styles.textInput, {marginRight: 8}]}
-                    placeholder={"Add Child"}
-                    onChangeText={handleChildNameUpdate}
-                    value={childNameInput}
-                />
+            <CreateQuestModal
+                userId={userId}
+                visibility={questModalVisible}
+                toggleVisibility={toggleQuestModal}
+                childList={childList}
+            />
+            <CustomPopup
+                visibility={signOutConfirm}
+                titleText={'Sign out'}
+                bodyText={'Are you sure you want to sign out?'}
+                buttonList={() => {
+                        return (
+                            <View style={{flexDirection: 'row',}}>
+                                <CustomButton
+                                    buttonStyle={{marginHorizontal: 8}}
+                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                    onPress={() => signOut()}
+                                >Yes</CustomButton>
+                                <CustomButton
+                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                    onPress={() => setSignOutConfirm(false)}
+                                >Cancel</CustomButton>
+                            </View>
+                        )
+                    }}
+            />
+            <View style={styles.topContainer}>
                 <CustomButton
-                    buttonStyle={styles.button}
-                    textStyle={{fontFamily: 'balsamiq'}}
-                    onPress={handleAddChild}
-                >Add</CustomButton>
+                    buttonStyle={[styles.button, {marginLeft: 8}]}
+                    textStyle={[styles.text, {paddingVertical: 1, fontSize: 17}]}
+                    onPress={handleSignOut}
+                >Sign Out</CustomButton>
+                <Text style={[styles.text, {marginRight: 8, fontSize: 17}]}>
+                    Welcome, Caregiver {auth.currentUser.displayName.length >= 15
+                    ? auth.currentUser.displayName.substr(0, 12) + '...' : auth.currentUser.displayName}
+                </Text>
             </View>
-            <View style={{marginTop: 8, flexDirection: 'row', alignItems: 'center'}}>
-                <TextInput
-                    style={[styles.textInput, {width: 150, marginRight: 8}]}
-                    placeholder={"Add Quest"}
-                    onChangeText={handleQuestUpdate}
-                    value={questInput}
-                />
-                <TextInput
-                    style={[styles.textInput, {width:100, marginRight: 8}]}
-                    placeholder={"For Child"}
-                    onChangeText={handleQuestChildUpdate}
-                    value={questChildInput}
-                />
-                <CustomButton
-                    buttonStyle={styles.button}
-                    textStyle={{fontFamily: 'balsamiq'}}
-                    onPress={handleAddQuest}
-                >Add</CustomButton>
+
+            <View style={styles.titleContainer}>
+                <Text style={[styles.text, {fontSize: 40}]}>Children</Text>
+                <View style={{flexDirection: 'row', marginTop: 21, height: 25}}>
+                    <CustomButton
+                        buttonStyle={[styles.button, {marginRight: 8}]}
+                        textStyle={{fontFamily: 'balsamiq', fontSize: 15, color: colors.button3}}
+                        onPress={() => {
+                            navigation.navigate('Caregiver Reward')
+                        }}
+                    >Rewards</CustomButton>
+                    <CustomButton
+                        buttonStyle={styles.button}
+                        textStyle={{fontFamily: 'balsamiq', fontSize: 15}}
+                        onPress={handleCreateQuest}
+                    >+ Create Quest</CustomButton>
+                </View>
             </View>
-            <Text style={{marginTop:8, fontFamily: 'balsamiq'}}>List of Children</Text>
-            <View style={{marginTop:8, height:100, width: 100, alignItems: 'center'}}>
+
+            <View style={styles.childContainer}>
+                <View style={styles.addChildContainer}>
+                    <TextInput
+                        style={[styles.textInput, {marginRight: 8}]}
+                        placeholder={"Add Child"}
+                        onChangeText={handleChildNameUpdate}
+                        value={childNameInput}
+                    />
+                    <CustomButton
+                        buttonStyle={[styles.button, {height: 33}]}
+                        textStyle={{fontFamily: 'balsamiq'}}
+                        onPress={handleAddChild}
+                    >Add</CustomButton>
+                </View>
+                <ErrorText
+                    errorCode={errorCode}
+                    setErrorCode={setErrorCode}
+                    errors={errors}
+                />
                 <FlatList
+                    style={styles.flatList}
                     data={childList}
                     renderItem={renderItem}
                     keyExtractor={item => item.key}
+                    ListEmptyComponent={emptyList}
                 />
+
             </View>
         </View>
     )
@@ -101,26 +173,68 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection: 'column',
         backgroundColor: colors.background,
-        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%'
+    },
+    topContainer: {
+        flexDirection: 'row',
+        marginTop: 45,
+        marginBottom: 8,
+        justifyContent: 'space-between',
+        height: 27,
+        width: '100%'
+    },
+    childContainer: {
+        width: '95%',
+        height: '79%',
+        borderWidth: 2,
+        padding: 5,
+        borderRadius: 10,
         alignItems: 'center'
+    },
+    addChildContainer: {
+        width: '90%',
+        height: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 8
+    },
+    titleContainer: {
+        flexDirection: 'row',
+        width: '100%',
+        height: 70,
+        paddingHorizontal: 8,
+        justifyContent: 'space-between'
     },
     text: {
         fontSize: 20,
-        fontFamily: 'balsamiq'
+        fontFamily: 'balsamiq',
+        textAlign: 'center'
     },
     textInput: {
         borderWidth: 1,
         borderColor: 'black',
+        borderRadius: 5,
         backgroundColor: '#fff',
         fontSize: 20,
-        width: 200,
-        height: 30,
+        width: '80%',
+        height: 33,
         paddingLeft: 5,
         fontFamily: 'balsamiq'
     },
     button: {
         backgroundColor: colors.button1,
         justifyContent: 'center',
+    },
+    errorText: {
+        fontFamily:'balsamiq',
+        fontSize: 15,
+        color: colors.button1
+    },
+    flatList: {
+        width: '90%',
+        height: '70%',
+        marginTop:8
     }
 })
 
