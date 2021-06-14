@@ -112,6 +112,11 @@ const CreateQuestModal = (props) => {
 
         let date = dueDateMode ? convertDuration() : combineDateAndTime(selectedDate, selectedTime)
 
+        if (date - new Date() <= 0) {
+            setErrorCode('pastDate')
+            return
+        }
+
         for(let i = 0; i < selectedChildren.length; i++) {
             Quests.createQuest(props.userId, selectedChildren[i], title, date.toJSON(), points)
         }
@@ -150,6 +155,7 @@ const CreateQuestModal = (props) => {
         {code: 'pointsNaN', text: 'Please only fill numbers into points', key:'5'},
         {code: 'noChildSelected', text: 'Please select at least 1 child', key:'6'},
         {code: 'decimalYMWD', text: 'Year, Month, Week and Day cannot be a decimal', key:'7'},
+        {code: 'pastDate', text: 'The date selected has passed', key:'8'},
     ]
 
     const combineDateAndTime = (date, time) => {
