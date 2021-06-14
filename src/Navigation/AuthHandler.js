@@ -2,16 +2,16 @@ import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from "@react-navigation/native";
 import AuthStack from "./AuthStack";
 import {auth, getCurrentUserId} from "../../api/auth";
-import CaregiverMain from "../Pages/CaregiverMain";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ChildMain from "../Pages/ChildMain";
 import {checkChildExists} from "../../api/child";
 import CustomPopup from "../Components/Popup";
 import CustomButton from "../Components/Button";
+import CaregiverStack from "./CaregiverStack";
+import ChildStack from "./ChildStack";
 
+export const AppContext = React.createContext('');
 
 const AuthHandler = () => {
-    const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState(null);
     const [childName, setChildName] = useState('')
     const [childNotFound, setChildNotFound] = useState(false)
@@ -33,7 +33,6 @@ const AuthHandler = () => {
                     }
 
                     setUser(user)
-                    if (initializing) setInitializing(false);
                 },700)
             } else {
                 setTimeout( async () => {
@@ -41,13 +40,20 @@ const AuthHandler = () => {
                     setUser(user)
                     await AsyncStorage.removeItem('childName')
                     setChildName('')
-                    if (initializing) setInitializing(false);
                 }, 500)
             }
         } catch (e) {
             console.log(e)
         }
 
+    }
+
+    const ChildStackWrapper = () => {
+        return (
+            <AppContext.Provider value={childName}>
+                <ChildStack/>
+            </AppContext.Provider>
+        )
     }
 
     useEffect(() => {
@@ -76,7 +82,7 @@ const AuthHandler = () => {
                         )
                     }}
                 />
-                {user ? (childName ? <ChildMain name={childName}/> : <CaregiverMain/>) : <AuthStack />}
+                {user ? (childName ? <ChildStackWrapper/> : <CaregiverStack/>) : <AuthStack />}
             </NavigationContainer>
     )
 }

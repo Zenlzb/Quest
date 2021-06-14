@@ -8,7 +8,7 @@ import CreateQuestModal from "../Components/CreateQuest";
 import ErrorText from "../Components/ErrorText";
 import CustomPopup from "../Components/Popup";
 
-const CaregiverMain = () => {
+const CaregiverMain = ({ navigation }) => {
     const [childList, setChildList] = useState([])
     const [userId, setUserId] = useState(getCurrentUserId());
     const [questModalVisible, toggleQuestModal] = useState(false)
@@ -124,7 +124,9 @@ const CaregiverMain = () => {
                     <CustomButton
                         buttonStyle={[styles.button, {marginRight: 8}]}
                         textStyle={{fontFamily: 'balsamiq', fontSize: 15, color: colors.button3}}
-                        onPress={() => {}}
+                        onPress={() => {
+                            navigation.navigate('Caregiver Reward')
+                        }}
                     >Rewards</CustomButton>
                     <CustomButton
                         buttonStyle={styles.button}
