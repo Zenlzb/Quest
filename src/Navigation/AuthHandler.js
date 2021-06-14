@@ -7,9 +7,7 @@ import {checkChildExists} from "../../api/child";
 import CustomPopup from "../Components/Popup";
 import CustomButton from "../Components/Button";
 import CaregiverStack from "./CaregiverStack";
-import ChildStack from "./ChildStack";
-
-export const AppContext = React.createContext('');
+import ChildStack, {AppContext} from "./ChildStack";
 
 const AuthHandler = () => {
     const [user, setUser] = useState(null);

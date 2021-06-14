@@ -1,9 +1,9 @@
 import React from 'react';
 import {createStackNavigator} from "@react-navigation/stack";
 import ChildMain from "../Pages/ChildMain";
-import {AppContext} from './AuthHandler'
 
 const Stack = createStackNavigator();
+export const AppContext = React.createContext('');
 
 const ChildMainWrapper = () => {
     return(
