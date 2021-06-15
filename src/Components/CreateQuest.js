@@ -73,7 +73,7 @@ const CreateQuestModal = (props) => {
         setSelectedTime(new Date())
         setErrorCode('')
     }
-    const handleValidQuest = () => {
+    const validateQuestCreate = () => {
         if (!title) {
             setErrorCode('emptyTitle')
             return false
@@ -97,7 +97,7 @@ const CreateQuestModal = (props) => {
     }
     const handleCreateQuest = () => {
         setErrorCode('')
-        if (!handleValidQuest()) { return }
+        if (!validateQuestCreate()) { return }
 
         let selectedChildren = []
         for(let i = 0; i < selected.length; i++) {
@@ -125,7 +125,7 @@ const CreateQuestModal = (props) => {
     }
     const handleAddPreset = () => {
         setErrorCode('')
-        if (!handleValidQuest()) { return }
+        if (!validateQuestCreate()) { return }
 
         Presets.createPreset(props.userId, title, points, year, month, week, day, hour, minute, second)
     }
@@ -287,7 +287,7 @@ const CreateQuestModal = (props) => {
                         <TextInput
                             style={[styles.textInput, {width: '35%', paddingRight: 5}]}
                             keyboardType='numeric'
-                            textAlign={'right'}
+                            textAlign='right'
                             onChangeText={handlePointsUpdate}
                             value={points}
                         />
@@ -462,6 +462,7 @@ const styles = StyleSheet.create({
     presetContainer: {
       padding: 8,
       borderWidth: 1,
+      borderRadius: 5,
       marginTop: 10,
       width: '100%',
       height: 70,
@@ -487,6 +488,7 @@ const styles = StyleSheet.create({
     dueDateContainer: {
         marginTop: 10,
         padding: 5,
+        borderRadius: 5,
         borderWidth: 1,
         alignItems: 'center'
 
@@ -503,6 +505,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
         backgroundColor: '#fff',
+        borderRadius: 5,
         fontSize: 20,
         height: 30,
         paddingLeft: 5,
@@ -511,6 +514,7 @@ const styles = StyleSheet.create({
     durationTextInput: {
         borderWidth: 1,
         borderColor: 'black',
+        borderRadius: 3,
         backgroundColor: '#fff',
         fontSize: 15,
         height: 30,
