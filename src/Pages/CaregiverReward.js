@@ -2,15 +2,43 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from "react-native";
 import colors from "../../assets/themes/colors";
 import CustomButton from "../Components/Button";
+import ErrorText from "../Components/ErrorText";
+import * as Rewards from '../../api/rewards'
 
-const CaregiverReward = ({ navigation }) => {
+const CaregiverReward = ({ route, navigation }) => {
+    const { userId } = route.params
     const [rewardName, setRewardName] = useState('')
     const [rewardCost, setRewardCost] = useState('')
     const [rewardAvailable, toggleRewardAvailable] = useState(true)
     const handleRewardNameUpdate = (text) => {setRewardName(text)}
     const handleRewardCostUpdate = (text) => {setRewardCost(text)}
 
-    const handleCreateReward = () => {}
+    const [errorCode, setErrorCode] = useState('')
+    const errors = [
+        {code: 'emptyName', text: 'Please fill in a name', key:'1'},
+        {code: 'emptyCost', text: 'Cost is empty or 0', key:'2'},
+        {code: 'costNaN', text: 'Please only fill numbers into cost', key:'3'},
+    ]
+    const validateRewardCreate = () => {
+        if (rewardName === '') {
+            setErrorCode('emptyName')
+            return false
+        } else if (+rewardCost === 0) {
+            setErrorCode('emptyCost')
+            return false
+        } else if (isNaN(+rewardCost)) {
+            setErrorCode('costNaN')
+            return false
+        }
+        return true
+    }
+    const handleCreateReward = () => {
+        setErrorCode('')
+        if (!validateRewardCreate()) { return }
+        Rewards.createReward(userId, rewardName, rewardCost, rewardAvailable)
+    }
+
+
 
 
     return (
@@ -23,10 +51,10 @@ const CaregiverReward = ({ navigation }) => {
                     onPress={() => {navigation.navigate('Caregiver Main')}}
                 >Main ></CustomButton>
             </View>
-            <View style={{borderWidth: 2, borderRadius: 7, width: '95%', height: 150, alignItems: 'flex-start'}}>
+            <View style={{borderWidth: 2, borderRadius: 7, width: '95%', height: 170, alignItems: 'flex-start'}}>
                 <Text style={[styles.text, {fontSize: 22, marginLeft: 8, marginBottom: 5}]}>Create Reward</Text>
                 <View style={{width: '100%', height: 100, flexDirection: 'row'}}>
-                    <View style={{width: '70%'}}>
+                    <View style={{width: '70%', marginLeft: 8}}>
                         <TextInput
                             style={[styles.textInput, {marginBottom: 8}]}
                             placeholder={"Name"}
@@ -34,21 +62,22 @@ const CaregiverReward = ({ navigation }) => {
                             value={rewardName}
                         />
                         <View style={{flexDirection: 'row', marginBottom: 8}}>
-                            <Text style={[styles.text, {marginLeft: 8}]}>Point Cost</Text>
+                            <Text style={[styles.text]}>Point Cost</Text>
                             <TextInput
-                                style={[styles.textInput, {width: '63%'}]}
+                                style={[styles.textInput, {width: '63%', marginLeft: 8}]}
                                 onChangeText={handleRewardCostUpdate}
                                 value={rewardCost}
                                 keyboardType='numeric'
+                                textAlign='right'
                             />
                         </View>
                         <View style={{flexDirection: 'row', height: 25}}>
-                            <Text style={[styles.text, {marginLeft: 8}]}>Available?</Text>
+                            <Text style={[styles.text]}>Available?</Text>
                             <CustomButton
                                 buttonStyle={[
                                     styles.button,
                                     rewardAvailable ? {backgroundColor: colors.button2} : {backgroundColor: colors.button1},
-                                    {marginLeft: 8}
+                                    { marginLeft: 8 }
                                 ]}
                                 textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                                 onPress={() => {toggleRewardAvailable(true)}}
@@ -57,12 +86,17 @@ const CaregiverReward = ({ navigation }) => {
                                 buttonStyle={[
                                     styles.button,
                                     rewardAvailable ? {backgroundColor: colors.button1} : {backgroundColor: colors.button2},
-                                    {marginLeft: 8}
+                                    { marginLeft: 8 }
                                 ]}
                                 textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                                 onPress={() => {toggleRewardAvailable(false)}}
                             >No</CustomButton>
                         </View>
+                        <ErrorText
+                            errorCode={errorCode}
+                            setErrorCode={setErrorCode}
+                            errors={errors}
+                        />
                     </View>
                     <View style={{alignItems: 'center', justifyContent: 'center', width: '30%'}}>
                         <CustomButton
@@ -111,9 +145,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         width: '100%',
         height: 30,
-        paddingLeft: 5,
+        paddingHorizontal: 5,
         fontFamily: 'balsamiq',
-        marginLeft: 8,
     }
 })
 export default CaregiverReward
