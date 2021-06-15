@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, TextInput, View} from "react-native";
+import React, {useEffect, useState} from 'react';
+import {Keyboard, StyleSheet, Text, TextInput, View} from "react-native";
 import colors from "../../assets/themes/colors";
 import CustomButton from "../Components/Button";
 import ErrorText from "../Components/ErrorText";
@@ -36,10 +36,17 @@ const CaregiverReward = ({ route, navigation }) => {
         setErrorCode('')
         if (!validateRewardCreate()) { return }
         Rewards.createReward(userId, rewardName, rewardCost, rewardAvailable)
+        Keyboard.dismiss()
     }
 
+    const [rewardList, setRewardList] = useState('')
+    useEffect(() => {
+        return Rewards.rewardListSubscribe(userId, setRewardList)
+    }, [])
 
+    const rewardItem = ({ item }) => {
 
+    }
 
     return (
         <View style={styles.container}>
@@ -108,6 +115,8 @@ const CaregiverReward = ({ route, navigation }) => {
 
                 </View>
             </View>
+
+
         </View>
     )
 }

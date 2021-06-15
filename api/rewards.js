@@ -21,3 +21,20 @@ export const deleteReward = async (userId, rewardId) => {
         console.error(e)
     }
 }
+
+export const rewardListSubscribe = (userId, onValueChanged) => {
+    try {
+        const rewards = db.ref(`users/${userId}/rewards`)
+        rewards.on("value", (snapshot) => {
+            const val = snapshot.val()
+            const retList = [];
+            for(let id in val) {
+                retList.push(val[id])
+            }
+            onValueChanged(retList)
+        })
+        return () => rewards.off("value")
+    } catch (e) {
+        console.error(e)
+    }
+}
