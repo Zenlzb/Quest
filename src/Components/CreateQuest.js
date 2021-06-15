@@ -73,7 +73,7 @@ const CreateQuestModal = (props) => {
         setSelectedTime(new Date())
         setErrorCode('')
     }
-    const handleValidQuest = () => {
+    const validateQuestCreate = () => {
         if (!title) {
             setErrorCode('emptyTitle')
             return false
@@ -97,7 +97,7 @@ const CreateQuestModal = (props) => {
     }
     const handleCreateQuest = () => {
         setErrorCode('')
-        if (!handleValidQuest()) { return }
+        if (!validateQuestCreate()) { return }
 
         let selectedChildren = []
         for(let i = 0; i < selected.length; i++) {
@@ -125,7 +125,7 @@ const CreateQuestModal = (props) => {
     }
     const handleAddPreset = () => {
         setErrorCode('')
-        if (!handleValidQuest()) { return }
+        if (!validateQuestCreate()) { return }
 
         Presets.createPreset(props.userId, title, points, year, month, week, day, hour, minute, second)
     }
@@ -287,7 +287,7 @@ const CreateQuestModal = (props) => {
                         <TextInput
                             style={[styles.textInput, {width: '35%', paddingRight: 5}]}
                             keyboardType='numeric'
-                            textAlign={'right'}
+                            textAlign='right'
                             onChangeText={handlePointsUpdate}
                             value={points}
                         />
