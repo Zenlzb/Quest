@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from "react-native";
+import {FlatList, StyleSheet, Text, View} from "react-native";
 import {getCurrentUserId, signOut} from "../../api/auth";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
 import * as Quests from "../../api/quest"
+import * as Children from "../../api/child";
 
 const ChildMain = ({name}) => {
     const [parentUserId, setParentUserId] = useState(getCurrentUserId());
@@ -17,6 +18,17 @@ const ChildMain = ({name}) => {
         signOut();
     }
 
+    const renderItem = ({item, index}) => {
+        const handleRemoveQuest = () => {Quests.deleteQuest(parentUserId, name, item.id)}
+        return (
+            <CustomButton
+                buttonStyle={[styles.button, {marginBottom: 8, width: '100%', height: 70}]}
+                textStyle={{fontFamily: 'balsamiq', fontSize:15}}
+                onPress={handleRemoveQuest}
+            >{item.title}</CustomButton>
+        )
+    }
+
     return(
         <View style={styles.container}>
             <View style={styles.topBar}>
@@ -28,6 +40,15 @@ const ChildMain = ({name}) => {
                     onPress={handleSignOut}
                 >Sign Out</CustomButton>
             </View>
+            <View style={{marginTop: 80, marginHorizontal: 10}}>
+                <Text style = {[styles.text, {fontSize: 18}]}> Quests</Text>
+                <FlatList
+                    data={questList}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id}
+                    // ListEmptyComponent={emptyList} //you have no quests
+                />
+            </View>
         </View>
     )
 }
@@ -38,7 +59,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: colors.background,
         // justifyContent: 'center',
-        alignItems: 'center'
+        // alignItems: 'center'
     },
     topBar: {
         marginTop: 30,
@@ -54,6 +75,10 @@ const styles = StyleSheet.create({
     },
     button: {
 
+        backgroundColor: colors.button1,
+        justifyContent: 'center',
+    },
+    tasks: {
         backgroundColor: colors.button1,
         justifyContent: 'center',
     }
