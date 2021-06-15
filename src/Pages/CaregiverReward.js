@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Keyboard, StyleSheet, Text, TextInput, View} from "react-native";
+import {FlatList, Keyboard, StyleSheet, Text, TextInput, View} from "react-native";
 import colors from "../../assets/themes/colors";
 import CustomButton from "../Components/Button";
 import ErrorText from "../Components/ErrorText";
@@ -45,7 +45,9 @@ const CaregiverReward = ({ route, navigation }) => {
     }, [])
 
     const rewardItem = ({ item }) => {
-
+        return (
+            <Text style={styles.text}>{item.name} + {item.cost} + {item.availability ? 'true' : 'false'}</Text>
+        )
     }
 
     return (
@@ -115,6 +117,11 @@ const CaregiverReward = ({ route, navigation }) => {
 
                 </View>
             </View>
+            <FlatList
+                data={rewardList}
+                renderItem={rewardItem}
+                keyExtractor={item => item.id}
+            />
 
 
         </View>
