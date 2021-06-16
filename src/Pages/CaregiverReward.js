@@ -47,7 +47,25 @@ const CaregiverReward = ({ route, navigation }) => {
 
     const rewardItem = ({ item }) => {
         return (
-            <Text style={styles.text}>{item.name} + {item.cost} + {item.availability ? 'true' : 'false'}</Text>
+            <View style={{
+                borderWidth: 2,
+                borderRadius: 7,
+                width: '95%',
+                height: 40,
+                marginTop: 8,
+                backgroundColor: colors.background2,
+                alignItems: 'flex-start',
+                flexDirection: 'row',
+                paddingHorizontal: 8,
+                paddingVertical: 3
+            }}>
+                <Text style={[styles.text, {fontSize: 18, width: 90, textAlign: 'right'}]} numberOfLines={1}>{item.name}</Text>
+                <Text style={[styles.text, {fontSize: 18, width: 80, textAlign: 'right'}]} numberOfLines={1}>{item.cost}</Text>
+                <CoinIcon style={{marginLeft: 2, marginTop: 2}} dimension={22}/>
+                {item.availability ? <Text style={[styles.text, {fontSize: 18, marginLeft: 30, color: colors.button2}]}>Available</Text>
+                    : <Text style={[styles.text, {fontSize: 18, marginLeft: 30, color: colors.button1}]}>Not Available</Text> }
+
+            </View>
         )
     }
 
@@ -119,13 +137,13 @@ const CaregiverReward = ({ route, navigation }) => {
 
                 </View>
             </View>
-            <FlatList
-                data={rewardList}
-                renderItem={rewardItem}
-                keyExtractor={item => item.id}
-            />
-
-
+            <View style={{width: '95%', justifyContent: 'center', marginLeft: 15}}>
+                <FlatList
+                    data={rewardList}
+                    renderItem={rewardItem}
+                    keyExtractor={item => item.id}
+                />
+            </View>
         </View>
     )
 }
