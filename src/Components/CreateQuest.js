@@ -7,6 +7,7 @@ import ErrorText from "./ErrorText";
 import * as Quests from '../../api/quest'
 import * as Presets from '../../api/presets'
 import CustomTooltip from "./Tooltip";
+import CoinIcon from './CoinIcon'
 
 const CreateQuestModal = (props) => {
     const [title, setTitle] = useState('')
@@ -285,12 +286,13 @@ const CreateQuestModal = (props) => {
                             Reward Points
                         </Text>
                         <TextInput
-                            style={[styles.textInput, {width: '35%', paddingRight: 5}]}
+                            style={[styles.textInput, {width: '35%', paddingRight: 5, marginRight: 8}]}
                             keyboardType='numeric'
                             textAlign='right'
                             onChangeText={handlePointsUpdate}
                             value={points}
                         />
+                        <CoinIcon dimension={30}/>
                     </View>
                     <View style={styles.dueDateContainer}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
