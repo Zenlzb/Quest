@@ -59,7 +59,7 @@ const CaregiverReward = ({ route, navigation }) => {
                 paddingHorizontal: 8,
                 paddingVertical: 3
             }}>
-                <Text style={[styles.text, {fontSize: 18, width: 90, textAlign: 'right'}]} numberOfLines={1}>{item.name}</Text>
+                <Text style={[styles.text, {fontSize: 18, width: 105, textAlign: 'right'}]} numberOfLines={1}>{item.name}</Text>
                 <Text style={[styles.text, {fontSize: 18, width: 80, textAlign: 'right'}]} numberOfLines={1}>{item.cost}</Text>
                 <CoinIcon style={{marginLeft: 2, marginTop: 2}} dimension={22}/>
                 {item.availability ? <Text style={[styles.text, {fontSize: 18, marginLeft: 30, color: colors.button2}]}>Available</Text>
