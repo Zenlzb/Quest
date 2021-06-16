@@ -4,6 +4,7 @@ import colors from "../../assets/themes/colors";
 import CustomButton from "../Components/Button";
 import ErrorText from "../Components/ErrorText";
 import * as Rewards from '../../api/rewards'
+import CoinIcon from '../Components/CoinIcon'
 
 const CaregiverReward = ({ route, navigation }) => {
     const { userId } = route.params
@@ -73,12 +74,13 @@ const CaregiverReward = ({ route, navigation }) => {
                         <View style={{flexDirection: 'row', marginBottom: 8}}>
                             <Text style={[styles.text]}>Point Cost</Text>
                             <TextInput
-                                style={[styles.textInput, {width: '63%', marginLeft: 8}]}
+                                style={[styles.textInput, {width: '50%', marginHorizontal: 8}]}
                                 onChangeText={handleRewardCostUpdate}
                                 value={rewardCost}
                                 keyboardType='numeric'
                                 textAlign='right'
                             />
+                            <CoinIcon dimension={30}/>
                         </View>
                         <View style={{flexDirection: 'row', height: 25}}>
                             <Text style={[styles.text]}>Available?</Text>
