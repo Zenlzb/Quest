@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Keyboard, StyleSheet, Text, TextInput, View} from "react-native";
+import {FlatList, Keyboard, StyleSheet, Text, TextInput, View, Pressable} from "react-native";
 import colors from "../../assets/themes/colors";
 import CustomButton from "../Components/Button";
 import ErrorText from "../Components/ErrorText";
 import * as Rewards from '../../api/rewards'
 import CoinIcon from '../Components/CoinIcon'
+import CreateRewardModal from "../Components/CreateReward";
 
 const CaregiverReward = ({ route, navigation }) => {
     const { userId } = route.params
@@ -13,6 +14,20 @@ const CaregiverReward = ({ route, navigation }) => {
     const [rewardAvailable, toggleRewardAvailable] = useState(true)
     const handleRewardNameUpdate = (text) => {setRewardName(text)}
     const handleRewardCostUpdate = (text) => {setRewardCost(text)}
+
+    const [popupId, setPopupId] = useState('')
+    const [popupName, setPopupName] = useState('')
+    const [popupCost, setPopupCost] = useState('')
+    const [popupAvailable, setPopupAvailable] = useState(false)
+    const [rewardModal, toggleRewardModal] = useState(false)
+
+    const handleEditReward = (id, name, cost, availability) => {
+        setPopupId(id)
+        setPopupName(name)
+        setPopupCost(cost)
+        setPopupAvailable(availability)
+        toggleRewardModal(true)
+    }
 
     const [errorCode, setErrorCode] = useState('')
     const errors = [
@@ -37,6 +52,9 @@ const CaregiverReward = ({ route, navigation }) => {
         setErrorCode('')
         if (!validateRewardCreate()) { return }
         Rewards.createReward(userId, rewardName, rewardCost, rewardAvailable)
+        setRewardName('')
+        setRewardCost('')
+        toggleRewardAvailable(true)
         Keyboard.dismiss()
     }
 
@@ -47,30 +65,44 @@ const CaregiverReward = ({ route, navigation }) => {
 
     const rewardItem = ({ item }) => {
         return (
-            <View style={{
+            <Pressable style={{
                 borderWidth: 2,
                 borderRadius: 7,
                 width: '95%',
-                height: 40,
+                height: 80,
                 marginTop: 8,
                 backgroundColor: colors.background2,
                 alignItems: 'flex-start',
-                flexDirection: 'row',
+                flexDirection: 'column',
                 paddingHorizontal: 8,
                 paddingVertical: 3
-            }}>
-                <Text style={[styles.text, {fontSize: 18, width: 105, textAlign: 'right'}]} numberOfLines={1}>{item.name}</Text>
-                <Text style={[styles.text, {fontSize: 18, width: 80, textAlign: 'right'}]} numberOfLines={1}>{item.cost}</Text>
-                <CoinIcon style={{marginLeft: 2, marginTop: 2}} dimension={22}/>
-                {item.availability ? <Text style={[styles.text, {fontSize: 18, marginLeft: 30, color: colors.button2}]}>Available</Text>
-                    : <Text style={[styles.text, {fontSize: 18, marginLeft: 30, color: colors.button1}]}>Not Available</Text> }
-
-            </View>
+            }}
+                       onPress={() => {handleEditReward(item.id, item.name, item.cost, item.availability)}}
+            >
+                <Text style={[styles.text, {fontSize: 22}]} numberOfLines={1}>{item.name}</Text>
+                <View style={{flexDirection: 'row',width: '100%', justifyContent: 'space-between'}}>
+                    {item.availability ? <Text style={[styles.text, {fontSize: 22, color: colors.button2}]}>Available</Text>
+                        : <Text style={[styles.text, {fontSize: 22, color: colors.button1}]}>Not Available</Text> }
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={[styles.text, {fontSize: 22, width: 80, textAlign: 'right'}]} numberOfLines={1}>{item.cost}</Text>
+                        <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
+                    </View>
+                </View>
+            </Pressable>
         )
     }
 
     return (
         <View style={styles.container}>
+            <CreateRewardModal
+                visibility={rewardModal}
+                toggleVisibility={toggleRewardModal}
+                userId={userId}
+                id={popupId}
+                name={popupName}
+                cost={popupCost}
+                availability={popupAvailable}
+            />
             <View style={styles.titleContainer}>
                 <Text style={[styles.text, {fontSize: 40}]}>Rewards</Text>
                 <CustomButton
