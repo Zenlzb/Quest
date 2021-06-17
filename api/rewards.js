@@ -22,6 +22,19 @@ export const deleteReward = async (userId, rewardId) => {
     }
 }
 
+export const editReward = async (userId, rewardId, rewardName, rewardCost, availability) => {
+    try {
+        const name = db.ref(`users/${userId}/rewards/${rewardId}/name`)
+        await name.set(rewardName)
+        const cost = db.ref(`users/${userId}/rewards/${rewardId}/cost`)
+        await cost.set(rewardCost)
+        const available = db.ref(`users/${userId}/rewards/${rewardId}/availability`)
+        await available.set(availability)
+    } catch (e) {
+        console.error(e)
+    }
+}
+
 export const rewardListSubscribe = (userId, onValueChanged) => {
     try {
         const rewards = db.ref(`users/${userId}/rewards`)
