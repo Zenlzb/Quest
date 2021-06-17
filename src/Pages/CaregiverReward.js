@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Keyboard, StyleSheet, Text, TextInput, View, Pressable} from "react-native";
+import {FlatList, Keyboard, StyleSheet, Text, TextInput, View} from "react-native";
 import colors from "../../assets/themes/colors";
 import CustomButton from "../Components/Button";
 import ErrorText from "../Components/ErrorText";
 import * as Rewards from '../../api/rewards'
 import CoinIcon from '../Components/CoinIcon'
 import CreateRewardModal from "../Components/CreateReward";
+import RewardListItem from "../Components/RewardListItem";
 
 const CaregiverReward = ({ route, navigation }) => {
     const { userId } = route.params
@@ -65,30 +66,10 @@ const CaregiverReward = ({ route, navigation }) => {
 
     const rewardItem = ({ item }) => {
         return (
-            <Pressable style={{
-                borderWidth: 2,
-                borderRadius: 7,
-                width: '95%',
-                height: 80,
-                marginTop: 8,
-                backgroundColor: colors.background2,
-                alignItems: 'flex-start',
-                flexDirection: 'column',
-                paddingHorizontal: 8,
-                paddingVertical: 3
-            }}
-                       onPress={() => {handleEditReward(item.id, item.name, item.cost, item.availability)}}
-            >
-                <Text style={[styles.text, {fontSize: 22}]} numberOfLines={1}>{item.name}</Text>
-                <View style={{flexDirection: 'row',width: '100%', justifyContent: 'space-between'}}>
-                    {item.availability ? <Text style={[styles.text, {fontSize: 22, color: colors.button2}]}>Available</Text>
-                        : <Text style={[styles.text, {fontSize: 22, color: colors.button1}]}>Not Available</Text> }
-                    <View style={{flexDirection: 'row'}}>
-                        <Text style={[styles.text, {fontSize: 22, width: 80, textAlign: 'right'}]} numberOfLines={1}>{item.cost}</Text>
-                        <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
-                    </View>
-                </View>
-            </Pressable>
+            <RewardListItem
+                item={item}
+                onPress={() => {handleEditReward(item.id, item.name, item.cost, item.availability)}}
+            />
         )
     }
 
