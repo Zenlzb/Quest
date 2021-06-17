@@ -41,6 +41,7 @@ const LoginPage = ({ navigation }) => {
                 <TextInput
                     style={[styles.textInput, {marginBottom: 8}]}
                     placeholder={"Email"}
+                    keyboardType='email-address'
                     onChangeText={handleEmailUpdate}
                     value={email}
                 />
