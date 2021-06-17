@@ -39,3 +39,21 @@ export const questListSubscribe = (userId, childName, onValueChanged) => {
         console.error(e)
     }
 }
+
+export const completeQuest = async (userId, childName, questId) => {
+    try {
+        const status = db.ref(`users/${userId}/children/${childName}/quests/${questId}/status`)
+        await status.set('complete')
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+export const expireQuest = async (userId, childName, questId) => {
+    try {
+        const status = db.ref(`users/${userId}/children/${childName}/quests/${questId}/status`)
+        await status.set('expired')
+    } catch (e) {
+        console.error(e)
+    }
+}
