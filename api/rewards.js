@@ -3,12 +3,12 @@ import firebase from "./firebase";
 const db = firebase.database();
 
 const newReward = (id, name, cost, availability) => ({id, name, cost, availability})
+const newRewardClaim = (id, rewardId, childName, claimDate, status) => ({id, rewardId, childName, claimDate, status})
 
 export const createReward = async (userId, rewardName, rewardCost, availability) => {
     try {
         const reward = db.ref(`users/${userId}/rewards`).push()
         await reward.set(newReward(reward.key, rewardName, rewardCost, availability))
-
     } catch (e) {
         console.error(e)
     }
@@ -47,6 +47,33 @@ export const rewardListSubscribe = (userId, onValueChanged) => {
             onValueChanged(retList)
         })
         return () => rewards.off("value")
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+export const createRewardClaim = async (userId, rewardId, childName, claimDate) => {
+    try {
+        const claim = db.ref(`users/${userId}/rewardHistory`).push()
+        await claim.set(newRewardClaim(claim.key, rewardId, childName, claimDate, 'pending'))
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+export const completeRewardClaim = async (userId, claimId) => {
+    try {
+        const status = db.ref(`users/${userId}/rewardHistory/${claimId}/status`)
+        await status.set('completed')
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+export const declineRewardClaim = async (userId, claimId) => {
+    try {
+        const status = db.ref(`users/${userId}/rewardHistory/${claimId}/status`)
+        await status.set('declined')
     } catch (e) {
         console.error(e)
     }
