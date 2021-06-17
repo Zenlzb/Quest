@@ -4,7 +4,7 @@ import {getCurrentUserId, signOut} from "../../api/auth";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
 import * as Quests from "../../api/quest"
-import * as Children from "../../api/child";
+
 
 const ChildMain = ({name}) => {
     const [parentUserId, setParentUserId] = useState(getCurrentUserId());
@@ -18,14 +18,75 @@ const ChildMain = ({name}) => {
         signOut();
     }
 
-    const renderItem = ({item, index}) => {
-        const handleRemoveQuest = () => {Quests.deleteQuest(parentUserId, name, item.id)}
+    const renderItem = ({item}) => {
+        const QuestStatus = () => {
+            if (item.status === 'incomplete') {
+                const timeLeft = calculateTimeLeft(new Date(item.dueDate))
+                console.log(timeLeft)
+                return (<View style = {{backgroundColor: colors.button1, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 1}}>
+                            <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Incomplete {timeLeft}</Text>
+                        </View>)
+            } else if (item.status === 'complete') {
+                return <Text style={[styles.text, {fontSize: 15, color: colors.button2}]}>Completed!</Text>
+            } else if (item.status === 'expired') {
+                return <Text style={[styles.text, {fontSize: 15, color: 'grey'}]}>Expired!</Text>
+            }
+        }
         return (
-            <CustomButton
-                buttonStyle={[styles.button, {marginBottom: 8, width: '100%', height: 70}]}
-                textStyle={{fontFamily: 'balsamiq', fontSize:15}}
-                onPress={handleRemoveQuest}
-            >{item.title}</CustomButton>
+            <View style = {styles.questEntries}>
+                <Text style = {styles.questText}>
+                    {item.title}, {item.points} points
+                </Text>
+                <View style = {{flexDirection: 'row', paddingHorizontal: 5}}>
+                    <QuestStatus/>
+                    <CustomButton
+                        buttonStyle={[styles.button, {marginTop: 8}]}
+                        textStyle={{fontFamily: 'balsamiq', fontSize:15}}
+                        onPress={() => {
+                            Quests.completeQuest(parentUserId, name, item.id)
+                        }}
+                    >Complete Quest
+                    </CustomButton>
+                </View>
+            </View>
+        )
+    }
+
+
+    const calculateTimeLeft = (date) => {
+        const timeLeft = date - new Date()
+
+        if (timeLeft < 31536000000) { //years
+            if (timeLeft < 2628000000) { //months
+                if (timeLeft < 604800000) { //weeks
+                    if (timeLeft < 86400000) { //days
+                        if (timeLeft < 3600000) { //hours
+                            if (timeLeft < 60000) {
+                                if (timeLeft < 0) {
+                                    Quests.expireQuest(parentUserId, name, item.id)
+                                    return 'Quest expired!'
+                                }
+                                return '<1 Min'
+                            }
+                            return Math.floor(timeLeft / 60000).toString() + ' Min'
+                        }
+                        return Math.floor(timeLeft / 3600000).toString() + ' H'
+                    }
+                    return Math.floor(timeLeft / 86400000).toString() + ' D'
+                }
+                return Math.floor(timeLeft / 604800000).toString() + ' W'
+            }
+            return Math.floor(timeLeft / 2628000000).toString() + ' M'
+        }
+        return Math.floor(timeLeft / 31536000000).toString() + ' Y'
+    }
+
+
+    const emptyList = () => {
+        return (
+            <Text style={{fontSize: 20, color: 'grey', textAlign: 'center', fontFamily: 'balsamiq'}}>
+                You don't have any quests right now!
+            </Text>
         )
     }
 
@@ -46,7 +107,7 @@ const ChildMain = ({name}) => {
                     data={questList}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
-                    // ListEmptyComponent={emptyList} //you have no quests
+                    ListEmptyComponent={emptyList}
                 />
             </View>
         </View>
@@ -74,13 +135,31 @@ const styles = StyleSheet.create({
         fontFamily: 'balsamiq'
     },
     button: {
-
         backgroundColor: colors.button1,
         justifyContent: 'center',
     },
     tasks: {
         backgroundColor: colors.button1,
         justifyContent: 'center',
-    }
+    },
+    questEntries: {
+        borderWidth: 1,
+        borderRadius: 10,
+        height: 120,
+        backgroundColor: colors.background3,
+        width: '90%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    questText: {
+        fontSize: 35,
+        fontFamily: 'balsamiq',
+        paddingHorizontal: 10,
+        paddingVertical: 2,
+        borderRadius: 5,
+        color: 'white',
+        textAlign: 'center'
+    },
+
 })
 export default ChildMain;
