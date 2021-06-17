@@ -121,10 +121,8 @@ const CreateRewardModal = (props) => {
                                     onPress={() => {props.toggleVisibility(false)}}
                                 >Cancel</CustomButton>
                             </View>
-
                         </View>
                     </View>
-
                 </View>
             </View>
         </Modal>
