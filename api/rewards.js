@@ -3,7 +3,7 @@ import firebase from "./firebase";
 const db = firebase.database();
 
 const newReward = (id, name, cost, availability) => ({id, name, cost, availability})
-const newRewardClaim = (id, rewardId, childName, claimDate, status) => ({id, rewardId, childName, claimDate, status})
+const newRewardClaim = (id, quantity, childName, rewardName, rewardCost, claimDate, status) => ({id, quantity, childName, rewardName, rewardCost, claimDate, status})
 
 export const createReward = async (userId, rewardName, rewardCost, availability) => {
     try {
@@ -52,10 +52,10 @@ export const rewardListSubscribe = (userId, onValueChanged) => {
     }
 }
 
-export const createRewardClaim = async (userId, rewardId, childName, claimDate) => {
+export const createRewardClaim = async (userId, quantity, childName, rewardName, rewardCost, claimDate) => {
     try {
         const claim = db.ref(`users/${userId}/rewardHistory`).push()
-        await claim.set(newRewardClaim(claim.key, rewardId, childName, claimDate, 'pending'))
+        await claim.set(newRewardClaim(claim.key, quantity, childName, rewardName, rewardCost, claimDate, 'pending'))
     } catch (e) {
         console.error(e)
     }
@@ -74,6 +74,25 @@ export const declineRewardClaim = async (userId, claimId) => {
     try {
         const status = db.ref(`users/${userId}/rewardHistory/${claimId}/status`)
         await status.set('declined')
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+export const pendingClaimListSubscribe = (userId, onValueChanged) => {
+    try {
+        const claims = db.ref(`users/${userId}/rewardHistory`)
+        claims.on("value", (snapshot) => {
+            const val = snapshot.val()
+            const retList = [];
+            for(let id in val) {
+                if (val[id].status === 'pending') {
+                    retList.push(val[id])
+                }
+            }
+            onValueChanged(retList)
+        })
+        return () => claims.off("value")
     } catch (e) {
         console.error(e)
     }
