@@ -10,12 +10,13 @@ const RewardListItem = (props) => {
             style={styles.container}
             onPress={onPress}
         >
-            <Text style={[styles.text, {fontSize: 22}]} numberOfLines={1}>{item.name}</Text>
-            <View style={{flexDirection: 'row',width: '100%', justifyContent: 'space-between'}}>
-                {item.availability ? <Text style={[styles.text, {fontSize: 22, color: colors.button2}]}>Available</Text>
-                    : <Text style={[styles.text, {fontSize: 22, color: colors.button1}]}>Not Available</Text> }
+            <Text style={styles.text} numberOfLines={1}>{item.name}</Text>
+            <View style={styles.textContainer}>
+                {item.availability
+                    ? <Text style={[styles.text, {color: colors.button2}]}>Available</Text>
+                    : <Text style={[styles.text, {color: colors.button1}]}>Not Available</Text>}
                 <View style={{flexDirection: 'row'}}>
-                    <Text style={[styles.text, {fontSize: 22, width: 80, textAlign: 'right'}]} numberOfLines={1}>{item.cost}</Text>
+                    <Text style={[styles.text, {width: 80, textAlign: 'right'}]} numberOfLines={1}>{item.cost}</Text>
                     <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
                 </View>
             </View>
@@ -36,8 +37,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         paddingVertical: 3
     },
+    textContainer: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between'
+    },
     text: {
-        fontSize: 20,
+        fontSize: 22,
         fontFamily: 'balsamiq',
         textAlign: 'center'
     },
