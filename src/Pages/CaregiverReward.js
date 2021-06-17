@@ -7,6 +7,7 @@ import * as Rewards from '../../api/rewards'
 import CoinIcon from '../Components/CoinIcon'
 import CreateRewardModal from "../Components/CreateReward";
 import RewardListItem from "../Components/RewardListItem";
+import RewardHistoryModal from "../Components/RewardHistory";
 
 const CaregiverReward = ({ route, navigation }) => {
     const { userId } = route.params
@@ -21,7 +22,6 @@ const CaregiverReward = ({ route, navigation }) => {
     const [popupCost, setPopupCost] = useState('')
     const [popupAvailable, setPopupAvailable] = useState(false)
     const [rewardModal, toggleRewardModal] = useState(false)
-
     const handleEditReward = (id, name, cost, availability) => {
         setPopupId(id)
         setPopupName(name)
@@ -29,6 +29,8 @@ const CaregiverReward = ({ route, navigation }) => {
         setPopupAvailable(availability)
         toggleRewardModal(true)
     }
+
+    const [rewardHistoryModal, toggleRewardHistoryModal] = useState(false)
 
     const [errorCode, setErrorCode] = useState('')
     const errors = [
@@ -69,6 +71,7 @@ const CaregiverReward = ({ route, navigation }) => {
             <RewardListItem
                 item={item}
                 onPress={() => {handleEditReward(item.id, item.name, item.cost, item.availability)}}
+                mode='caregiverReward'
             />
         )
     }
@@ -84,13 +87,25 @@ const CaregiverReward = ({ route, navigation }) => {
                 cost={popupCost}
                 availability={popupAvailable}
             />
+            <RewardHistoryModal
+                visibility={rewardHistoryModal}
+                toggleVisibility={toggleRewardHistoryModal}
+                userId={userId}
+            />
             <View style={styles.titleContainer}>
                 <Text style={[styles.text, {fontSize: 40}]}>Rewards</Text>
-                <CustomButton
-                    buttonStyle={[styles.button, {marginLeft: 8, height: 25, marginTop: 21}]}
-                    textStyle={[styles.text, {paddingVertical: 1, fontSize: 17}]}
-                    onPress={() => {navigation.navigate('Caregiver Main')}}
-                >Main ></CustomButton>
+                <View style={{flexDirection:'row', height: 25, marginTop: 21}}>
+                    <CustomButton
+                        buttonStyle={styles.button}
+                        textStyle={[styles.text, {paddingVertical: 1, fontSize: 17}]}
+                        onPress={() => {toggleRewardHistoryModal(true)}}
+                    >Pending</CustomButton>
+                    <CustomButton
+                        buttonStyle={[styles.button, {marginLeft: 8,}]}
+                        textStyle={[styles.text, {paddingVertical: 1, fontSize: 17}]}
+                        onPress={() => {navigation.navigate('Caregiver Main')}}
+                    >Main ></CustomButton>
+                </View>
             </View>
             <View style={{borderWidth: 2, borderRadius: 7, width: '95%', height: 170, alignItems: 'flex-start'}}>
                 <Text style={[styles.text, {fontSize: 22, marginLeft: 8, marginBottom: 5}]}>Create Reward</Text>
