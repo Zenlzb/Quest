@@ -108,13 +108,12 @@ const CaregiverMain = ({ navigation }) => {
             />
             <View style={styles.topContainer}>
                 <CustomButton
-                    buttonStyle={[styles.button, {marginLeft: 8}]}
+                    buttonStyle={styles.button}
                     textStyle={[styles.text, {paddingVertical: 1, fontSize: 17}]}
                     onPress={handleSignOut}
                 >Sign Out</CustomButton>
-                <Text style={[styles.text, {marginRight: 8, fontSize: 17}]}>
-                    Welcome, Caregiver {auth.currentUser.displayName.length >= 15
-                    ? auth.currentUser.displayName.substr(0, 12) + '...' : auth.currentUser.displayName}
+                <Text style={[styles.text, {textAlign: 'right', fontSize: 17, width: '70%'}]} numberOfLines={1}>
+                    Welcome, Caregiver {auth.currentUser.displayName}
                 </Text>
             </View>
 
@@ -180,6 +179,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 45,
         marginBottom: 8,
+        paddingHorizontal: 8,
         justifyContent: 'space-between',
         height: 27,
         width: '100%'
