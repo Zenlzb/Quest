@@ -49,10 +49,16 @@ export const completeQuest = async (userId, childName, questId) => {
     }
 }
 
-export const expireQuest = async (userId, childName, questId) => {
+export const childExpireQuest = async (userId, childName, questId) => {
     try {
         const status = db.ref(`users/${userId}/children/${childName}/quests/${questId}/status`)
-        await status.set('expired')
+        const stat = await status.get()
+        if (stat.val() === 'incomplete') {
+            await status.set('expired-caregiver')
+        } else if (stat.val() === 'expired-child') {
+            await status.set('expired-none')
+        }
+
     } catch (e) {
         console.error(e)
     }
