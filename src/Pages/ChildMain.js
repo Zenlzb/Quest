@@ -1,17 +1,25 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, View} from "react-native";
+import {FlatList, Pressable, StyleSheet, Text, View} from "react-native";
 import {getCurrentUserId, signOut} from "../../api/auth";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
 import * as Quests from "../../api/quest"
+import * as Children from "../../api/child"
+import CoinIcon from "../Components/CoinIcon";
+import { Icon } from 'react-native-elements'
 
 
 const ChildMain = ({name}) => {
     const [parentUserId, setParentUserId] = useState(getCurrentUserId());
-    const [questList, setQuestList] = useState()
+    const [childStats, setChildStats] = useState({key: '1', name:'a', points: '0'})
+    const [questList, setQuestList] = useState([])
+    const [reloadList, setReloadList] = useState(0)
 
     useEffect(() => {
         return Quests.questListSubscribe(parentUserId, name, setQuestList)
+    }, [])
+    useEffect(() => {
+        return Children.childStatSubscribe(parentUserId, name, setChildStats)
     }, [])
 
     const handleSignOut = () => {
@@ -19,35 +27,88 @@ const ChildMain = ({name}) => {
     }
 
     const renderItem = ({item}) => {
+        if (item.status === 'expired-caregiver' || item.status === 'expired-none' || item.status === 'claimed' ) { return null }
         const QuestStatus = () => {
             if (item.status === 'incomplete') {
                 const timeLeft = calculateTimeLeft(new Date(item.dueDate))
-                console.log(timeLeft)
-                return (<View style = {{backgroundColor: colors.button1, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 1}}>
-                            <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Incomplete {timeLeft}</Text>
-                        </View>)
+                if (!timeLeft) {
+                    return(
+                        <View style = {{flexDirection: 'row', padding: 5, justifyContent: 'space-between', width: '100%', height: '50%', alignItems: 'flex-end'}}>
+                            <View style={{backgroundColor: 'grey', borderRadius: 5, paddingHorizontal: 5, height: 25}}>
+                                <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Expired</Text>
+                            </View>
+                            <CustomButton
+                                buttonStyle={styles.button}
+                                textStyle={[styles.text, {paddingVertical: 1, fontSize: 15}]}
+                                onPress={() => {Quests.childExpireQuest(parentUserId, name, item.id)}}
+                            >Clear</CustomButton>
+                        </View>
+                        )
+                }
+                return (
+                    <View style = {{flexDirection: 'row', padding: 5, justifyContent: 'space-between', width: '100%', height: '50%', alignItems: 'flex-end'}}>
+                        <View style={{flexDirection: 'row', height: 25}}>
+                            <View style = {{backgroundColor: colors.button1, borderRadius: 5, paddingHorizontal: 5}}>
+                                <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Incomplete</Text>
+                            </View>
+                            <Text style={[styles.text, {fontSize: 15, color: 'white', marginLeft: 5}]}>
+                                {timeLeft}
+                            </Text>
+                            <Icon
+                                name='clock'
+                                type='feather'
+                                color='white'
+                                size={17}
+                                style={{marginTop: 3, marginLeft: 2}}
+                            />
+                        </View>
+                        <Pressable
+                            onPress={() => {Quests.completeQuest(parentUserId, name, item.id)}}
+                        >
+                            <Icon
+                                name='check-square'
+                                type='feather'
+                                color='white'
+                                size={35}
+                            />
+                        </Pressable>
+                    </View>
+
+                )
             } else if (item.status === 'complete') {
-                return <Text style={[styles.text, {fontSize: 15, color: colors.button2}]}>Completed!</Text>
-            } else if (item.status === 'expired') {
-                return <Text style={[styles.text, {fontSize: 15, color: 'grey'}]}>Expired!</Text>
+                return (
+                    <View style = {{flexDirection: 'row', padding: 5,width: '100%', height: '50%', alignItems: 'flex-end'}}>
+                        <View style={{backgroundColor: colors.button2, borderRadius: 5, paddingHorizontal: 5, height: 25}}>
+                            <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Completed!</Text>
+                        </View>
+                    </View>
+
+                )
+            } else if (item.status === 'expired-child') {
+                return (
+                    <View style = {{flexDirection: 'row', padding: 5, justifyContent: 'space-between', width: '100%', height: '50%', alignItems: 'flex-end'}}>
+                        <View style={{backgroundColor: 'grey', borderRadius: 5, paddingHorizontal: 5, height: 25}}>
+                            <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Expired</Text>
+                        </View>
+                        <CustomButton
+                            buttonStyle={styles.button}
+                            textStyle={[styles.text, {paddingVertical: 1, fontSize: 15}]}
+                            onPress={() => {Quests.childExpireQuest(parentUserId, name, item.id)}}
+                        >Clear</CustomButton>
+                    </View>
+                )
             }
         }
         return (
             <View style = {styles.questEntries}>
-                <Text style = {styles.questText}>
-                    {item.title}, {item.points} points
-                </Text>
-                <View style = {{flexDirection: 'row', paddingHorizontal: 5}}>
-                    <QuestStatus/>
-                    <CustomButton
-                        buttonStyle={[styles.button, {marginTop: 8}]}
-                        textStyle={{fontFamily: 'balsamiq', fontSize:15}}
-                        onPress={() => {
-                            Quests.completeQuest(parentUserId, name, item.id)
-                        }}
-                    >Complete Quest
-                    </CustomButton>
+                <View style={{flexDirection: 'row', width: '100%', height: '50%', paddingHorizontal: 5, justifyContent: 'space-between'}}>
+                    <Text style={[styles.text, {width: '60%', fontSize: 22}]} numberOfLines={2}>{item.title}</Text>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '30%'}}>
+                        <Text style={[styles.text, {fontSize: 22}]} numberOfLines={1}>{item.points}</Text>
+                        <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
+                    </View>
                 </View>
+                <QuestStatus/>
             </View>
         )
     }
@@ -63,22 +124,21 @@ const ChildMain = ({name}) => {
                         if (timeLeft < 3600000) { //hours
                             if (timeLeft < 60000) {
                                 if (timeLeft < 0) {
-                                    Quests.expireQuest(parentUserId, name, item.id)
-                                    return 'Quest expired!'
+                                    return null
                                 }
                                 return '<1 Min'
                             }
-                            return Math.floor(timeLeft / 60000).toString() + ' Min'
+                            return Math.floor(timeLeft / 60000).toString() + 'Min'
                         }
-                        return Math.floor(timeLeft / 3600000).toString() + ' H'
+                        return Math.floor(timeLeft / 3600000).toString() + 'Hr'
                     }
-                    return Math.floor(timeLeft / 86400000).toString() + ' D'
+                    return Math.floor(timeLeft / 86400000).toString() + 'd'
                 }
-                return Math.floor(timeLeft / 604800000).toString() + ' W'
+                return Math.floor(timeLeft / 604800000).toString() + 'w'
             }
-            return Math.floor(timeLeft / 2628000000).toString() + ' M'
+            return Math.floor(timeLeft / 2628000000).toString() + 'M'
         }
-        return Math.floor(timeLeft / 31536000000).toString() + ' Y'
+        return Math.floor(timeLeft / 31536000000).toString() + 'Yr'
     }
 
 
@@ -92,22 +152,42 @@ const ChildMain = ({name}) => {
 
     return(
         <View style={styles.container}>
-            <View style={styles.topBar}>
-                <Text style={styles.text}>Child {name}</Text>
-                <Text style={styles.text}>Points</Text>
+            <View style={styles.topContainer}>
+                <Text style={[styles.text, {flex: 0.5, fontSize: 17}]} numberOfLines={1}>{name}</Text>
+                <View style={{flex: 0.5, flexDirection: 'row'}}>
+                    <Text style={[styles.text, {textAlign: 'center',fontSize: 17}]} numberOfLines={1}>{childStats.points}</Text>
+                    <CoinIcon style={{marginLeft: 2, marginTop: 3}} dimension={20}/>
+                </View>
+
                 <CustomButton
                     buttonStyle={styles.button}
-                    textStyle={{fontFamily: 'balsamiq'}}
+                    textStyle={[styles.text, {paddingVertical: 1, fontSize: 17}]}
                     onPress={handleSignOut}
                 >Sign Out</CustomButton>
             </View>
-            <View style={{marginTop: 80, marginHorizontal: 10}}>
-                <Text style = {[styles.text, {fontSize: 18}]}> Quests</Text>
+            <View style={styles.titleContainer}>
+                <Text style={[styles.text, {fontSize: 40}]}>Quests</Text>
+                <View style={{flexDirection: 'row', marginTop: 21, height: 25}}>
+                    <CustomButton
+                        buttonStyle={[styles.button, {marginRight: 8}]}
+                        textStyle={{fontFamily: 'balsamiq', fontSize: 15}}
+                        onPress={() => {setReloadList(reloadList+1)}}
+                    >Reload</CustomButton>
+                    <CustomButton
+                        buttonStyle={[styles.button, {marginRight: 8}]}
+                        textStyle={{fontFamily: 'balsamiq', fontSize: 15, color: colors.button3}}
+                        onPress={() => {}}
+                    >Rewards</CustomButton>
+                </View>
+            </View>
+            <View style={styles.questListContainer}>
                 <FlatList
+                    style={{width:'100%'}}
                     data={questList}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
                     ListEmptyComponent={emptyList}
+                    extraData={reloadList}
                 />
             </View>
         </View>
@@ -119,15 +199,33 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection: 'column',
         backgroundColor: colors.background,
-        // justifyContent: 'center',
-        // alignItems: 'center'
+        alignItems: 'center',
+        width: '100%'
     },
-    topBar: {
-        marginTop: 30,
-        marginHorizontal: 10,
-        width: '90%',
+    topContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        marginTop: 45,
+        paddingHorizontal: 10,
+        paddingVertical: 3,
+        height: 40,
+        width: '95%',
+        borderWidth: 2,
+        borderRadius: 5,
+        alignItems: 'center'
+    },
+    titleContainer: {
+        flexDirection: 'row',
+        width: '100%',
+        height: 70,
+        paddingHorizontal: 8,
+        justifyContent: 'space-between'
+    },
+    questListContainer: {
+        width: '95%',
+        height: '79%',
+        borderWidth: 2,
+        padding: 10,
+        borderRadius: 10,
         alignItems: 'center'
     },
     text: {
@@ -143,22 +241,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     questEntries: {
-        borderWidth: 1,
+        borderWidth: 2,
         borderRadius: 10,
-        height: 120,
+        height: 115,
         backgroundColor: colors.background3,
-        width: '90%',
+        width: '100%',
         alignItems: 'center',
-        justifyContent: 'center',
-    },
-    questText: {
-        fontSize: 35,
-        fontFamily: 'balsamiq',
-        paddingHorizontal: 10,
-        paddingVertical: 2,
-        borderRadius: 5,
-        color: 'white',
-        textAlign: 'center'
+        marginBottom: 8,
+        padding: 3
     },
 
 })
