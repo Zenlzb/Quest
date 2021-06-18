@@ -41,3 +41,12 @@ export const childListSubscribe = (userId, onValueChanged) => {
     })
     return () => children.off("value")
 }
+
+export const childStatSubscribe = (userId, childName, onValueChanged) => {
+    const child = db.ref(`users/${userId}/children/${childName}`)
+    child.on("value", (snapshot) => {
+        const val = snapshot.val()
+        onValueChanged(val)
+    })
+    return () => child.off("value")
+}
