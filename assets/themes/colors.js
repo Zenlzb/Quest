@@ -1,6 +1,6 @@
 const palette = {
     lightGreen: '#ADFF5F',
-    green: '#11FEB0',
+    green: '#1bd195',
     blue: '#71bed1',
     pink: '#FF5864',
     orange: '#F79940',
@@ -13,7 +13,7 @@ const palette = {
 const colors = {
     background: palette.yellow,
     background2: palette.blue,
-    background3: palette.purple,
+    background3: palette.orange,
     transparentBackground: palette.transparentBlack,
     button1: palette.pink,
     button2: palette.green,
