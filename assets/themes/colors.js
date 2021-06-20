@@ -1,7 +1,7 @@
 const palette = {
     lightGreen: '#ADFF5F',
     green: '#1bd195',
-    blue: '#71bed1',
+    blue: '#98dced',
     pink: '#FF5864',
     orange: '#F79940',
     yellow: '#f5f376',
