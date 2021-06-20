@@ -7,6 +7,7 @@ import * as Children from "../../api/child"
 import CreateQuestModal from "../Components/CreateQuest";
 import ErrorText from "../Components/ErrorText";
 import CustomPopup from "../Components/Popup";
+import ChildListItem from "../Components/ChildListItem";
 
 const CaregiverMain = ({ navigation }) => {
     const [childList, setChildList] = useState([])
@@ -50,12 +51,13 @@ const CaregiverMain = ({ navigation }) => {
 
     const renderItem = ({ item }) => {
         const handleRemoveChild = () => {Children.deleteChild(userId, item)}
+
         return (
-            <CustomButton
-                buttonStyle={[styles.button, {marginBottom: 8, width: '100%', height: 70}]}
-                textStyle={{fontFamily: 'balsamiq', fontSize:15}}
-                onPress={handleRemoveChild}
-            >{item.name}</CustomButton>
+            <ChildListItem
+                item={item}
+                userId={userId}
+                handleRemoveChild={handleRemoveChild}
+            />
         )
     }
 
@@ -232,7 +234,7 @@ const styles = StyleSheet.create({
         color: colors.button1
     },
     flatList: {
-        width: '90%',
+        width: '95%',
         height: '70%',
         marginTop:8
     }
