@@ -37,6 +37,7 @@ const CaregiverReward = ({ route, navigation }) => {
         {code: 'emptyName', text: 'Please fill in a name', key:'1'},
         {code: 'emptyCost', text: 'Cost is empty or 0', key:'2'},
         {code: 'costNaN', text: 'Please only fill numbers into cost', key:'3'},
+        {code: 'costLarge', text: 'Cost cannot exceed 10,000,000', key:'4'},
     ]
     const validateRewardCreate = () => {
         if (rewardName === '') {
@@ -47,6 +48,9 @@ const CaregiverReward = ({ route, navigation }) => {
             return false
         } else if (isNaN(+rewardCost)) {
             setErrorCode('costNaN')
+            return false
+        } else if ((+rewardCost) > 10000000) {
+            setErrorCode('costLarge')
             return false
         }
         return true
