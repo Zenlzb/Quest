@@ -70,23 +70,23 @@ export const completeRewardClaim = async (userId, claimId) => {
     }
 }
 
-export const declineRewardClaim = async (userId, claimId) => {
+export const denyRewardClaim = async (userId, claimId) => {
     try {
         const status = db.ref(`users/${userId}/rewardHistory/${claimId}/status`)
-        await status.set('declined')
+        await status.set('denied')
     } catch (e) {
         console.error(e)
     }
 }
 
-export const pendingClaimListSubscribe = (userId, onValueChanged) => {
+export const claimListSubscribe = (userId, onValueChanged, pending) => {
     try {
         const claims = db.ref(`users/${userId}/rewardHistory`)
         claims.on("value", (snapshot) => {
             const val = snapshot.val()
             const retList = [];
             for(let id in val) {
-                if (val[id].status === 'pending') {
+                if (val[id].status === 'pending' ^ !pending) {
                     retList.push(val[id])
                 }
             }
@@ -97,3 +97,4 @@ export const pendingClaimListSubscribe = (userId, onValueChanged) => {
         console.error(e)
     }
 }
+

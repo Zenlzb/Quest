@@ -9,10 +9,10 @@ const CustomPopup = (props) => {
         transparent={true}
         visible={props.visibility}
         >
-            <View style={[styles.container, props.containerStyle]}>
-                <View style={styles.popupContainer}>
-                    <Text style={styles.titleText}>{props.titleText}</Text>
-                    <Text style={styles.bodyText}>{props.bodyText}</Text>
+            <View style={styles.container}>
+                <View style={[styles.popupContainer, props.containerStyle]}>
+                    <Text style={[styles.titleText, props.textStyle]}>{props.titleText}</Text>
+                    <Text style={[styles.bodyText, props.textStyle]} numberOfLines={1}>{props.bodyText}</Text>
                     {props.buttonList()}
                 </View>
             </View>
