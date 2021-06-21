@@ -37,6 +37,20 @@ const RewardHistoryModal = (props) => {
             />
         )
     }
+    const emptyPendingList = () => {
+        return (
+            <Text style={{fontSize: 25, color: 'grey', textAlign: 'center', fontFamily: 'balsamiq'}}>
+                There are no pending reward claims
+            </Text>
+        )
+    }
+    const emptyHistoryList = () => {
+        return (
+            <Text style={{fontSize: 25, color: 'grey', textAlign: 'center', fontFamily: 'balsamiq'}}>
+                Reward claim history is empty
+            </Text>
+        )
+    }
     return (
         <Modal
             transparent={true}
@@ -91,6 +105,7 @@ const RewardHistoryModal = (props) => {
                                     data={pendingClaimList}
                                     renderItem={claimItem}
                                     keyExtractor={item => item.id}
+                                    ListEmptyComponent={emptyPendingList}
                                 />
                             </View>
 
@@ -104,6 +119,7 @@ const RewardHistoryModal = (props) => {
                                     data={completeClaimList}
                                     renderItem={claimItem}
                                     keyExtractor={item => item.id}
+                                    ListEmptyComponent={emptyHistoryList}
                                 />
                             </View>
 
