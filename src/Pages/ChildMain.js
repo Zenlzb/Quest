@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Pressable, StyleSheet, Text, View} from "react-native";
+import {FlatList, StyleSheet, Text, View} from "react-native";
 import {getCurrentUserId, signOut} from "../../api/auth";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
 import * as Quests from "../../api/quest"
 import * as Children from "../../api/child"
 import CoinIcon from "../Components/CoinIcon";
-import { Icon } from 'react-native-elements'
+import QuestListItem from "../Components/QuestListItem";
 
 
 const ChildMain = ({name}) => {
@@ -27,120 +27,15 @@ const ChildMain = ({name}) => {
     }
 
     const renderItem = ({item}) => {
-        if (item.status === 'expired-caregiver' || item.status === 'expired-none' || item.status === 'claimed' ) { return null }
-        const QuestStatus = () => {
-            if (item.status === 'incomplete') {
-                const timeLeft = calculateTimeLeft(new Date(item.dueDate))
-                if (!timeLeft) {
-                    return(
-                        <View style = {{flexDirection: 'row', padding: 5, justifyContent: 'space-between', width: '100%', height: '50%', alignItems: 'flex-end'}}>
-                            <View style={{backgroundColor: 'grey', borderRadius: 5, paddingHorizontal: 5, height: 25}}>
-                                <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Expired</Text>
-                            </View>
-                            <CustomButton
-                                buttonStyle={styles.button}
-                                textStyle={[styles.text, {paddingVertical: 1, fontSize: 15}]}
-                                onPress={() => {Quests.childExpireQuest(parentUserId, name, item.id)}}
-                            >Clear</CustomButton>
-                        </View>
-                        )
-                }
-                return (
-                    <View style = {{flexDirection: 'row', padding: 5, justifyContent: 'space-between', width: '100%', height: '50%', alignItems: 'flex-end'}}>
-                        <View style={{flexDirection: 'row', height: 25}}>
-                            <View style = {{backgroundColor: colors.button1, borderRadius: 5, paddingHorizontal: 5}}>
-                                <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Incomplete</Text>
-                            </View>
-                            <Text style={[styles.text, {fontSize: 15, color: 'white', marginLeft: 5}]}>
-                                {timeLeft}
-                            </Text>
-                            <Icon
-                                name='clock'
-                                type='feather'
-                                color='white'
-                                size={17}
-                                style={{marginTop: 3, marginLeft: 2}}
-                            />
-                        </View>
-                        <Pressable
-                            onPress={() => {Quests.completeQuest(parentUserId, name, item.id)}}
-                        >
-                            <Icon
-                                name='check-square'
-                                type='feather'
-                                color='white'
-                                size={35}
-                            />
-                        </Pressable>
-                    </View>
-
-                )
-            } else if (item.status === 'complete') {
-                return (
-                    <View style = {{flexDirection: 'row', padding: 5,width: '100%', height: '50%', alignItems: 'flex-end'}}>
-                        <View style={{backgroundColor: colors.button2, borderRadius: 5, paddingHorizontal: 5, height: 25}}>
-                            <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Completed!</Text>
-                        </View>
-                    </View>
-
-                )
-            } else if (item.status === 'expired-child') {
-                return (
-                    <View style = {{flexDirection: 'row', padding: 5, justifyContent: 'space-between', width: '100%', height: '50%', alignItems: 'flex-end'}}>
-                        <View style={{backgroundColor: 'grey', borderRadius: 5, paddingHorizontal: 5, height: 25}}>
-                            <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Expired</Text>
-                        </View>
-                        <CustomButton
-                            buttonStyle={styles.button}
-                            textStyle={[styles.text, {paddingVertical: 1, fontSize: 15}]}
-                            onPress={() => {Quests.childExpireQuest(parentUserId, name, item.id)}}
-                        >Clear</CustomButton>
-                    </View>
-                )
-            }
-        }
         return (
-            <View style = {styles.questEntries}>
-                <View style={{flexDirection: 'row', width: '100%', height: '50%', paddingHorizontal: 5, justifyContent: 'space-between'}}>
-                    <Text style={[styles.text, {width: '60%', fontSize: 22}]} numberOfLines={2}>{item.title}</Text>
-                    <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '30%'}}>
-                        <Text style={[styles.text, {fontSize: 22}]} numberOfLines={1}>{item.points}</Text>
-                        <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
-                    </View>
-                </View>
-                <QuestStatus/>
-            </View>
+            <QuestListItem
+                item={item}
+                mode={'child'}
+                parentUserId={parentUserId}
+                childName={name}
+            />
         )
     }
-
-
-    const calculateTimeLeft = (date) => {
-        const timeLeft = date - new Date()
-
-        if (timeLeft < 31536000000) { //years
-            if (timeLeft < 2628000000) { //months
-                if (timeLeft < 604800000) { //weeks
-                    if (timeLeft < 86400000) { //days
-                        if (timeLeft < 3600000) { //hours
-                            if (timeLeft < 60000) {
-                                if (timeLeft < 0) {
-                                    return null
-                                }
-                                return '<1 Min'
-                            }
-                            return Math.floor(timeLeft / 60000).toString() + 'Min'
-                        }
-                        return Math.floor(timeLeft / 3600000).toString() + 'Hr'
-                    }
-                    return Math.floor(timeLeft / 86400000).toString() + 'd'
-                }
-                return Math.floor(timeLeft / 604800000).toString() + 'w'
-            }
-            return Math.floor(timeLeft / 2628000000).toString() + 'M'
-        }
-        return Math.floor(timeLeft / 31536000000).toString() + 'Yr'
-    }
-
 
     const emptyList = () => {
         return (
@@ -239,16 +134,6 @@ const styles = StyleSheet.create({
     tasks: {
         backgroundColor: colors.button1,
         justifyContent: 'center',
-    },
-    questEntries: {
-        borderWidth: 2,
-        borderRadius: 10,
-        height: 115,
-        backgroundColor: colors.background3,
-        width: '100%',
-        alignItems: 'center',
-        marginBottom: 8,
-        padding: 3
     },
 
 })

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, FlatList, Keyboard} from "react-native";
+import {View, Text, StyleSheet, TextInput, FlatList, Keyboard, Pressable} from "react-native";
 import CustomButton from "../Components/Button";
 import {auth, signOut, getCurrentUserId} from "../../api/auth";
 import colors from "../../assets/themes/colors";
@@ -8,12 +8,16 @@ import CreateQuestModal from "../Components/CreateQuest";
 import ErrorText from "../Components/ErrorText";
 import CustomPopup from "../Components/Popup";
 import ChildListItem from "../Components/ChildListItem";
+import {Icon} from "react-native-elements";
 
 const CaregiverMain = ({ navigation }) => {
     const [childList, setChildList] = useState([])
     const [userId, setUserId] = useState(getCurrentUserId());
     const [questModalVisible, toggleQuestModal] = useState(false)
     const [signOutConfirm, setSignOutConfirm] = useState(false)
+    const [deleteChildPopup, setDeleteChildPopup] = useState(false)
+    const [deleteChild, setDeleteChild] = useState()
+    const [reloadList, setReloadList] = useState(0)
 
     const [childNameInput, setChildNameInput] = useState('')
     const handleChildNameUpdate = (text) => setChildNameInput(text)
@@ -36,6 +40,10 @@ const CaregiverMain = ({ navigation }) => {
             }
         })
     }
+    const handleDeleteChild = () => {
+        Children.deleteChild(userId, deleteChild)
+        setDeleteChildPopup(false)
+    }
     const handleCreateQuest = () => {
         if (childList.length === 0) {
             setErrorCode('noChild')
@@ -50,13 +58,14 @@ const CaregiverMain = ({ navigation }) => {
     }, [])
 
     const renderItem = ({ item }) => {
-        const handleRemoveChild = () => {Children.deleteChild(userId, item)}
-
         return (
             <ChildListItem
                 item={item}
                 userId={userId}
-                handleRemoveChild={handleRemoveChild}
+                handleRemoveChild={() => {
+                    setDeleteChild(item.name)
+                    setDeleteChildPopup(true)
+                }}
             />
         )
     }
@@ -108,6 +117,28 @@ const CaregiverMain = ({ navigation }) => {
                         )
                     }}
             />
+            <CustomPopup
+                visibility={deleteChildPopup}
+                titleText={'Remove Child'}
+                bodyText={`Are you sure you want to remove "${deleteChild}" ?`}
+                numberOfLines={2}
+                textStyle={{textAlign: 'center'}}
+                buttonList={() => {
+                    return (
+                        <View style={{flexDirection: 'row',}}>
+                            <CustomButton
+                                buttonStyle={{marginHorizontal: 8}}
+                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                onPress={handleDeleteChild}
+                            >Remove</CustomButton>
+                            <CustomButton
+                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                onPress={() => setDeleteChildPopup(false)}
+                            >Cancel</CustomButton>
+                        </View>
+                    )
+                }}
+            />
             <View style={styles.topContainer}>
                 <CustomButton
                     buttonStyle={styles.button}
@@ -140,7 +171,7 @@ const CaregiverMain = ({ navigation }) => {
             <View style={styles.childContainer}>
                 <View style={styles.addChildContainer}>
                     <TextInput
-                        style={[styles.textInput, {marginRight: 8}]}
+                        style={[styles.textInput, {marginRight: 8, width: '70%'}]}
                         placeholder={"Add Child"}
                         onChangeText={handleChildNameUpdate}
                         value={childNameInput}
@@ -150,6 +181,19 @@ const CaregiverMain = ({ navigation }) => {
                         textStyle={{fontFamily: 'balsamiq'}}
                         onPress={handleAddChild}
                     >Add</CustomButton>
+                    <Pressable
+                        style={{height: 33, width: 33, borderRadius: 7, backgroundColor: colors.button1, marginLeft: 8}}
+                        onPress={() => {setReloadList(reloadList + 1)}}
+                        android_ripple={{color: 'white', borderless: false}}
+                    >
+                        <Icon
+                            name='refresh-cw'
+                            type='feather'
+                            color='white'
+                            size={20}
+                            style={{marginTop: 6}}
+                        />
+                    </Pressable>
                 </View>
                 <ErrorText
                     errorCode={errorCode}
@@ -162,6 +206,7 @@ const CaregiverMain = ({ navigation }) => {
                     renderItem={renderItem}
                     keyExtractor={item => item.key}
                     ListEmptyComponent={emptyList}
+                    extraData={reloadList}
                 />
 
             </View>
@@ -195,11 +240,12 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     addChildContainer: {
-        width: '90%',
-        height: 20,
+        width: '100%',
+        height: 33,
+        paddingHorizontal: 5,
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 8
+        marginVertical: 5
     },
     titleContainer: {
         flexDirection: 'row',

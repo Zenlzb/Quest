@@ -3,31 +3,28 @@ import {Pressable, Text, View, StyleSheet, FlatList} from "react-native";
 import colors from "../../assets/themes/colors";
 import CoinIcon from "./CoinIcon";
 import * as Quests from "../../api/quest";
+import QuestListItem from "./QuestListItem";
+import {Icon} from "react-native-elements";
 
 const ChildListItem = (props) => {
     const {item, userId, handleRemoveChild} = props
+    const { name, points } = item
     const [expanded, setExpanded] = useState(false)
     const [questList, setQuestList] = useState([])
 
     useEffect(() => {
-        return Quests.questListSubscribe(userId, item.name, setQuestList)
+        return Quests.questListSubscribe(userId, name, setQuestList)
     }, [])
 
     const questListItem = ({ item }) => {
-        if (item.status === 'expired-caregiver' || item.status === 'expired-none' || item.status === 'claimed' ) {
-            return null
-        } else if (item.status === 'complete') {
-            return(
-                <Pressable style={{width: '80%', height: 25, borderWidth: 1, borderRadius: 5, backgroundColor: colors.button2, marginBottom: 3, paddingHorizontal: 3}}>
-                    <Text style={[styles.text, {fontSize: 15, textAlign: 'left', width: '60%'}]} numberOfLines={1}>{item.title}</Text>
-
-                </Pressable>
-            )
-        } else if (item.status === 'incomplete') {
-
-        } else if (item.status === 'expired-caregiver') {
-
-        }
+        return (
+            <QuestListItem
+                item={item}
+                mode={'caregiver'}
+                userId={userId}
+                childName={name}
+            />
+        )
     }
     return (
         <Pressable
@@ -35,19 +32,38 @@ const ChildListItem = (props) => {
             onPress={() => {setExpanded(!expanded)}}
         >
             <View style={{width: '100%', height: 30, alignItems: 'flex-start', flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={[styles.text, {width: '50%', textAlign: 'left'}]} numberOfLines={1}>{item.name}</Text>
+                <Text style={[styles.text, {width: '50%', textAlign: 'left'}]} numberOfLines={1}>{name}</Text>
                 <View style={{flexDirection: 'row'}}>
-                    <Text style={[styles.text, {width: 80, textAlign: 'right'}]} numberOfLines={1}>{item.points}</Text>
+                    <Text style={[styles.text, {width: 80, textAlign: 'right'}]} numberOfLines={1}>{points}</Text>
                     <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={22}/>
                 </View>
             </View>
             <Text style={[styles.text, {width: '50%', textAlign: 'left', color: 'white', fontSize: 15, marginTop: 8}]} numberOfLines={1}>{expanded ? 'v Quests':'> Quests'}</Text>
-            {expanded && <FlatList
-                style={{width: '100%', marginTop: 5}}
-                data={questList}
-                renderItem={questListItem}
-                keyExtractor={item => item.id}
-            />}
+            {expanded &&
+            <View style={{width: '100%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between'}}>
+                <View style={{width: '80%'}}>
+                    <FlatList
+                        style={{width: '100%', marginTop: 5}}
+                        data={questList}
+                        renderItem={questListItem}
+                        keyExtractor={item => item.id}
+                    />
+                </View>
+                <Pressable
+                    onPress={handleRemoveChild}
+                >
+                    <Icon
+                        name='trash-2'
+                        type='feather'
+                        color='white'
+                        size={35}
+                        style={{marginBottom: 5}}
+                    />
+                </Pressable>
+
+
+            </View>
+            }
 
         </Pressable>
     )
