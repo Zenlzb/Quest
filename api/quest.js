@@ -76,3 +76,16 @@ export const caregiverExpireQuest = async (userId, childName, questId) => {
         console.error(e)
     }
 }
+
+export const releaseRewards = async (userId, childName, questId) => {
+    try {
+        const status = db.ref(`users/${userId}/children/${childName}/quests/${questId}/status`)
+        await status.set('claimed')
+        const questPoints = await db.ref(`users/${userId}/children/${childName}/quests/${questId}/points`).get()
+        const childPoints = db.ref(`users/${userId}/children/${childName}/points`)
+        const childPointCount = await childPoints.get()
+        await childPoints.set((+childPointCount.val()) + (+questPoints.val()))
+    } catch (e) {
+        console.error(e)
+    }
+}
