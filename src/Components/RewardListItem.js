@@ -36,6 +36,22 @@ const RewardListItem = (props) => {
                 </View>
             </Pressable>
         )
+    } else if (props.mode === 'childReward') {
+        const { item, onPress } = props
+        return (
+            <Pressable
+                style={[styles.container, {height: 45}]}
+                onPress={onPress}
+            >
+                <View style={[styles.textContainer, {height: 30, alignItems: 'flex-end'}]}>
+                    <Text style={styles.text} numberOfLines={1}>{item.name}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={[styles.text, {width: 80, textAlign: 'right'}]} numberOfLines={1}>{item.cost}</Text>
+                        <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
+                    </View>
+                </View>
+            </Pressable>
+        )
     } else if (props.mode === 'caregiverRewardHistory') {
         const { item, onPress } = props
         const StatusText = () => {
@@ -54,8 +70,8 @@ const RewardListItem = (props) => {
             >
                 <View style={styles.textContainer}>
                     <View style={{flexDirection: 'row', width: '60%'}}>
-                        <Text style={[styles.text, {fontSize: 18, width: '80%', textAlign: 'left'}]} numberOfLines={1}>{item.rewardName}</Text>
-                        <Text style={[styles.text, {fontSize: 18, width: '20%', textAlign: 'left'}]} numberOfLines={1}> x{item.quantity}</Text>
+                        <Text style={[styles.text, {fontSize: 18, width: '70%', textAlign: 'left'}]} numberOfLines={1}>{item.rewardName}</Text>
+                        <Text style={[styles.text, {fontSize: 18, width: '30%', textAlign: 'left'}]} numberOfLines={1}> x{item.quantity}</Text>
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <Text style={[styles.text, {width: 80, textAlign: 'right', fontSize: 18}]} numberOfLines={1}>{item.rewardCost * item.quantity}</Text>
@@ -78,7 +94,7 @@ const styles = StyleSheet.create({
     container: {
         borderWidth: 2,
         borderRadius: 7,
-        width: '95%',
+        width: '100%',
         height: 80,
         marginTop: 8,
         backgroundColor: colors.background2,
