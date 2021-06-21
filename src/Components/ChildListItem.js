@@ -8,15 +8,21 @@ import {Icon} from "react-native-elements";
 import CustomButton from "./Button";
 
 const ChildListItem = (props) => {
-    const {item, userId, handleRemoveChild} = props
+    const { item, userId, handleRemoveChild } = props
     const { name, points } = item
     const [expanded, setExpanded] = useState(false)
     const [questList, setQuestList] = useState([])
     const [selectedQuestPopup, setSelectedQuestPopup] = useState(false)
     const [selectedQuest, setSelectedQuest] = useState({dueDate:'', id:'', points: 0, status: '', title: ''})
 
-    const handleReleaseRewards = () => {}
-    const handleDeleteQuest = () => {}
+    const handleReleaseRewards = () => {
+        Quests.releaseRewards(userId, name, selectedQuest.id)
+        setSelectedQuestPopup(false)
+    }
+    const handleDeleteQuest = () => {
+        Quests.deleteQuest(userId, name, selectedQuest.id)
+        setSelectedQuestPopup(false)
+    }
 
     useEffect(() => {
         return Quests.questListSubscribe(userId, name, setQuestList)
@@ -40,7 +46,7 @@ const ChildListItem = (props) => {
                 alignItems: 'center',
                 justifyContent: 'space-between'
             },})
-        const { dueDate, id, points, status, title } = selectedQuest
+        const { dueDate, points, status, title } = selectedQuest
         const date = new Date(dueDate)
         const containerColor = () => {
             if (status === 'complete') {
@@ -90,7 +96,7 @@ const ChildListItem = (props) => {
                     <View style={[popupStyles.popupContainer, containerColor()]}>
                         <View style={{width: '100%', alignItems: 'flex-start'}}>
                             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between'}}>
-                                <Text style={[styles.text, {fontSize: 22}]}>Title: {title}</Text>
+                                <Text style={[styles.text, {fontSize: 22, width: '70%', textAlign: 'left'}]} numberOfLines={1}>Title: {title}</Text>
                                 <CustomButton
                                     buttonStyle={[styles.button, {height: 25}]}
                                     textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
