@@ -97,7 +97,7 @@ const RewardHistoryModal = (props) => {
                             <Text style={[styles.text, {fontSize: 30}]}>Pending</Text>
                         </View>
                         <View style={{width: '100%', borderWidth: 2, borderRadius: 5, marginBottom: 8, paddingHorizontal: 8, paddingBottom: 8}}>
-                            <View style={{width: '100%', justifyContent: 'center', marginLeft: 7}}>
+                            <View style={{width: '100%', justifyContent: 'center'}}>
                                 <FlatList
                                     data={pendingClaimList}
                                     renderItem={claimItem}
@@ -111,7 +111,7 @@ const RewardHistoryModal = (props) => {
                             <Text style={[styles.text, {fontSize: 30}]}>History</Text>
                         </View>
                         <View style={{width: '100%', borderWidth: 2, borderRadius: 5, marginBottom: 8, paddingHorizontal: 8, paddingBottom: 8}}>
-                            <View style={{width: '100%', justifyContent: 'center', marginLeft: 7}}>
+                            <View style={{width: '100%', justifyContent: 'center'}}>
                                 <FlatList
                                     data={completeClaimList}
                                     renderItem={claimItem}

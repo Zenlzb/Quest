@@ -1,14 +1,15 @@
 import React from 'react';
 import {createStackNavigator} from "@react-navigation/stack";
 import ChildMain from "../Pages/ChildMain";
+import ChildReward from "../Pages/ChildReward";
 
 const Stack = createStackNavigator();
 export const AppContext = React.createContext('');
 
-const ChildMainWrapper = () => {
+const ChildMainWrapper = (props) => {
     return(
         <AppContext.Consumer>
-            {(data) => <ChildMain name={data}/>}
+            {(data) => <ChildMain name={data} navigation={props.navigation} route={props.route}/>}
         </AppContext.Consumer>
     )
 }
@@ -40,6 +41,7 @@ const ChildStack = () => {
             mode="modal"
         >
             <Stack.Screen name="Child Main" component={ChildMainWrapper}/>
+            <Stack.Screen name="Child Reward" component={ChildReward}/>
         </Stack.Navigator>
     )
 }

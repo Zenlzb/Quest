@@ -157,7 +157,7 @@ const CaregiverMain = ({ navigation }) => {
                         buttonStyle={[styles.button, {marginRight: 8}]}
                         textStyle={{fontFamily: 'balsamiq', fontSize: 15, color: colors.button3}}
                         onPress={() => {
-                            navigation.navigate('Caregiver Reward', { userId: userId})
+                            navigation.navigate('Caregiver Reward', { userId: userId })
                         }}
                     >Rewards</CustomButton>
                     <CustomButton

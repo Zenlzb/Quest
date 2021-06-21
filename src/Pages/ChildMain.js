@@ -9,7 +9,7 @@ import CoinIcon from "../Components/CoinIcon";
 import QuestListItem from "../Components/QuestListItem";
 
 
-const ChildMain = ({name}) => {
+const ChildMain = ({ name, navigation }) => {
     const [parentUserId, setParentUserId] = useState(getCurrentUserId());
     const [childStats, setChildStats] = useState({key: '1', name:'a', points: '0'})
     const [questList, setQuestList] = useState([])
@@ -71,7 +71,8 @@ const ChildMain = ({name}) => {
                     <CustomButton
                         buttonStyle={[styles.button, {marginRight: 8}]}
                         textStyle={{fontFamily: 'balsamiq', fontSize: 15, color: colors.button3}}
-                        onPress={() => {}}
+                        onPress={() => {navigation.navigate('Child Reward', {parentUserId: parentUserId, childName: name, childPoints: childStats.points})}
+                        }
                     >Rewards</CustomButton>
                 </View>
             </View>

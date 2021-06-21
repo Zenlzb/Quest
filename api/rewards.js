@@ -35,13 +35,16 @@ export const editReward = async (userId, rewardId, rewardName, rewardCost, avail
     }
 }
 
-export const rewardListSubscribe = (userId, onValueChanged) => {
+export const rewardListSubscribe = (userId, onValueChanged, child) => {
     try {
         const rewards = db.ref(`users/${userId}/rewards`)
         rewards.on("value", (snapshot) => {
             const val = snapshot.val()
             const retList = [];
             for(let id in val) {
+                if (child && !val[id].availability) {
+                    continue
+                }
                 retList.push(val[id])
             }
             onValueChanged(retList)

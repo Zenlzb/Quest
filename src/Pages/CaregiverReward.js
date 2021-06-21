@@ -67,7 +67,7 @@ const CaregiverReward = ({ route, navigation }) => {
 
     const [rewardList, setRewardList] = useState('')
     useEffect(() => {
-        return Rewards.rewardListSubscribe(userId, setRewardList)
+        return Rewards.rewardListSubscribe(userId, setRewardList, false)
     }, [])
 
     const rewardItem = ({ item }) => {
@@ -169,7 +169,7 @@ const CaregiverReward = ({ route, navigation }) => {
 
                 </View>
             </View>
-            <View style={{width: '95%', justifyContent: 'center', marginLeft: 15}}>
+            <View style={{width: '95%', justifyContent: 'center'}}>
                 <FlatList
                     data={rewardList}
                     renderItem={rewardItem}
