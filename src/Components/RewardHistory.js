@@ -55,9 +55,6 @@ const RewardHistoryModal = (props) => {
         <Modal
             transparent={true}
             visible={props.visibility}
-            onShow={() => {
-
-            }}
         >
             <View style={styles.container}>
                 <CustomPopup
