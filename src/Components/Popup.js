@@ -12,7 +12,7 @@ const CustomPopup = (props) => {
             <View style={styles.container}>
                 <View style={[styles.popupContainer, props.containerStyle]}>
                     <Text style={[styles.titleText, props.textStyle]}>{props.titleText}</Text>
-                    <Text style={[styles.bodyText, props.textStyle]} numberOfLines={1}>{props.bodyText}</Text>
+                    <Text style={[styles.bodyText, props.textStyle]} numberOfLines={props.numberOfLines || 1}>{props.bodyText}</Text>
                     {props.buttonList()}
                 </View>
             </View>

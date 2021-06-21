@@ -13,9 +13,9 @@ export const createChild = async (userId, name) => {
     }
 }
 
-export const deleteChild = async  (userId, child) => {
+export const deleteChild = async  (userId, childName) => {
     try {
-        await db.ref(`users/${userId}/children/${child.name}`).remove()
+        await db.ref(`users/${userId}/children/${childName}`).remove()
     } catch (e) {
         console.error(e)
     }
