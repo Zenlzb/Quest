@@ -124,12 +124,15 @@ const QuestListItem = (props) => {
             </View>
         )
     } else if (mode === 'caregiver') {
-        const { userId, childName } = props
+        const { userId, childName, caregiverOnPress } = props
         if (item.status === 'expired-child' || item.status === 'expired-none' || item.status === 'claimed' ) {
             return null
         } else if (item.status === 'complete') {
             return(
-                <Pressable style={[styles.questEntriesCaregiver, {backgroundColor: colors.button2}]}>
+                <Pressable
+                    style={[styles.questEntriesCaregiver, {backgroundColor: colors.button2}]}
+                    onPress={caregiverOnPress}
+                >
                     <Text style={[styles.text, {fontSize: 15, textAlign: 'left', width: '60%'}]} numberOfLines={1}>{item.title}</Text>
                     <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '25%'}}>
                         <Text style={[styles.text, {fontSize: 15}]} numberOfLines={1}>{item.points}</Text>
@@ -143,9 +146,7 @@ const QuestListItem = (props) => {
                 return (
                     <Pressable
                         style={[styles.questEntriesCaregiver, {backgroundColor: 'grey', alignItems: 'center'}]}
-                        onPress={() => {
-                            caregiverExpireQuest(userId, childName, item.id)
-                        }}
+                        onPress={() => {caregiverExpireQuest(userId, childName, item.id)}}
                     >
                         <Text style={[styles.text, {fontSize: 15, textAlign: 'left', width: '40%'}]} numberOfLines={1}>{item.title}</Text>
                         <Text style={[styles.text, {fontSize: 13, textAlign: 'right', width: '50%'}]} numberOfLines={1}>Expired. Tap to clear</Text>
@@ -153,7 +154,10 @@ const QuestListItem = (props) => {
                 )
             }
             return(
-                <Pressable style={[styles.questEntriesCaregiver, {backgroundColor: colors.button1}]}>
+                <Pressable
+                    style={[styles.questEntriesCaregiver, {backgroundColor: colors.button1}]}
+                    onPress={caregiverOnPress}
+                >
                     <Text style={[styles.text, {fontSize: 15, textAlign: 'left', width: '60%'}]} numberOfLines={1}>{item.title}</Text>
                     <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '25%'}}>
                         <Text style={[styles.text, {fontSize: 15, color: 'white', marginLeft: 5}]}>
