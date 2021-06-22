@@ -5,11 +5,14 @@ import CustomButton from "../Components/Button";
 import * as Rewards from "../../api/rewards";
 import RewardListItem from "../Components/RewardListItem";
 import CreateClaim from "../Components/CreateClaim";
+import CoinIcon from "../Components/CoinIcon";
+import RewardHistoryModal from "../Components/RewardHistory";
 
 const ChildReward = ({ route, navigation }) => {
     const { parentUserId, childName, childPoints } = route.params
     const [rewardList, setRewardList] = useState([])
     const [createClaim, setCreateClaim] = useState(false)
+    const [rewardHistoryModal, toggleRewardHistoryModal] = useState(false)
     useEffect(() => {
         return Rewards.rewardListSubscribe(parentUserId, setRewardList, true)
     }, [])
@@ -41,13 +44,20 @@ const ChildReward = ({ route, navigation }) => {
                 rewardName={popupName}
                 rewardCost={popupCost}
             />
+            <RewardHistoryModal
+                visibility={rewardHistoryModal}
+                toggleVisibility={toggleRewardHistoryModal}
+                userId={parentUserId}
+                childName={childName}
+                caregiver={false}
+            />
             <View style={styles.titleContainer}>
                 <Text style={[styles.text, {fontSize: 40}]}>Rewards</Text>
                 <View style={{flexDirection:'row', height: 25, marginTop: 21}}>
                     <CustomButton
                         buttonStyle={styles.button}
                         textStyle={[styles.text, {paddingVertical: 1, fontSize: 17}]}
-                        onPress={() => {}}
+                        onPress={() => {toggleRewardHistoryModal(true)}}
                     >Pending</CustomButton>
                     <CustomButton
                         buttonStyle={[styles.button, {marginLeft: 8,}]}
@@ -56,7 +66,15 @@ const ChildReward = ({ route, navigation }) => {
                     >Main ></CustomButton>
                 </View>
             </View>
-            <View style={{width: '95%', height: '83%', borderWidth: 2, borderRadius: 10, alignItems: 'center'}}>
+            <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '100%', height: '2%', alignItems: 'center', marginRight: 20, marginBottom: 8}}>
+                <Text style={[styles.text, {fontSize: 20}]}>Available Points: </Text>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={[styles.text, {textAlign: 'center',fontSize: 20}]} numberOfLines={1}>{childPoints}</Text>
+                    <CoinIcon style={{marginLeft: 2, marginTop: 5.5}} dimension={20}/>
+                </View>
+
+            </View>
+            <View style={{width: '95%', height: '80%', borderWidth: 2, borderRadius: 10, alignItems: 'center'}}>
                 <FlatList
                     style={{width: '95%'}}
                     data={rewardList}

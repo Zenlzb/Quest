@@ -4,8 +4,18 @@ import colors from "../../assets/themes/colors";
 import CoinIcon from "./CoinIcon";
 
 const RewardListItem = (props) => {
+    const { item } = props
+    const StatusText = () => {
+        if (item.status === 'pending') {
+            return <Text style={[styles.text, {color: 'grey', fontSize: 18}]}>Pending</Text>
+        } else if (item.status === 'completed') {
+            return <Text style={[styles.text, {color: colors.button2, fontSize: 18}]}>Completed</Text>
+        } else if (item.status === 'denied') {
+            return <Text style={[styles.text, {color: colors.button1, fontSize: 18}]}>Denied</Text>
+        }
+    }
     if (props.mode === 'caregiverReward') {
-        const { item, onPress } = props
+        const { onPress } = props
         const AvailableText = () => {
             if (item.availability) {
                 return (
@@ -37,7 +47,7 @@ const RewardListItem = (props) => {
             </Pressable>
         )
     } else if (props.mode === 'childReward') {
-        const { item, onPress } = props
+        const { onPress } = props
         return (
             <Pressable
                 style={[styles.container, {height: 45}]}
@@ -53,20 +63,11 @@ const RewardListItem = (props) => {
             </Pressable>
         )
     } else if (props.mode === 'caregiverRewardHistory') {
-        const { item, onPress } = props
-        const StatusText = () => {
-            if (item.status === 'pending') {
-                return <Text style={[styles.text, {color: 'grey', fontSize: 18}]}>Pending</Text>
-            } else if (item.status === 'completed') {
-                return <Text style={[styles.text, {color: colors.button2, fontSize: 18}]}>Completed</Text>
-            } else if (item.status === 'denied') {
-                return <Text style={[styles.text, {color: colors.button1, fontSize: 18}]}>Denied</Text>
-            }
-        }
+        const { onPress } = props
         return(
             <Pressable
                 style={[styles.container, {height: 67, borderWidth: 1.5}]}
-                onPress={onPress}
+                onPress={item.status === 'pending' ? onPress : () => {}}
             >
                 <View style={styles.textContainer}>
                     <View style={{flexDirection: 'row', width: '60%'}}>
@@ -86,6 +87,27 @@ const RewardListItem = (props) => {
             </Pressable>
         )
 
+    } else if (props.mode === 'childRewardHistory') {
+        return(
+            <View
+                style={[styles.container, {height: 67, borderWidth: 1.5}]}
+            >
+                <View style={styles.textContainer}>
+                    <View style={{flexDirection: 'row', width: '60%'}}>
+                        <Text style={[styles.text, {fontSize: 18, width: '70%', textAlign: 'left'}]} numberOfLines={1}>{item.rewardName}</Text>
+                        <Text style={[styles.text, {fontSize: 18, width: '30%', textAlign: 'left'}]} numberOfLines={1}> x{item.quantity}</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={[styles.text, {width: 80, textAlign: 'right', fontSize: 18}]} numberOfLines={1}>{item.rewardCost * item.quantity}</Text>
+                        <CoinIcon style={{marginLeft: 2, marginTop: 3}} dimension={20}/>
+                    </View>
+                </View>
+
+                <View style={[styles.textContainer, {justifyContent: 'flex-end'}]}>
+                    <StatusText/>
+                </View>
+            </View>
+        )
     }
 
 }

@@ -22,7 +22,6 @@ const CreateClaim = (props) => {
             return
         } else if ((+rewardCost)*(+quantity) > childBalance) {
             setErrorCode('notEnoughPoints')
-            console.log((+rewardCost)*(+quantity))
             return
         }
         Rewards.createRewardClaim(parentUserId, quantity, childName, rewardName, rewardCost, new Date().toJSON())

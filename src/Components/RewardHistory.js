@@ -7,32 +7,46 @@ import RewardListItem from "./RewardListItem";
 import CustomPopup from "./Popup";
 
 const RewardHistoryModal = (props) => {
+    const { userId, childName, caregiver } = props
     const [pendingClaimList, setPendingClaimList] = useState([])
     const [completeClaimList, setCompleteClaimList] = useState([])
     const [completeClaimPopup, setCompleteClaimPopup] = useState(false)
     const [completeClaimId, setCompleteClaimId] = useState('')
     const [completeClaimName, setCompleteClaimName] = useState('')
+    const [completeClaimPoints, setCompleteClaimPoints] = useState(0)
+    const [completeClaimChild, setCompleteClaimChild] = useState('')
 
     useEffect(() => {
-        return Rewards.claimListSubscribe(props.userId, setPendingClaimList, true)
+        if (caregiver) {
+            return Rewards.claimListSubscribe(userId, setPendingClaimList, true)
+        } else {
+            return Rewards.childClaimListSubscribe(userId, childName, setPendingClaimList, true)
+        }
+
     }, [])
 
     useEffect(() => {
-        return Rewards.claimListSubscribe(props.userId, setCompleteClaimList, false)
+        if (caregiver) {
+            return Rewards.claimListSubscribe(userId, setCompleteClaimList, false)
+        } else {
+            return Rewards.childClaimListSubscribe(userId, childName, setCompleteClaimList, false)
+        }
+
     }, [])
 
-    const test = () => {
-        Rewards.createRewardClaim(props.userId,  3, 'Bob', 'AAAAAAAAAAAAAAAAAAAAAAAAAA', 99999999999999, new Date().toJSON())
-    }
     const claimItem = ({ item }) => {
         return (
             <RewardListItem
                 item={item}
-                mode='caregiverRewardHistory'
+                mode={caregiver ? 'caregiverRewardHistory' : 'childRewardHistory'}
                 onPress={() => {
-                    setCompleteClaimId(item.id)
-                    setCompleteClaimName(item.rewardName)
-                    setCompleteClaimPopup(true)
+                    if (caregiver) {
+                        setCompleteClaimId(item.id)
+                        setCompleteClaimName(item.rewardName)
+                        setCompleteClaimPoints((+item.quantity) * (+item.rewardCost))
+                        setCompleteClaimChild(item.childName)
+                        setCompleteClaimPopup(true)
+                    }
                 }}
             />
         )
@@ -61,7 +75,7 @@ const RewardHistoryModal = (props) => {
                     visibility={completeClaimPopup}
                     titleText={'Complete Claim'}
                     bodyText={`Complete: '${completeClaimName}' ?`}
-                    containerStyle={{backgroundColor: colors.background}}
+                    containerStyle={{backgroundColor: colors.background2}}
                     textStyle={{color:'black'}}
                     buttonList={() => {
                         return (
@@ -70,7 +84,7 @@ const RewardHistoryModal = (props) => {
                                     buttonStyle={[styles.button, {backgroundColor: colors.button2}]}
                                     textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                                     onPress={() => {
-                                        Rewards.completeRewardClaim(props.userId, completeClaimId)
+                                        Rewards.completeRewardClaim(userId, completeClaimId)
                                         setCompleteClaimPopup(false)
                                     }}
                                 >Accept</CustomButton>
@@ -78,7 +92,7 @@ const RewardHistoryModal = (props) => {
                                     buttonStyle={styles.button}
                                     textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                                     onPress={() => {
-                                        Rewards.denyRewardClaim(props.userId, completeClaimId)
+                                        Rewards.denyRewardClaim(userId, completeClaimId, completeClaimChild, completeClaimPoints)
                                         setCompleteClaimPopup(false)
                                     }}
                                 >Deny</CustomButton>
@@ -113,7 +127,7 @@ const RewardHistoryModal = (props) => {
                         <View style={{width: '100%', borderWidth: 2, borderRadius: 5, marginBottom: 8, paddingHorizontal: 8, paddingBottom: 8}}>
                             <View style={{width: '100%', justifyContent: 'center'}}>
                                 <FlatList
-                                    data={completeClaimList}
+                                    data={completeClaimList.reverse()}
                                     renderItem={claimItem}
                                     keyExtractor={item => item.id}
                                     ListEmptyComponent={emptyHistoryList}
@@ -122,13 +136,6 @@ const RewardHistoryModal = (props) => {
 
                         </View>
                     </ScrollView>
-                    <View style={{flexDirection: 'row', marginBottom: 8}}>
-                        <CustomButton
-                            buttonStyle={styles.button}
-                            textStyle={{fontSize:12, fontFamily: 'balsamiq'}}
-                            onPress={test}
-                        >Test Button</CustomButton>
-                    </View>
                     <CustomButton
                         buttonStyle={styles.button}
                         textStyle={{fontSize:15, fontFamily: 'balsamiq'}}

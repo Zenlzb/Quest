@@ -57,6 +57,9 @@ export const rewardListSubscribe = (userId, onValueChanged, child) => {
 
 export const createRewardClaim = async (userId, quantity, childName, rewardName, rewardCost, claimDate) => {
     try {
+        const childPoints = db.ref(`users/${userId}/children/${childName}/points`)
+        const childPointCount = await childPoints.get()
+        await childPoints.set((+childPointCount.val()) - (+rewardCost)*(+quantity))
         const claim = db.ref(`users/${userId}/rewardHistory`).push()
         await claim.set(newRewardClaim(claim.key, quantity, childName, rewardName, rewardCost, claimDate, 'pending'))
     } catch (e) {
@@ -73,8 +76,11 @@ export const completeRewardClaim = async (userId, claimId) => {
     }
 }
 
-export const denyRewardClaim = async (userId, claimId) => {
+export const denyRewardClaim = async (userId, claimId, childName, points) => {
     try {
+        const childPoints = db.ref(`users/${userId}/children/${childName}/points`)
+        const childPointCount = await childPoints.get()
+        await childPoints.set((+childPointCount.val()) + (+points))
         const status = db.ref(`users/${userId}/rewardHistory/${claimId}/status`)
         await status.set('denied')
     } catch (e) {
@@ -90,6 +96,24 @@ export const claimListSubscribe = (userId, onValueChanged, pending) => {
             const retList = [];
             for(let id in val) {
                 if (val[id].status === 'pending' ^ !pending) {
+                    retList.push(val[id])
+                }
+            }
+            onValueChanged(retList)
+        })
+        return () => claims.off("value")
+    } catch (e) {
+        console.error(e)
+    }
+}
+export const childClaimListSubscribe = (userId, childName, onValueChanged, pending) => {
+    try {
+        const claims = db.ref(`users/${userId}/rewardHistory`)
+        claims.on("value", (snapshot) => {
+            const val = snapshot.val()
+            const retList = [];
+            for(let id in val) {
+                if ((val[id].status === 'pending' ^ !pending) && val[id].childName === childName) {
                     retList.push(val[id])
                 }
             }

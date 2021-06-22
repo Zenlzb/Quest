@@ -95,6 +95,7 @@ const CaregiverReward = ({ route, navigation }) => {
                 visibility={rewardHistoryModal}
                 toggleVisibility={toggleRewardHistoryModal}
                 userId={userId}
+                caregiver={true}
             />
             <View style={styles.titleContainer}>
                 <Text style={[styles.text, {fontSize: 40}]}>Rewards</Text>
@@ -111,7 +112,7 @@ const CaregiverReward = ({ route, navigation }) => {
                     >Main ></CustomButton>
                 </View>
             </View>
-            <View style={{borderWidth: 2, borderRadius: 7, width: '95%', height: 170, alignItems: 'flex-start'}}>
+            <View style={styles.createRewardContainer}>
                 <Text style={[styles.text, {fontSize: 22, marginLeft: 8, marginBottom: 5}]}>Create Reward</Text>
                 <View style={{width: '100%', height: 100, flexDirection: 'row'}}>
                     <View style={{width: '70%', marginLeft: 8}}>
@@ -196,6 +197,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 45
     },
+    createRewardContainer: {
+        borderWidth: 2,
+        borderRadius: 7,
+        width: '95%',
+        height: 170,
+        alignItems: 'flex-start',
+        backgroundColor: colors.background2
+    },
     button: {
         backgroundColor: colors.button1,
         justifyContent: 'center',
@@ -215,6 +224,7 @@ const styles = StyleSheet.create({
         height: 30,
         paddingHorizontal: 5,
         fontFamily: 'balsamiq',
-    }
+    },
+
 })
 export default CaregiverReward
