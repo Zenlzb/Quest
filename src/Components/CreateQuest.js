@@ -93,6 +93,9 @@ const CreateQuestModal = (props) => {
         } else if ((+year % 1 !== 0) || (+month % 1 !== 0) || (+week % 1 !== 0) || (+day % 1 !== 0)) {
             setErrorCode('decimalYMWD')
             return false
+        } else if (+points > 10000000) {
+            setErrorCode('pointsLarge')
+            return false
         }
         return true
     }
@@ -157,6 +160,7 @@ const CreateQuestModal = (props) => {
         {code: 'noChildSelected', text: 'Please select at least 1 child', key:'6'},
         {code: 'decimalYMWD', text: 'Year, Month, Week and Day cannot be a decimal', key:'7'},
         {code: 'pastDate', text: 'The date selected has passed', key:'8'},
+        {code: 'pointsLarge', text: 'The point reward cannot exceed 10,000,000', key:'8'},
     ]
 
     const combineDateAndTime = (date, time) => {
