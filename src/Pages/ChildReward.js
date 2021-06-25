@@ -7,14 +7,19 @@ import RewardListItem from "../Components/RewardListItem";
 import CreateClaim from "../Components/CreateClaim";
 import CoinIcon from "../Components/CoinIcon";
 import RewardHistoryModal from "../Components/RewardHistory";
+import * as Children from "../../api/child";
 
 const ChildReward = ({ route, navigation }) => {
-    const { parentUserId, childName, childPoints } = route.params
+    const { parentUserId, childName} = route.params
     const [rewardList, setRewardList] = useState([])
     const [createClaim, setCreateClaim] = useState(false)
     const [rewardHistoryModal, toggleRewardHistoryModal] = useState(false)
+    const [childStats, setChildStats] = useState({key: '1', name:'a', points: '0'})
     useEffect(() => {
         return Rewards.rewardListSubscribe(parentUserId, setRewardList, true)
+    }, [])
+    useEffect(() => {
+        return Children.childStatSubscribe(parentUserId, childName, setChildStats)
     }, [])
 
     const [popupName, setPopupName] = useState('')
@@ -40,7 +45,7 @@ const ChildReward = ({ route, navigation }) => {
                 toggleVisibility={setCreateClaim}
                 parentUserId={parentUserId}
                 childName={childName}
-                childBalance={childPoints}
+                childBalance={childStats.points}
                 rewardName={popupName}
                 rewardCost={popupCost}
             />
@@ -69,7 +74,7 @@ const ChildReward = ({ route, navigation }) => {
             <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '100%', height: '2%', alignItems: 'center', marginRight: 20, marginBottom: 8}}>
                 <Text style={[styles.text, {fontSize: 20}]}>Available Points: </Text>
                 <View style={{flexDirection: 'row'}}>
-                    <Text style={[styles.text, {textAlign: 'center',fontSize: 20}]} numberOfLines={1}>{childPoints}</Text>
+                    <Text style={[styles.text, {textAlign: 'center',fontSize: 20}]} numberOfLines={1}>{childStats.points}</Text>
                     <CoinIcon style={{marginLeft: 2, marginTop: 5.5}} dimension={20}/>
                 </View>
 

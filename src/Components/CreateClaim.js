@@ -41,12 +41,13 @@ const CreateClaim = (props) => {
             onShow={() => {
                 setRewardName(props.rewardName)
                 setRewardCost(props.rewardCost)
+                setQuantity('')
             }}
         >
             <View style={styles.container}>
                 <View style={styles.popupContainer}>
                     <View style={[styles.textContainer, {height: 30, alignItems: 'flex-end'}]}>
-                        <Text style={styles.text} numberOfLines={1}>{rewardName}</Text>
+                        <Text style={[styles.text, {width: '40%', textAlign: 'left'}]} numberOfLines={1}>{rewardName}</Text>
                         <View style={{flexDirection: 'row', width: '30%'}}>
                             <Text style={[styles.text, {width: 80, textAlign: 'right'}]} numberOfLines={1}>{rewardCost}</Text>
                             <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.background2,
         padding:10,
         borderRadius: 5,
-        width: '70%',
+        width: '80%',
         height: 100,
         alignItems: 'center',
         justifyContent: 'space-between'

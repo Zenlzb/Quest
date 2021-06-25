@@ -71,7 +71,7 @@ const ChildMain = ({ name, navigation }) => {
                     <CustomButton
                         buttonStyle={[styles.button, {marginRight: 8}]}
                         textStyle={{fontFamily: 'balsamiq', fontSize: 15, color: colors.button3}}
-                        onPress={() => {navigation.navigate('Child Reward', {parentUserId: parentUserId, childName: name, childPoints: childStats.points})}
+                        onPress={() => {navigation.navigate('Child Reward', {parentUserId: parentUserId, childName: name})}
                         }
                     >Rewards</CustomButton>
                 </View>
