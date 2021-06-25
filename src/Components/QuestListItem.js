@@ -44,7 +44,7 @@ const QuestListItem = (props) => {
                 const timeLeft = calculateTimeLeft(new Date(item.dueDate))
                 if (!timeLeft) {
                     return(
-                        <View style = {{flexDirection: 'row', padding: 5, justifyContent: 'space-between', width: '100%', height: '50%', alignItems: 'flex-end'}}>
+                        <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
                             <View style={{backgroundColor: 'grey', borderRadius: 5, paddingHorizontal: 5, height: 25}}>
                                 <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Expired</Text>
                             </View>
@@ -57,7 +57,7 @@ const QuestListItem = (props) => {
                     )
                 }
                 return (
-                    <View style = {{flexDirection: 'row', padding: 5, justifyContent: 'space-between', width: '100%', height: '50%', alignItems: 'flex-end'}}>
+                    <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
                         <View style={{flexDirection: 'row', height: 25}}>
                             <View style = {{backgroundColor: colors.button1, borderRadius: 5, paddingHorizontal: 5}}>
                                 <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Incomplete</Text>
@@ -88,7 +88,7 @@ const QuestListItem = (props) => {
                 )
             } else if (item.status === 'complete') {
                 return (
-                    <View style = {{flexDirection: 'row', padding: 5,width: '100%', height: '50%', alignItems: 'flex-end'}}>
+                    <View style = {styles.questStatusChild}>
                         <View style={{backgroundColor: colors.button2, borderRadius: 5, paddingHorizontal: 5, height: 25}}>
                             <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Completed!</Text>
                         </View>
@@ -98,7 +98,7 @@ const QuestListItem = (props) => {
                 )
             } else if (item.status === 'expired-child') {
                 return (
-                    <View style = {{flexDirection: 'row', padding: 5, justifyContent: 'space-between', width: '100%', height: '50%', alignItems: 'flex-end'}}>
+                    <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
                         <View style={{backgroundColor: 'grey', borderRadius: 5, paddingHorizontal: 5, height: 25}}>
                             <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Expired</Text>
                         </View>
@@ -113,7 +113,7 @@ const QuestListItem = (props) => {
         }
         return (
             <View style = {styles.questEntriesChild}>
-                <View style={{flexDirection: 'row', width: '100%', height: '50%', paddingHorizontal: 5, justifyContent: 'space-between'}}>
+                <View style={{flexDirection: 'row', width: '100%', height: '60%', paddingHorizontal: 5, justifyContent: 'space-between'}}>
                     <Text style={[styles.text, {width: '60%', fontSize: 22}]} numberOfLines={2}>{item.title}</Text>
                     <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '30%'}}>
                         <Text style={[styles.text, {fontSize: 22}]} numberOfLines={1}>{item.points}</Text>
@@ -205,6 +205,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 8,
         padding: 3
+    },
+    questStatusChild: {
+        flexDirection: 'row',
+        padding: 5,
+        width: '100%',
+        height: '40%',
+        alignItems: 'flex-end'
     },
     questEntriesCaregiver: {
         width: '100%',
