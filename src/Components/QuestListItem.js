@@ -140,6 +140,7 @@ const QuestListItem = (props) => {
                 >
                     <Text style={[styles.text, {fontSize: 15, textAlign: 'left', width: '60%'}]} numberOfLines={1}>{item.title}</Text>
                     <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '25%'}}>
+                        <Text style={[styles.text, {fontSize: 15}]} numberOfLines={1}> </Text>
                         <Text style={[styles.text, {fontSize: 15}]} numberOfLines={1}>{item.points}</Text>
                         <CoinIcon style={{marginLeft: 2, marginTop: 3.5}} dimension={17}/>
                     </View>

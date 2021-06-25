@@ -100,7 +100,7 @@ const CreateQuestModal = (props) => {
         }
 
         for(let i = 0; i < selectedChildren.length; i++) {
-            Quests.createQuest(props.userId, selectedChildren[i], title, date.toJSON(), points)
+            Quests.createQuest(props.userId, selectedChildren[i], title, date.toJSON(), +points)
         }
         props.toggleVisibility(false)
 
