@@ -20,6 +20,12 @@ const CreateClaim = (props) => {
         } else if (quantity > 1000) {
             setErrorCode('quantityLarge')
             return
+        } else if (+quantity === 0) {
+            setErrorCode('quantityZero')
+            return
+        } else if (+quantity < 0) {
+            setErrorCode('quantityNegative')
+            return
         } else if ((+rewardCost)*(+quantity) > childBalance) {
             setErrorCode('notEnoughPoints')
             return
@@ -32,7 +38,9 @@ const CreateClaim = (props) => {
     const errors = [
         {code: 'quantityNaN', text: 'Please input a number into quantity', key:'1'},
         {code: 'quantityLarge', text: 'Max quantity is 1,000', key:'2'},
-        {code: 'notEnoughPoints', text: 'Not enough points', key:'3'},
+        {code: 'quantityZero', text: 'Quantity cannot be 0', key:'3'},
+        {code: 'quantityNegative', text: 'Quantity cannot be negative', key:'4'},
+        {code: 'notEnoughPoints', text: 'Not enough points', key:'5'},
     ]
     return (
         <Modal
