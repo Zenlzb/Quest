@@ -94,6 +94,9 @@ const CreateQuestModal = (props) => {
         if (date - new Date() <= 0) {
             setErrorCode('pastDate')
             return
+        } else if (date - new Date() > 315360000000) {
+            setErrorCode('dateTooFar')
+            return
         }
 
         for(let i = 0; i < selectedChildren.length; i++) {
@@ -164,7 +167,8 @@ const CreateQuestModal = (props) => {
         {code: 'decimalYMWD', text: 'Year, Month, Week and Day cannot be a decimal', key:'7'},
         {code: 'pastDate', text: 'The date selected has passed', key:'8'},
         {code: 'pointsLarge', text: 'The point reward cannot exceed 10,000,000', key:'8'},
-        {code: 'pointsNegative', text: 'The point reward cannot be negative', key:'0'},
+        {code: 'pointsNegative', text: 'The point reward cannot be negative', key:'9'},
+        {code: 'dateTooFar', text: 'The duration cannot exceed 10 years', key:'10'},
     ]
 
     const combineDateAndTime = (date, time) => {
