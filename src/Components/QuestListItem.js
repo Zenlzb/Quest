@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Pressable, Text, View, StyleSheet} from "react-native";
 import CustomButton from "./Button";
 import * as Quests from "../../api/quest";
@@ -41,7 +41,9 @@ const QuestListItem = (props) => {
         if (item.status === 'expired-caregiver' || item.status === 'expired-none' || item.status === 'claimed' ) { return null }
         const QuestStatus = () => {
             if (item.status === 'incomplete') {
-                const timeLeft = calculateTimeLeft(new Date(item.dueDate))
+                const [timeLeftMode, setTimeLeftMode] = useState(true)
+                const date = new Date(item.dueDate)
+                const timeLeft = calculateTimeLeft(date)
                 if (!timeLeft) {
                     return(
                         <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
@@ -58,21 +60,24 @@ const QuestListItem = (props) => {
                 }
                 return (
                     <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
-                        <View style={{flexDirection: 'row', height: 25}}>
+                        <Pressable
+                            style={{flexDirection: 'row', height: 25}}
+                            onPress={() => {setTimeLeftMode(!timeLeftMode)}}
+                        >
                             <View style = {{backgroundColor: colors.button1, borderRadius: 5, paddingHorizontal: 5}}>
                                 <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Incomplete</Text>
                             </View>
                             <Text style={[styles.text, {fontSize: 15, color: 'white', marginLeft: 5}]}>
-                                {timeLeft}
+                                {timeLeftMode ? timeLeft : date.toDateString() + ' ' + date.toTimeString().substr(0,5)}
                             </Text>
-                            <Icon
+                            {timeLeftMode && <Icon
                                 name='clock'
                                 type='feather'
                                 color='white'
                                 size={17}
                                 style={{marginTop: 3, marginLeft: 2}}
-                            />
-                        </View>
+                            />}
+                        </Pressable>
                         <Pressable
                             onPress={() => {Quests.completeQuest(parentUserId, childName, item.id)}}
                         >
