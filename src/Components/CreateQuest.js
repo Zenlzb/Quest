@@ -74,31 +74,6 @@ const CreateQuestModal = (props) => {
         setSelectedTime(new Date())
         setErrorCode('')
     }
-    const validateQuestCreate = () => {
-        if (!title) {
-            setErrorCode('emptyTitle')
-            return false
-        } else if (+points === 0) {
-            setErrorCode('emptyPoints')
-            return false
-        } else if (dueDateMode && !(year || month || week || day || hour || minute || second)) {
-            setErrorCode('emptyDuration')
-            return false
-        } else if (dueDateMode && (isNaN(+year) || isNaN(+month) || isNaN(+week) || isNaN(+day) || isNaN(+hour) || isNaN(+minute) || isNaN(+second))) {
-            setErrorCode('durationNaN')
-            return false
-        } else if (isNaN(+points)) {
-            setErrorCode('pointsNaN')
-            return false
-        } else if ((+year % 1 !== 0) || (+month % 1 !== 0) || (+week % 1 !== 0) || (+day % 1 !== 0)) {
-            setErrorCode('decimalYMWD')
-            return false
-        } else if (+points > 10000000) {
-            setErrorCode('pointsLarge')
-            return false
-        }
-        return true
-    }
     const handleCreateQuest = () => {
         setErrorCode('')
         if (!validateQuestCreate()) { return }
@@ -150,6 +125,34 @@ const CreateQuestModal = (props) => {
         return Presets.presetListSubscribe(props.userId, setPresetList)
     }, [])
 
+    const validateQuestCreate = () => {
+        if (!title) {
+            setErrorCode('emptyTitle')
+            return false
+        } else if (+points === 0) {
+            setErrorCode('emptyPoints')
+            return false
+        } else if (dueDateMode && !(year || month || week || day || hour || minute || second)) {
+            setErrorCode('emptyDuration')
+            return false
+        } else if (dueDateMode && (isNaN(+year) || isNaN(+month) || isNaN(+week) || isNaN(+day) || isNaN(+hour) || isNaN(+minute) || isNaN(+second))) {
+            setErrorCode('durationNaN')
+            return false
+        } else if (isNaN(+points)) {
+            setErrorCode('pointsNaN')
+            return false
+        } else if ((+year % 1 !== 0) || (+month % 1 !== 0) || (+week % 1 !== 0) || (+day % 1 !== 0)) {
+            setErrorCode('decimalYMWD')
+            return false
+        } else if (+points > 10000000) {
+            setErrorCode('pointsLarge')
+            return false
+        } else if (+points < 0) {
+            setErrorCode('pointsNegative')
+            return false
+        }
+        return true
+    }
     const [errorCode, setErrorCode] = useState('')
     const errors = [
         {code: 'emptyTitle', text: 'Please fill in a title', key:'1'},
@@ -161,6 +164,7 @@ const CreateQuestModal = (props) => {
         {code: 'decimalYMWD', text: 'Year, Month, Week and Day cannot be a decimal', key:'7'},
         {code: 'pastDate', text: 'The date selected has passed', key:'8'},
         {code: 'pointsLarge', text: 'The point reward cannot exceed 10,000,000', key:'8'},
+        {code: 'pointsNegative', text: 'The point reward cannot be negative', key:'0'},
     ]
 
     const combineDateAndTime = (date, time) => {

@@ -38,6 +38,7 @@ const CaregiverReward = ({ route, navigation }) => {
         {code: 'emptyCost', text: 'Cost is empty or 0', key:'2'},
         {code: 'costNaN', text: 'Please only fill numbers into cost', key:'3'},
         {code: 'costLarge', text: 'Cost cannot exceed 10,000,000', key:'4'},
+        {code: 'costNegative', text: 'Cost cannot be negative', key:'5'},
     ]
     const validateRewardCreate = () => {
         if (rewardName === '') {
@@ -51,6 +52,9 @@ const CaregiverReward = ({ route, navigation }) => {
             return false
         } else if ((+rewardCost) > 10000000) {
             setErrorCode('costLarge')
+            return false
+        } else if (+rewardCost < 0) {
+            setErrorCode('costNegative')
             return false
         }
         return true
