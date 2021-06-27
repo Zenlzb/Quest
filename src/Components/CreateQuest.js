@@ -99,6 +99,7 @@ const CreateQuestModal = (props) => {
             return
         }
 
+
         for(let i = 0; i < selectedChildren.length; i++) {
             Quests.createQuest(props.userId, selectedChildren[i], title, date.toJSON(), +points)
         }
@@ -172,7 +173,9 @@ const CreateQuestModal = (props) => {
     ]
 
     const combineDateAndTime = (date, time) => {
-        const timeString = time.getHours() + ':' + time.getMinutes() + ':00';
+        let minutes = time.getMinutes().toString()
+        if (minutes.length === 1) { minutes = '0' + minutes }
+        const timeString = time.getHours() + ':' + minutes + ':00';
 
         const year = date.getFullYear();
         let month = date.getMonth() + 1; // Jan is 0, dec is 11
@@ -195,6 +198,7 @@ const CreateQuestModal = (props) => {
                 timezone = `+${Math.abs(hr)}:00`
             }
         }
+
         console.log(dateString + 'T' + timeString + timezone)
 
         return new Date(dateString + 'T' + timeString + timezone);
