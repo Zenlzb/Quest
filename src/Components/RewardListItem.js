@@ -54,7 +54,7 @@ const RewardListItem = (props) => {
                 onPress={onPress}
             >
                 <View style={[styles.textContainer, {height: 30, alignItems: 'flex-end'}]}>
-                    <Text style={styles.text} numberOfLines={1}>{item.name}</Text>
+                    <Text style={[styles.text, {maxWidth: '40%'}]} numberOfLines={1}>{item.name}</Text>
                     <View style={{flexDirection: 'row'}}>
                         <Text style={[styles.text, {width: 80, textAlign: 'right'}]} numberOfLines={1}>{item.cost}</Text>
                         <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>

@@ -105,7 +105,7 @@ const ChildListItem = (props) => {
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={[styles.text, {fontSize: 22}]}>Points: </Text>
-                                <Text style={[styles.text, {fontSize: 22, maxWidth: '40%',textAlign: 'right'}]} numberOfLines={1}>{points}</Text>
+                                <Text style={[styles.text, {fontSize: 22, maxWidth: '40%',textAlign: 'left'}]} numberOfLines={1}>{points}</Text>
                                 <CoinIcon style={{marginLeft: 3, marginTop: 6}} dimension={25}/>
                             </View>
                             <Text style={[styles.text, {fontSize: 22}]}>Status: {currentStatus()}</Text>
