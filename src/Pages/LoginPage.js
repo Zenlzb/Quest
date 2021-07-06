@@ -12,8 +12,10 @@ const LoginPage = ({ navigation }) => {
 
     const [errorCode, setErrorCode] = useState(null)
     const errors = [
-        {code: 'auth/wrong-password', text: 'Username or Password is Invalid', key:'1'},
-        {code: 'auth/too-many-requests', text: 'Too many tries, please try again later', key:'2'}
+        {code: 'auth/user-not-found', text: 'No user with that email found', key:'1'},
+        {code: 'auth/wrong-password', text: 'Password is Incorrect or Empty', key:'2'},
+        {code: 'auth/too-many-requests', text: 'Too many tries, please try again later', key:'3'},
+        {code: 'auth/invalid-email', text: 'Email is invalid', key:'4'},
     ]
 
     const handleEmailUpdate = (text) => setEmail(text)

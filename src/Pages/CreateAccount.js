@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, TextInput, StyleSheet, Text} from "react-native";
+import {View, TextInput, StyleSheet} from "react-native";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
 import {createAccount} from '../../api/auth';
@@ -23,6 +23,7 @@ const CreateAccount = () => {
     const [errorCode, setErrorCode] = useState(null)
     const errors = [
         {code: 'auth/weak-password', text: 'Password is too short', key:'1'},
+        {code: 'auth/invalid-email', text: 'Email is invalid', key:'2'},
     ]
 
     return(

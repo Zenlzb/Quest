@@ -10,8 +10,10 @@ export const signIn = async ({ email, password, childLink }, setErrorCode) => {
         await AsyncStorage.setItem('childName', childLink)
     } catch (error) {
         const code = error.code
-        if (code==='auth/wrong-password' ||
-            code==='auth/too-many-requests') {
+        if (code === 'auth/user-not-found' ||
+            code==='auth/wrong-password' ||
+            code==='auth/too-many-requests'||
+            code==='auth/invalid-email') {
             setErrorCode(code)
         } else {
             console.log(code)
@@ -20,7 +22,7 @@ export const signIn = async ({ email, password, childLink }, setErrorCode) => {
     }
 }
 
-export const createAccount = async ({ name, email, password }, onError) => {
+export const createAccount = async ({ name, email, password }, setErrorCode) => {
     try {
 
         const { user } = await auth.createUserWithEmailAndPassword(email, password)
@@ -29,7 +31,14 @@ export const createAccount = async ({ name, email, password }, onError) => {
             // await user.sendEmailVerification();
         }
     } catch (error) {
-        onError(error.code)
+        const code = error.code
+        if (code==='auth/weak-password' ||
+            code==='auth/invalid-email') {
+            setErrorCode(code)
+        } else {
+            console.log(code)
+            console.error(error);
+        }
     }
 }
 
@@ -42,5 +51,3 @@ export const signOut = async () => {
 }
 
 export const getCurrentUserId = () => auth.currentUser ? auth.currentUser.uid : null;
-
-export const getCurrentUserName = () => auth.currentUser ? auth.currentUser.displayName : null;
