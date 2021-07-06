@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, FlatList, Keyboard, Pressable} from "react-native";
+import {View, Text, StyleSheet, TextInput, FlatList, Keyboard, Pressable, Dimensions} from "react-native";
 import CustomButton from "../Components/Button";
 import {auth, signOut, getCurrentUserId} from "../../api/auth";
 import colors from "../../assets/themes/colors";
@@ -18,6 +18,8 @@ const CaregiverMain = ({ navigation }) => {
     const [deleteChildPopup, setDeleteChildPopup] = useState(false)
     const [deleteChild, setDeleteChild] = useState()
     const [reloadList, setReloadList] = useState(0)
+    const { width, scale } = Dimensions.get("screen")
+    const fontScale = (width * scale) / 540
 
     const [childNameInput, setChildNameInput] = useState('')
     const handleChildNameUpdate = (text) => setChildNameInput(text)
@@ -151,18 +153,18 @@ const CaregiverMain = ({ navigation }) => {
             </View>
 
             <View style={styles.titleContainer}>
-                <Text style={[styles.text, {fontSize: 40}]}>Children</Text>
-                <View style={{flexDirection: 'row', marginTop: 21, height: 25}}>
+                <Text style={[styles.text, {fontSize: 35+fontScale*5}]}>Children</Text>
+                <View style={{flexDirection: 'row', marginLeft: 3, marginTop: 12 + fontScale*2, height: 25}}>
                     <CustomButton
                         buttonStyle={[styles.button, {marginRight: 8}]}
-                        textStyle={{fontFamily: 'balsamiq', fontSize: 15, color: colors.button3}}
+                        textStyle={{fontFamily: 'balsamiq', fontSize: 12 + fontScale, color: colors.button3}}
                         onPress={() => {
                             navigation.navigate('Caregiver Reward', { userId: userId })
                         }}
                     >Rewards</CustomButton>
                     <CustomButton
                         buttonStyle={styles.button}
-                        textStyle={{fontFamily: 'balsamiq', fontSize: 15}}
+                        textStyle={{fontFamily: 'balsamiq', fontSize: 12 + fontScale}}
                         onPress={handleCreateQuest}
                     >+ Create Quest</CustomButton>
                 </View>
@@ -178,7 +180,7 @@ const CaregiverMain = ({ navigation }) => {
                     />
                     <CustomButton
                         buttonStyle={[styles.button, {height: 33}]}
-                        textStyle={{fontFamily: 'balsamiq'}}
+                        textStyle={{fontFamily: 'balsamiq', fontSize: 12 + fontScale*3}}
                         onPress={handleAddChild}
                     >Add</CustomButton>
                     <Pressable
@@ -252,7 +254,8 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 70,
         paddingHorizontal: 8,
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     text: {
         fontSize: 20,

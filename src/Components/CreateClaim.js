@@ -57,7 +57,7 @@ const CreateClaim = (props) => {
                     <View style={[styles.textContainer, {height: 30, alignItems: 'flex-end'}]}>
                         <Text style={[styles.text, {width: '40%', textAlign: 'left'}]} numberOfLines={1}>{rewardName}</Text>
                         <View style={{flexDirection: 'row', width: '30%'}}>
-                            <Text style={[styles.text, {width: 80, textAlign: 'right'}]} numberOfLines={1}>{rewardCost}</Text>
+                            <Text style={[styles.text, {width: '50%', textAlign: 'right'}]} numberOfLines={1}>{rewardCost}</Text>
                             <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
                         </View>
                         <View style={{flexDirection: 'row', width: '30%', justifyContent: 'flex-end'}}>
