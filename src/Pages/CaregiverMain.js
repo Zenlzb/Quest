@@ -239,10 +239,9 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         padding: 5,
         borderRadius: 10,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     addChildContainer: {
-        width: '100%',
         height: 33,
         paddingHorizontal: 5,
         flexDirection: 'row',
