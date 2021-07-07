@@ -6,6 +6,7 @@ import colors from "../../assets/themes/colors";
 import {Icon} from "react-native-elements";
 import CoinIcon from "./CoinIcon";
 import {caregiverExpireQuest} from "../../api/quest";
+import CustomPopup from "./Popup";
 
 const calculateTimeLeft = (date) => {
     const timeLeft = date - new Date()
@@ -35,6 +36,7 @@ const calculateTimeLeft = (date) => {
 }
 
 const QuestListItem = (props) => {
+    const [completeQuest, setCompleteQuest] = useState(false)
     const { item, mode } = props
     if (mode === 'child') {
         const { parentUserId, childName } = props
@@ -60,6 +62,33 @@ const QuestListItem = (props) => {
                 }
                 return (
                     <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
+                        <CustomPopup
+                            visibility={completeQuest}
+                            titleText={'Complete Quest'}
+                            bodyText={`Are you sure you want to complete '${item.title}' ?`}
+                            numberOfLines={2}
+                            containerStyle={{backgroundColor: colors.button2}}
+                            textStyle={{textAlign: 'center'}}
+                            buttonList={() => {
+                                return (
+                                    <View style={{flexDirection: 'row',}}>
+                                        <CustomButton
+                                            buttonStyle={{marginHorizontal: 8, backgroundColor: colors.button2}}
+                                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                            onPress={() => {
+                                                Quests.completeQuest(parentUserId, childName, item.id)
+                                                setCompleteQuest(false)
+                                            }}
+                                        >Complete</CustomButton>
+                                        <CustomButton
+                                            buttonStyle={{backgroundColor: colors.button2}}
+                                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                            onPress={() => setCompleteQuest(false)}
+                                        >Cancel</CustomButton>
+                                    </View>
+                                )
+                            }}
+                        />
                         <Pressable
                             style={{flexDirection: 'row', height: 25}}
                             onPress={() => {setTimeLeftMode(!timeLeftMode)}}
@@ -79,7 +108,7 @@ const QuestListItem = (props) => {
                             />}
                         </Pressable>
                         <Pressable
-                            onPress={() => {Quests.completeQuest(parentUserId, childName, item.id)}}
+                            onPress={() => {setCompleteQuest(true)}}
                         >
                             <Icon
                                 name='check-square'
