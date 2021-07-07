@@ -443,17 +443,17 @@ const CreateQuestModal = (props) => {
                             buttonStyle={styles.button}
                             textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                             onPress={handleCreateQuest}
-                        >Create</CustomButton>
+                        >+ Create</CustomButton>
                         <CustomButton
                             buttonStyle={[styles.button, {marginLeft: 30}]}
                             textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                             onPress={() => props.toggleVisibility(false)}
-                        >Cancel</CustomButton>
+                        >⨯ Cancel</CustomButton>
                         <CustomButton
                             buttonStyle={[styles.button, {marginLeft: 30}]}
                             textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                             onPress={handleClearAll}
-                        >Clear All</CustomButton>
+                        >- Clear All</CustomButton>
                     </View>
                 </View>
             </View>
