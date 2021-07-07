@@ -89,3 +89,19 @@ export const releaseRewards = async (userId, childName, questId) => {
         console.error(e)
     }
 }
+
+export const releaseAllRewards = async (userId, childName) => {
+    try {
+        const childQuests = db.ref(`users/${userId}/children/${childName}/quests`)
+        const quest = (await childQuests.get()).val()
+        if (quest.length === 0) { return }
+        for (let id in quest) {
+            if (quest[id].status === "complete") {
+                await releaseRewards(userId, childName, quest[id].id)
+            }
+        }
+
+    } catch (e) {
+        console.error(e)
+    }
+}

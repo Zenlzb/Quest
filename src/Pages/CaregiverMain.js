@@ -9,6 +9,7 @@ import ErrorText from "../Components/ErrorText";
 import CustomPopup from "../Components/Popup";
 import ChildListItem from "../Components/ChildListItem";
 import {Icon} from "react-native-elements";
+import * as Quests from "../../api/quest";
 
 const CaregiverMain = ({ navigation }) => {
     const [childList, setChildList] = useState([])
@@ -53,6 +54,13 @@ const CaregiverMain = ({ navigation }) => {
         }
         setErrorCode(null)
         toggleQuestModal(true)
+    }
+
+    const handleReleaseAll = () => {
+        for (let id in childList) {
+            Quests.releaseAllRewards(userId, childList[id].name)
+        }
+
     }
 
     useEffect(() => {
@@ -197,6 +205,13 @@ const CaregiverMain = ({ navigation }) => {
                         />
                     </Pressable>
                 </View>
+                <View style={styles.releaseButtonContainer}>
+                    <CustomButton
+                        buttonStyle={[styles.button, {backgroundColor: colors.button2}]}
+                        textStyle={{fontFamily: 'balsamiq', fontSize: 12 + fontScale*3}}
+                        onPress={handleReleaseAll}
+                    >Release rewards for all completed quests</CustomButton>
+                </View>
                 <ErrorText
                     errorCode={errorCode}
                     setErrorCode={setErrorCode}
@@ -247,6 +262,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 5
+    },
+    releaseButtonContainer: {
+        height: 25,
+        width: '100%',
+        paddingHorizontal: 5,
     },
     titleContainer: {
         flexDirection: 'row',
