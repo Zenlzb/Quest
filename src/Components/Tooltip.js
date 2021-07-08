@@ -4,14 +4,15 @@ import colors from "../../assets/themes/colors";
 import {Tooltip} from "react-native-elements";
 
 const CustomTooltip = (props) => {
+    const { modal, width, height, circleSize } = props
     return (
         <Tooltip
             popover={<Text style={{fontFamily: 'balsamiq'}}>{props.children}</Text>}
-            height={62}
-            width={300}
+            height={height}
+            width={width}
             backgroundColor={colors.background}
-            skipAndroidStatusBar={true}>
-            <View style={styles.tooltipCircle}>
+            skipAndroidStatusBar={modal}>
+            <View style={[styles.tooltipCircle, {width: circleSize, height: circleSize, borderRadius: circleSize}]}>
                 <Text style={[styles.text, {color: 'white'}]}>?</Text>
             </View>
         </Tooltip>
@@ -20,9 +21,6 @@ const CustomTooltip = (props) => {
 
 const styles = StyleSheet.create({
     tooltipCircle: {
-        width: 35,
-        height: 35,
-        borderRadius: 35,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: colors.button1
