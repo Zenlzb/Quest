@@ -2,12 +2,12 @@ import firebase from "./firebase";
 
 const db = firebase.database();
 
-const newQuest = (id, title, dueDate, points, status) => ({id, title, dueDate, points, status})
+const newQuest = (id, title, dueDate, points, status, priority) => ({id, title, dueDate, points, status, priority})
 
 export const createQuest = async (userId, childName, questTitle, questDueDate, questPoints) => {
     try {
         const quest = db.ref(`users/${userId}/children/${childName}/quests`).push()
-        await quest.set(newQuest(quest.key, questTitle, questDueDate, questPoints, 'incomplete'))
+        await quest.set(newQuest(quest.key, questTitle, questDueDate, questPoints, 'incomplete', 1))
 
     } catch (e) {
         console.error(e)
@@ -31,7 +31,7 @@ export const questListSubscribe = (userId, childName, onValueChanged) => {
             for(let id in val) {
                 retList.push(val[id])
             }
-            onValueChanged(retList)
+            onValueChanged(retList.sort((a, b) => b.priority - a.priority))
         })
         return () => quests.off("value")
 
@@ -44,6 +44,8 @@ export const completeQuest = async (userId, childName, questId) => {
     try {
         const status = db.ref(`users/${userId}/children/${childName}/quests/${questId}/status`)
         await status.set('complete')
+        const priority = db.ref(`users/${userId}/children/${childName}/quests/${questId}/priority`)
+        await priority.set(-1)
     } catch (e) {
         console.error(e)
     }
@@ -52,12 +54,14 @@ export const completeQuest = async (userId, childName, questId) => {
 export const childExpireQuest = async (userId, childName, questId) => {
     try {
         const status = db.ref(`users/${userId}/children/${childName}/quests/${questId}/status`)
+        const priority = db.ref(`users/${userId}/children/${childName}/quests/${questId}/priority`)
         const stat = await status.get()
         if (stat.val() === 'incomplete') {
             await status.set('expired-caregiver')
         } else if (stat.val() === 'expired-child') {
             await status.set('expired-none')
         }
+        await priority.set(0)
     } catch (e) {
         console.error(e)
     }
@@ -66,12 +70,14 @@ export const childExpireQuest = async (userId, childName, questId) => {
 export const caregiverExpireQuest = async (userId, childName, questId) => {
     try {
         const status = db.ref(`users/${userId}/children/${childName}/quests/${questId}/status`)
+        const priority = db.ref(`users/${userId}/children/${childName}/quests/${questId}/priority`)
         const stat = await status.get()
         if (stat.val() === 'incomplete') {
             await status.set('expired-child')
         } else if (stat.val() === 'expired-caregiver') {
             await status.set('expired-none')
         }
+        await priority.set(0)
     } catch (e) {
         console.error(e)
     }
