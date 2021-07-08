@@ -286,7 +286,12 @@ const CreateQuestModal = (props) => {
                             textStyle={{paddingBottom: 7, fontSize:25, fontFamily: 'balsamiq'}}
                             onPress={handleAddPreset}
                         >+</CustomButton>
-                        <CustomTooltip>
+                        <CustomTooltip
+                            modal={true}
+                            height={62}
+                            width={300}
+                            circleSize={35}
+                        >
                             Add a preset: Fill in the fields and click '+'{'\n'}
                             Delete a preset: Hold down on the preset{'\n'}
                             Presets will only save duration, not due date
