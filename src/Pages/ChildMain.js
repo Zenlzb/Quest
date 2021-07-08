@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, View} from "react-native";
+import {FlatList, Pressable, StyleSheet, Text, View} from "react-native";
 import {getCurrentUserId, signOut} from "../../api/auth";
 import CustomButton from "../Components/Button";
 import colors from "../../assets/themes/colors";
@@ -14,6 +14,8 @@ const ChildMain = ({ name, navigation }) => {
     const [childStats, setChildStats] = useState({key: '1', name:'a', points: '0'})
     const [questList, setQuestList] = useState([])
     const [reloadList, setReloadList] = useState(0)
+    const [swapMode, setSwapMode] = useState(false)
+    const [swappingQuest, setSwappingQuest] = useState(null)
 
     useEffect(() => {
         return Quests.questListSubscribe(parentUserId, name, setQuestList)
@@ -27,13 +29,28 @@ const ChildMain = ({ name, navigation }) => {
     }
 
     const renderItem = ({item}) => {
+        const handleSwap = () => {
+            if (swappingQuest !== item.id) {
+                Quests.swapQuests(parentUserId, name, swappingQuest, item.id)
+            }
+            setSwapMode(false)
+        }
         return (
-            <QuestListItem
-                item={item}
-                mode={'child'}
-                parentUserId={parentUserId}
-                childName={name}
-            />
+            <Pressable
+                onPress={swapMode ? handleSwap : () => {}}
+            >
+                <QuestListItem
+                    item={item}
+                    mode={'child'}
+                    parentUserId={parentUserId}
+                    childName={name}
+                    swapMode={swapMode}
+                    setSwapMode={setSwapMode}
+                    swappingQuest={swappingQuest}
+                    setSwappingQuest={setSwappingQuest}
+                />
+            </Pressable>
+
         )
     }
 
@@ -60,7 +77,7 @@ const ChildMain = ({ name, navigation }) => {
                     onPress={handleSignOut}
                 >Sign Out</CustomButton>
             </View>
-            <View style={styles.titleContainer}>
+            {!swapMode && <View style={styles.titleContainer}>
                 <Text style={[styles.text, {fontSize: 40}]}>Quests</Text>
                 <View style={{flexDirection: 'row', marginTop: 21, height: 25}}>
                     <CustomButton
@@ -71,11 +88,20 @@ const ChildMain = ({ name, navigation }) => {
                     <CustomButton
                         buttonStyle={[styles.button, {marginRight: 8}]}
                         textStyle={{fontFamily: 'balsamiq', fontSize: 15, color: colors.button3}}
-                        onPress={() => {navigation.navigate('Child Reward', {parentUserId: parentUserId, childName: name})}
-                        }
+                        onPress={() => {navigation.navigate('Child Reward', {parentUserId: parentUserId, childName: name})}}
                     >Rewards</CustomButton>
                 </View>
-            </View>
+            </View>}
+            {swapMode && <View style={styles.titleContainer}>
+                <Text style={[styles.text, {fontSize: 40}]}>Swap</Text>
+                <View style={{flexDirection: 'row', marginTop: 21, height: 25}}>
+                    <CustomButton
+                        buttonStyle={[styles.button, {marginRight: 8}]}
+                        textStyle={{fontFamily: 'balsamiq', fontSize: 15}}
+                        onPress={() => {setSwapMode(false)}}
+                    >Cancel</CustomButton>
+                </View>
+            </View>}
             <View style={styles.questListContainer}>
                 <FlatList
                     style={{width:'100%'}}

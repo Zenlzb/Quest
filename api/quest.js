@@ -7,7 +7,8 @@ const newQuest = (id, title, dueDate, points, status, priority) => ({id, title, 
 export const createQuest = async (userId, childName, questTitle, questDueDate, questPoints) => {
     try {
         const quest = db.ref(`users/${userId}/children/${childName}/quests`).push()
-        await quest.set(newQuest(quest.key, questTitle, questDueDate, questPoints, 'incomplete', 1))
+        const priority = (await getHighestIncompletePriority(userId, childName)) + 1
+        await quest.set(newQuest(quest.key, questTitle, questDueDate, questPoints, 'incomplete', priority))
 
     } catch (e) {
         console.error(e)
@@ -106,6 +107,37 @@ export const releaseAllRewards = async (userId, childName) => {
                 await releaseRewards(userId, childName, quest[id].id)
             }
         }
+
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+export const getHighestIncompletePriority = async (userId, childName) => {
+    try {
+        const childQuests = db.ref(`users/${userId}/children/${childName}/quests`)
+        const quest = (await childQuests.get()).val()
+        if (quest.length === 0) { return }
+        let max = 0
+        for (let id in quest) {
+            if (quest[id].priority > max && quest[id].status === "incomplete") {
+                max = quest[id].priority
+            }
+        }
+        return max
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+export const swapQuests = async (userId, childName, questIdA, questIdB) => {
+    try {
+        const questA = db.ref(`users/${userId}/children/${childName}/quests/${questIdA}/priority`)
+        const questB = db.ref(`users/${userId}/children/${childName}/quests/${questIdB}/priority`)
+        const priorityA = await questA.get()
+        const priorityB = await questB.get()
+        await questA.set(priorityB.val())
+        await questB.set(priorityA.val())
 
     } catch (e) {
         console.error(e)

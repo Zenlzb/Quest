@@ -39,13 +39,13 @@ const QuestListItem = (props) => {
     const [completeQuest, setCompleteQuest] = useState(false)
     const { item, mode } = props
     if (mode === 'child') {
-        const { parentUserId, childName } = props
+        const { parentUserId, childName, swapMode, setSwapMode, swappingQuest, setSwappingQuest } = props
         if (item.status === 'expired-caregiver' || item.status === 'expired-none' || item.status === 'claimed' ) { return null }
+        const date = new Date(item.dueDate)
+        const timeLeft = calculateTimeLeft(date)
         const QuestStatus = () => {
             if (item.status === 'incomplete') {
                 const [timeLeftMode, setTimeLeftMode] = useState(true)
-                const date = new Date(item.dueDate)
-                const timeLeft = calculateTimeLeft(date)
                 if (!timeLeft) {
                     return(
                         <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
@@ -107,16 +107,35 @@ const QuestListItem = (props) => {
                                 style={{marginTop: 3, marginLeft: 2}}
                             />}
                         </Pressable>
-                        <Pressable
-                            onPress={() => {setCompleteQuest(true)}}
-                        >
-                            <Icon
-                                name='check-square'
-                                type='feather'
-                                color='white'
-                                size={35}
-                            />
-                        </Pressable>
+                        {!swapMode && <View style={{marginTop: 4}}>
+                            <Pressable
+                                onPress={() => {
+                                    setSwapMode(true)
+                                    setSwappingQuest(item.id)
+                                }}
+                            >
+                                <Icon
+                                    name='swap-vertical'
+                                    type='material-community'
+                                    color='white'
+                                    size={30}
+                                />
+                            </Pressable>
+                            <Pressable
+                                onPress={() => {setCompleteQuest(true)}}
+                                style={{marginTop: 4}}
+                            >
+                                <Icon
+                                    name='check-square'
+                                    type='feather'
+                                    color='white'
+                                    size={30}
+                                />
+                            </Pressable>
+                        </View>}
+                        {swapMode && (swappingQuest === item.id) && <Text style={[styles.text, {color: 'white', fontSize: 12}]}>
+                            Swapping..
+                        </Text>}
                     </View>
 
                 )
@@ -145,6 +164,7 @@ const QuestListItem = (props) => {
                 )
             }
         }
+        if (swapMode && (item.status !== 'incomplete' || !timeLeft)) { return null }
         return (
             <View style = {styles.questEntriesChild}>
                 <View style={{flexDirection: 'row', width: '100%', height: '60%', paddingHorizontal: 5, justifyContent: 'space-between'}}>
