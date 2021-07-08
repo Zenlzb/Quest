@@ -7,6 +7,7 @@ import * as Quests from "../../api/quest"
 import * as Children from "../../api/child"
 import CoinIcon from "../Components/CoinIcon";
 import QuestListItem from "../Components/QuestListItem";
+import CustomTooltip from "../Components/Tooltip";
 
 
 const ChildMain = ({ name, navigation }) => {
@@ -95,8 +96,16 @@ const ChildMain = ({ name, navigation }) => {
             {swapMode && <View style={styles.titleContainer}>
                 <Text style={[styles.text, {fontSize: 40}]}>Swap</Text>
                 <View style={{flexDirection: 'row', marginTop: 21, height: 25}}>
+                    <CustomTooltip
+                        modal={false}
+                        height={30}
+                        width={280}
+                        circleSize={27}
+                    >
+                        Click on another quest to swap places
+                    </CustomTooltip>
                     <CustomButton
-                        buttonStyle={[styles.button, {marginRight: 8}]}
+                        buttonStyle={[styles.button, {marginHorizontal: 8}]}
                         textStyle={{fontFamily: 'balsamiq', fontSize: 15}}
                         onPress={() => {setSwapMode(false)}}
                     >Cancel</CustomButton>
