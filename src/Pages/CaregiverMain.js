@@ -208,7 +208,7 @@ const CaregiverMain = ({ navigation }) => {
                 <View style={styles.releaseButtonContainer}>
                     <CustomButton
                         buttonStyle={[styles.button, {backgroundColor: colors.button2}]}
-                        textStyle={{fontFamily: 'balsamiq', fontSize: 12 + fontScale*3}}
+                        textStyle={{fontFamily: 'balsamiq', fontSize: 12 + fontScale*2}}
                         onPress={handleReleaseAll}
                     >Release rewards for all completed quests</CustomButton>
                 </View>
