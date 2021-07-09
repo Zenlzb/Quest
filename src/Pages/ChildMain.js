@@ -8,6 +8,7 @@ import * as Children from "../../api/child"
 import CoinIcon from "../Components/CoinIcon";
 import QuestListItem from "../Components/QuestListItem";
 import CustomTooltip from "../Components/Tooltip";
+import {Icon} from "react-native-elements";
 
 
 const ChildMain = ({ name, navigation }) => {
@@ -81,11 +82,18 @@ const ChildMain = ({ name, navigation }) => {
             {!swapMode && <View style={styles.titleContainer}>
                 <Text style={[styles.text, {fontSize: 40}]}>Quests</Text>
                 <View style={{flexDirection: 'row', marginTop: 21, height: 25}}>
-                    <CustomButton
-                        buttonStyle={[styles.button, {marginRight: 8}]}
-                        textStyle={{fontFamily: 'balsamiq', fontSize: 15}}
-                        onPress={() => {setReloadList(reloadList+1)}}
-                    >Reload</CustomButton>
+                    <Pressable
+                        style={{height: 28, width: 28, borderRadius: 7, backgroundColor: colors.button1, marginRight: 8, alignItems: 'center', justifyContent: 'center'}}
+                        onPress={() => {setReloadList(reloadList + 1)}}
+                        android_ripple={{color: 'white', borderless: false}}
+                    >
+                        <Icon
+                            name='refresh-cw'
+                            type='feather'
+                            color='white'
+                            size={17}
+                        />
+                    </Pressable>
                     <CustomButton
                         buttonStyle={[styles.button, {marginRight: 8}]}
                         textStyle={{fontFamily: 'balsamiq', fontSize: 15, color: colors.button3}}

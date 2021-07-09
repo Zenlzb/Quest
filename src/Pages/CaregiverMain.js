@@ -192,7 +192,7 @@ const CaregiverMain = ({ navigation }) => {
                         onPress={handleAddChild}
                     >Add</CustomButton>
                     <Pressable
-                        style={{height: 33, width: 33, borderRadius: 7, backgroundColor: colors.button1, marginLeft: 8}}
+                        style={{height: 33, width: 33, borderRadius: 7, backgroundColor: colors.button1, marginLeft: 8, alignItems: 'center', justifyContent: 'center'}}
                         onPress={() => {setReloadList(reloadList + 1)}}
                         android_ripple={{color: 'white', borderless: false}}
                     >
@@ -201,7 +201,6 @@ const CaregiverMain = ({ navigation }) => {
                             type='feather'
                             color='white'
                             size={20}
-                            style={{marginTop: 6}}
                         />
                     </Pressable>
                 </View>
