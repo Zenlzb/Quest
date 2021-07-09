@@ -109,18 +109,41 @@ const CreateQuestModal = (props) => {
         setErrorCode('')
         if (!validateQuestCreate()) { return }
 
-        Presets.createPreset(props.userId, title, points, year, month, week, day, hour, minute, second)
+        if (dueDateMode) {
+            Presets.createPreset(props.userId, title, points, dueDateMode, year, month, week, day, hour, minute, second)
+        } else {
+            Presets.createPreset(props.userId, title, points, dueDateMode, 0, 0, 0, selectedDate.getDay(), selectedTime.getHours(), selectedTime.getMinutes(), 0)
+        }
+
+
     }
     const handleSelectPreset = (item) => {
+        const addDays = (date, days) => {
+            let result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
         setTitle(item.title)
         setPoints(item.points)
-        setYear(item.year)
-        setMonth(item.month)
-        setWeek(item.week)
-        setDay(item.day)
-        setHour(item.hour)
-        setMinute(item.minute)
-        setSecond(item.second)
+        setDueDateMode(item.durationMode)
+        if (item.durationMode) {
+            setYear(item.year)
+            setMonth(item.month)
+            setWeek(item.week)
+            setDay(item.day)
+            setHour(item.hour)
+            setMinute(item.minute)
+            setSecond(item.second)
+        } else {
+            let newDate = new Date()
+            const daysForward = newDate.getDay() >= item.day ? item.day - newDate.getDay() + 7 : item.day - newDate.getDay()
+            newDate = addDays(newDate, daysForward)
+            newDate.setHours(item.hour)
+            newDate.setMinutes(item.minute)
+            setSelectedDate(newDate)
+            setSelectedTime(newDate)
+        }
+
     }
 
     const [presetList, setPresetList] = useState([])
@@ -288,13 +311,16 @@ const CreateQuestModal = (props) => {
                         >+</CustomButton>
                         <CustomTooltip
                             modal={true}
-                            height={62}
-                            width={300}
+                            height={102}
+                            width={330}
                             circleSize={35}
                         >
                             Add a preset: Fill in the fields and click '+'{'\n'}
                             Delete a preset: Hold down on the preset{'\n'}
-                            Presets will only save duration, not due date
+                            If duration is selected, only duration is saved{'\n'}
+                            If due date is selected, day and time is saved{'\n'}
+                            Selecting a due date preset will set the date{'\n'}
+                            to the next closest day of the week
                         </CustomTooltip>
                     </View>
                     <TextInput
