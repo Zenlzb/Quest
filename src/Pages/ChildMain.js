@@ -69,6 +69,7 @@ const ChildMain = ({ name, navigation }) => {
     return(
         <View style={styles.container}>
             <QuestHistoryModal
+                mode={'child'}
                 parentUserId={parentUserId}
                 childName={name}
                 visibility={questHistoryModal}

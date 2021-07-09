@@ -6,7 +6,7 @@ import * as Quests from "../../api/quest";
 import QuestListItem from "./QuestListItem";
 
 const QuestHistoryModal = (props) => {
-    const { parentUserId, childName, visibility, toggleVisibility } = props
+    const { parentUserId, childName, visibility, toggleVisibility, mode } = props
     const [questList, setQuestList] = useState([])
     useEffect(() => {
         return Quests.questListSubscribe(parentUserId, childName, setQuestList)
@@ -16,7 +16,7 @@ const QuestHistoryModal = (props) => {
         return (
             <QuestListItem
                 item={item}
-                mode={'child-history'}
+                mode={mode+'-history'}
             />
         )
     }
