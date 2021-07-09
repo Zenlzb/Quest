@@ -31,14 +31,13 @@ const AuthHandler = () => {
                     }
 
                     setUser(user)
-                },700)
+                },10)
             } else {
                 setTimeout( async () => {
-
                     setUser(user)
                     await AsyncStorage.removeItem('childName')
                     setChildName('')
-                }, 500)
+                }, 10)
             }
         } catch (e) {
             console.log(e)
