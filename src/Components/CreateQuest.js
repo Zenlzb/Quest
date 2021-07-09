@@ -8,6 +8,7 @@ import * as Quests from '../../api/quest'
 import * as Presets from '../../api/presets'
 import CustomTooltip from "./Tooltip";
 import CoinIcon from './CoinIcon'
+import CustomPopup from "./Popup";
 
 const CreateQuestModal = (props) => {
     const [title, setTitle] = useState('')
@@ -105,17 +106,24 @@ const CreateQuestModal = (props) => {
         props.toggleVisibility(false)
 
     }
+
+    const [presetName, setPresetName] = useState("")
+    const [addPresetPopup, toggleAddPresetPopup] = useState(false)
+    const handlePresetNameUpdate = (text) => setPresetName(text)
     const handleAddPreset = () => {
         setErrorCode('')
         if (!validateQuestCreate()) { return }
+        setPresetName('')
+        toggleAddPresetPopup(true)
+    }
 
+    const addPreset = () => {
         if (dueDateMode) {
-            Presets.createPreset(props.userId, title, points, dueDateMode, year, month, week, day, hour, minute, second)
+            Presets.createPreset(props.userId, presetName, title, points, dueDateMode, year, month, week, day, hour, minute, second)
         } else {
-            Presets.createPreset(props.userId, title, points, dueDateMode, 0, 0, 0, selectedDate.getDay(), selectedTime.getHours(), selectedTime.getMinutes(), 0)
+            Presets.createPreset(props.userId, presetName, title, points, dueDateMode, 0, 0, 0, selectedDate.getDay(), selectedTime.getHours(), selectedTime.getMinutes(), 0)
         }
-
-
+        toggleAddPresetPopup(false)
     }
     const handleSelectPreset = (item) => {
         const addDays = (date, days) => {
@@ -237,19 +245,19 @@ const CreateQuestModal = (props) => {
 
     const childItem = ({ item, index }) => {
         return (
-                <CustomButton
-                    buttonStyle={[
-                        styles.button,
-                        index === 0 ? {marginLeft: 0} : {marginLeft: 8},
-                        selected[getItemIndex(item)] ? {backgroundColor: colors.button2} : {backgroundColor: colors.button1}
-                    ]}
-                    textStyle={{fontFamily: 'balsamiq', fontSize:15}}
-                    onPress={ () => {
-                        const temp = [...selected]
-                        temp[getItemIndex(item)] = !temp[getItemIndex(item)]
-                        toggleSelected(temp)
-                    } }
-                >{item.name}</CustomButton>
+            <CustomButton
+                buttonStyle={[
+                    styles.button,
+                    index === 0 ? {marginLeft: 0} : {marginLeft: 8},
+                    selected[getItemIndex(item)] ? {backgroundColor: colors.button2} : {backgroundColor: colors.button1}
+                ]}
+                textStyle={{fontFamily: 'balsamiq', fontSize:15}}
+                onPress={ () => {
+                    const temp = [...selected]
+                    temp[getItemIndex(item)] = !temp[getItemIndex(item)]
+                    toggleSelected(temp)
+                } }
+            >{item.name}</CustomButton>
         )
     }
     const presetItem = ({ item }) => {
@@ -264,8 +272,8 @@ const CreateQuestModal = (props) => {
                 onLongPress={() => {
                     Presets.deletePreset(props.userId, item.id)
                 }}
-            >{item.title}</CustomButton>
-            )
+            >{item.presetName}</CustomButton>
+        )
     }
 
 
@@ -280,6 +288,15 @@ const CreateQuestModal = (props) => {
             }}
         >
             <View style={styles.container}>
+                <CustomPopup
+                    userId={props.userId}
+                    presetMode={true}
+                    addPresetPopup={addPresetPopup}
+                    toggleAddPresetPopup={toggleAddPresetPopup}
+                    presetName={presetName}
+                    handlePresetNameUpdate={handlePresetNameUpdate}
+                    addPreset={addPreset}
+                />
                 <View style={styles.popupContainer}>
                     <View style={styles.childPickerContainer}>
                         <FlatList
@@ -510,15 +527,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     presetContainer: {
-      padding: 8,
-      borderWidth: 1,
-      borderRadius: 5,
-      marginTop: 10,
-      width: '100%',
-      height: 70,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row'
+        padding: 8,
+        borderWidth: 1,
+        borderRadius: 5,
+        marginTop: 10,
+        width: '100%',
+        height: 70,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row'
     },
     childPickerContainer: {
         flexDirection: 'row',
