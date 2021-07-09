@@ -6,6 +6,7 @@ import * as Quests from "../../api/quest";
 import QuestListItem from "./QuestListItem";
 import {Icon} from "react-native-elements";
 import CustomButton from "./Button";
+import QuestHistoryModal from "./QuestHistory";
 
 const ChildListItem = (props) => {
     const { item, userId, handleRemoveChild } = props
@@ -14,6 +15,7 @@ const ChildListItem = (props) => {
     const [questList, setQuestList] = useState([])
     const [selectedQuestPopup, setSelectedQuestPopup] = useState(false)
     const [selectedQuest, setSelectedQuest] = useState({dueDate:'', id:'', points: 0, status: '', title: ''})
+    const [questHistoryModal, setQuestHistoryModal] = useState(false)
 
     const handleReleaseRewards = () => {
         Quests.releaseRewards(userId, name, selectedQuest.id)
@@ -145,6 +147,13 @@ const ChildListItem = (props) => {
                 visibility={selectedQuestPopup}
                 toggleVisibility={setSelectedQuestPopup}
             />
+            <QuestHistoryModal
+                mode={'caregiver'}
+                parentUserId={userId}
+                childName={name}
+                visibility={questHistoryModal}
+                toggleVisibility={setQuestHistoryModal}
+            />
             <View style={{width: '100%', height: 30, alignItems: 'flex-start', flexDirection: 'row', justifyContent: 'space-between'}}>
                 <Text style={[styles.text, {width: '50%', textAlign: 'left'}]} numberOfLines={1}>{name}</Text>
                 <View style={{flexDirection: 'row'}}>
@@ -155,7 +164,7 @@ const ChildListItem = (props) => {
             <Text style={[styles.text, {width: '50%', textAlign: 'left', color: 'white', fontSize: 15, marginTop: 8}]} numberOfLines={1}>{expanded ? 'v Quests':'> Quests'}</Text>
             {expanded &&
             <View style={{width: '100%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between'}}>
-                <View style={{width: '80%'}}>
+                <View style={{width: '80%', height: '100%', alignItems: 'flex-start'}}>
                     <FlatList
                         style={{width: '100%', marginTop: 5}}
                         data={questList}
@@ -163,17 +172,31 @@ const ChildListItem = (props) => {
                         keyExtractor={item => item.id}
                     />
                 </View>
-                <Pressable
-                    onPress={handleRemoveChild}
-                >
-                    <Icon
-                        name='trash-2'
-                        type='feather'
-                        color='white'
-                        size={35}
-                        style={{marginBottom: 5}}
-                    />
-                </Pressable>
+                <View>
+                    <Pressable
+                        onPress={() => {setQuestHistoryModal(true)}}
+                    >
+                        <Icon
+                            name='history'
+                            type='material-community'
+                            color='white'
+                            size={25}
+                            style={{marginBottom: 8}}
+                        />
+                    </Pressable>
+                    <Pressable
+                        onPress={handleRemoveChild}
+                    >
+                        <Icon
+                            name='trash-2'
+                            type='feather'
+                            color='white'
+                            size={25}
+                            style={{marginBottom: 5}}
+                        />
+                    </Pressable>
+                </View>
+
             </View>
             }
         </Pressable>
