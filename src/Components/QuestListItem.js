@@ -231,13 +231,36 @@ const QuestListItem = (props) => {
         } else if (item.status === 'expired-caregiver') {
             return(
                 <Pressable
-                    style={[styles.questEntriesCaregiver, {backgroundColor: 'grey', alignItems: 'center'}]}
+                    style={[styles.questEntriesCaregiver, {backgroundColor: 'grey', alignItems: 'center', flexDirection: 'row'}]}
                     onPress={() => {caregiverExpireQuest(userId, childName, item.id)}}
                 >
-                    <Text style={[styles.text, {fontSize: 15, textAlign: 'left', width: '60%'}]} numberOfLines={1}>{item.title}</Text>
+                    <Text style={[styles.text, {fontSize: 15, textAlign: 'left', width: '50%'}]} numberOfLines={1}>{item.title}</Text>
+                    <Text style={[styles.text, {fontSize: 12, textAlign: 'left', width: '50%'}]} numberOfLines={1}>Expired. Tap to clear</Text>
                 </Pressable>
             )
         }
+    } else if (mode === 'child-history' || mode === 'caregiver-history') {
+        if (!(item.status === 'expired-child' || item.status === 'expired-caregiver' || item.status === 'expired-none' || item.status === 'claimed' )) { return null }
+        if ((mode === 'child-history' && item.status === 'expired-child') || (mode === 'caregiver-history' && item.status === 'expired-caregiver')) { return null }
+        const date = new Date(item.dueDate)
+        const dateString = date.toDateString() + ' ' + date.toTimeString().substr(0,5)
+        const statusString = item.status === 'claimed' ? 'Claimed' : 'Expired'
+        return (
+            <View style = {[styles.questEntriesChild, {justifyContent: 'space-between'}, item.status === 'claimed' ? {backgroundColor: colors.button2} : {backgroundColor: 'grey'}]}>
+                <View style={{width: '100%'}}>
+                    <View style={{flexDirection: 'row', width: '100%', paddingHorizontal: 5, justifyContent: 'space-between'}}>
+                        <Text style={[styles.text, {width: '60%', fontSize: 22}]} numberOfLines={2}>{item.title}</Text>
+                        <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '30%'}}>
+                            <Text style={[styles.text, {fontSize: 22}]} numberOfLines={1}>{item.points}</Text>
+                            <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
+                        </View>
+                    </View>
+                    <Text style={[styles.text, {paddingHorizontal: 5, width: '100%', fontSize: 17}]}>Due date: {dateString}</Text>
+                </View>
+                <Text style={[styles.text, {paddingHorizontal: 5, width: '100%', fontSize: 22}]}>{statusString}</Text>
+            </View>
+
+        )
     }
 
 }

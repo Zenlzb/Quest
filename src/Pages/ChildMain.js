@@ -9,6 +9,7 @@ import CoinIcon from "../Components/CoinIcon";
 import QuestListItem from "../Components/QuestListItem";
 import CustomTooltip from "../Components/Tooltip";
 import {Icon} from "react-native-elements";
+import QuestHistoryModal from "../Components/QuestHistory";
 
 
 const ChildMain = ({ name, navigation }) => {
@@ -18,6 +19,7 @@ const ChildMain = ({ name, navigation }) => {
     const [reloadList, setReloadList] = useState(0)
     const [swapMode, setSwapMode] = useState(false)
     const [swappingQuest, setSwappingQuest] = useState(null)
+    const [questHistoryModal, setQuestHistoryModal] = useState(false)
 
     useEffect(() => {
         return Quests.questListSubscribe(parentUserId, name, setQuestList)
@@ -66,13 +68,18 @@ const ChildMain = ({ name, navigation }) => {
 
     return(
         <View style={styles.container}>
+            <QuestHistoryModal
+                parentUserId={parentUserId}
+                childName={name}
+                visibility={questHistoryModal}
+                toggleVisibility={setQuestHistoryModal}
+            />
             <View style={styles.topContainer}>
                 <Text style={[styles.text, {flex: 0.5, fontSize: 17}]} numberOfLines={1}>{name}</Text>
                 <View style={{flex: 0.5, flexDirection: 'row'}}>
                     <Text style={[styles.text, {textAlign: 'center',fontSize: 17}]} numberOfLines={1}>{childStats.points}</Text>
                     <CoinIcon style={{marginLeft: 2, marginTop: 3}} dimension={20}/>
                 </View>
-
                 <CustomButton
                     buttonStyle={styles.button}
                     textStyle={[styles.text, {paddingVertical: 1, fontSize: 17}]}
@@ -99,6 +106,11 @@ const ChildMain = ({ name, navigation }) => {
                         textStyle={{fontFamily: 'balsamiq', fontSize: 15, color: colors.button3}}
                         onPress={() => {navigation.navigate('Child Reward', {parentUserId: parentUserId, childName: name})}}
                     >Rewards</CustomButton>
+                    <CustomButton
+                        buttonStyle={[styles.button, {marginRight: 8}]}
+                        textStyle={{fontFamily: 'balsamiq', fontSize: 15}}
+                        onPress={() => {setQuestHistoryModal(true)}}
+                    >History</CustomButton>
                 </View>
             </View>}
             {swapMode && <View style={styles.titleContainer}>
