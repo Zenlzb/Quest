@@ -33,7 +33,8 @@ export const createAccount = async ({ name, email, password }, setErrorCode) => 
     } catch (error) {
         const code = error.code
         if (code==='auth/weak-password' ||
-            code==='auth/invalid-email') {
+            code==='auth/invalid-email' ||
+            code==='auth/email-already-in-use') {
             setErrorCode(code)
         } else {
             console.log(code)

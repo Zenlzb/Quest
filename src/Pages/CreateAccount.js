@@ -24,6 +24,7 @@ const CreateAccount = () => {
     const errors = [
         {code: 'auth/weak-password', text: 'Password is too short', key:'1'},
         {code: 'auth/invalid-email', text: 'Email is invalid', key:'2'},
+        {code: 'auth/email-already-in-use', text: 'Email is already in use', key:'3'},
     ]
 
     return(
