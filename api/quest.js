@@ -2,13 +2,13 @@ import firebase from "./firebase";
 
 const db = firebase.database();
 
-const newQuest = (id, title, dueDate, points, status, priority) => ({id, title, dueDate, points, status, priority})
+const newQuest = (id, title, dueDate, points, status, priority, requirePhoto) => ({id, title, dueDate, points, status, priority, requirePhoto})
 
-export const createQuest = async (userId, childName, questTitle, questDueDate, questPoints) => {
+export const createQuest = async (userId, childName, questTitle, questDueDate, questPoints, requirePhoto) => {
     try {
         const quest = db.ref(`users/${userId}/children/${childName}/quests`).push()
         const priority = (await getHighestIncompletePriority(userId, childName)) + 1
-        await quest.set(newQuest(quest.key, questTitle, questDueDate, questPoints, 'incomplete', priority))
+        await quest.set(newQuest(quest.key, questTitle, questDueDate, questPoints, 'incomplete', priority, requirePhoto))
 
     } catch (e) {
         console.error(e)
@@ -117,13 +117,16 @@ export const getHighestIncompletePriority = async (userId, childName) => {
     try {
         const childQuests = db.ref(`users/${userId}/children/${childName}/quests`)
         const quest = (await childQuests.get()).val()
-        if (quest.length === 0) { return }
+        if (!quest || quest.length === 0 ) {
+            return 0
+        }
         let max = 0
         for (let id in quest) {
             if (quest[id].priority > max && quest[id].status === "incomplete") {
                 max = quest[id].priority
             }
         }
+
         return max
     } catch (e) {
         console.error(e)

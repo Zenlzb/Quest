@@ -17,6 +17,8 @@ const CreateQuestModal = (props) => {
     const [points, setPoints] = useState('')
     const handlePointsUpdate = (text) => setPoints(text)
 
+    const [requirePhoto, toggleRequirePhoto] = useState(false)
+
     const [year, setYear] = useState('')
     const [month, setMonth] = useState('')
     const [week, setWeek] = useState('')
@@ -101,7 +103,7 @@ const CreateQuestModal = (props) => {
         }
 
         for(let i = 0; i < selectedChildren.length; i++) {
-            Quests.createQuest(props.userId, selectedChildren[i], title, date.toJSON(), +points)
+            Quests.createQuest(props.userId, selectedChildren[i], title, date.toJSON(), +points, requirePhoto)
         }
         props.toggleVisibility(false)
 
@@ -481,12 +483,32 @@ const CreateQuestModal = (props) => {
                         />)}
 
                     </View>
+                    <View style={{flexDirection: 'row', height: 23, marginBottom: 8}}>
+                        <Text style={[styles.text, {fontSize: 15}]}>Require Photo?</Text>
+                        <CustomButton
+                            buttonStyle={[
+                                styles.button,
+                                requirePhoto ? {backgroundColor: colors.button2} : {backgroundColor: colors.button1},
+                                { marginLeft: 8 }
+                            ]}
+                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                            onPress={() => {toggleRequirePhoto(true)}}
+                        >Yes</CustomButton>
+                        <CustomButton
+                            buttonStyle={[
+                                styles.button,
+                                requirePhoto  ? {backgroundColor: colors.button1} : {backgroundColor: colors.button2},
+                                { marginLeft: 8 }
+                            ]}
+                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                            onPress={() => {toggleRequirePhoto(false)}}
+                        >No</CustomButton>
+                    </View>
                     <ErrorText
                         errorCode={errorCode}
                         setErrorCode={setErrorCode}
                         errors={errors}
                     />
-
                     <View style={styles.buttonContainer}>
                         <CustomButton
                             buttonStyle={styles.button}
@@ -523,7 +545,7 @@ const styles = StyleSheet.create({
         padding:10,
         borderRadius: 5,
         width: 350,
-        height: 500,
+        height: '85%',
         alignItems: 'center',
     },
     presetContainer: {
@@ -553,7 +575,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     dueDateContainer: {
-        marginTop: 10,
+        marginVertical: 10,
         padding: 5,
         borderRadius: 5,
         borderWidth: 1,
