@@ -4,17 +4,17 @@ import colors from "../../assets/themes/colors";
 import CoinIcon from "./CoinIcon";
 import * as Quests from "../../api/quest";
 import QuestListItem from "./QuestListItem";
-import {Icon} from "react-native-elements";
+import {Icon, Image} from "react-native-elements";
 import CustomButton from "./Button";
 import QuestHistoryModal from "./QuestHistory";
 
 const ChildListItem = (props) => {
-    const { item, userId, handleRemoveChild } = props
+    const { item, userId, handleRemoveChild, fontScale } = props
     const { name, points } = item
     const [expanded, setExpanded] = useState(false)
     const [questList, setQuestList] = useState([])
     const [selectedQuestPopup, setSelectedQuestPopup] = useState(false)
-    const [selectedQuest, setSelectedQuest] = useState({dueDate:'', id:'', points: 0, status: '', title: ''})
+    const [selectedQuest, setSelectedQuest] = useState({dueDate:'', id:'', points: 0, status: '', title: '', requirePhoto: false, photoURL: ''})
     const [questHistoryModal, setQuestHistoryModal] = useState(false)
 
     const handleReleaseRewards = () => {
@@ -48,7 +48,7 @@ const ChildListItem = (props) => {
                 alignItems: 'center',
                 justifyContent: 'space-between'
             },})
-        const { dueDate, points, status, title } = selectedQuest
+        const { dueDate, points, status, title, requirePhoto, photoURL } = selectedQuest
         const date = new Date(dueDate)
         const containerColor = () => {
             if (status === 'complete') {
@@ -72,7 +72,7 @@ const ChildListItem = (props) => {
             if (status === 'complete') {
                 return (
                     <CustomButton
-                        buttonStyle={[styles.button, {height: 25, marginTop: 48}]}
+                        buttonStyle={[styles.button, {height: 25}]}
                         textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                         onPress={handleReleaseRewards}
                     >Release Rewards</CustomButton>
@@ -80,7 +80,7 @@ const ChildListItem = (props) => {
             } else if (status === 'incomplete') {
                 return (
                     <CustomButton
-                        buttonStyle={[styles.button, {height: 25, marginTop: 18}]}
+                        buttonStyle={[styles.button, {height: 25}]}
                         textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                         onPress={handleDeleteQuest}
                     >Delete</CustomButton>
@@ -95,25 +95,38 @@ const ChildListItem = (props) => {
                 visible={props.visibility}
             >
                 <View style={popupStyles.container}>
-                    <View style={[popupStyles.popupContainer, containerColor()]}>
-                        <View style={{width: '100%', alignItems: 'flex-start'}}>
-                            <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between'}}>
-                                <Text style={[styles.text, {fontSize: 22, width: '70%', textAlign: 'left'}]} numberOfLines={1}>Title: {title}</Text>
-                                <CustomButton
-                                    buttonStyle={[styles.button, {height: 25}]}
-                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                                    onPress={() => {props.toggleVisibility(false)}}
-                                >Close</CustomButton>
-                            </View>
-                            <View style={{flexDirection: 'row'}}>
-                                <Text style={[styles.text, {fontSize: 22}]}>Points: </Text>
-                                <Text style={[styles.text, {fontSize: 22, maxWidth: '40%',textAlign: 'left'}]} numberOfLines={1}>{points}</Text>
-                                <CoinIcon style={{marginLeft: 3, marginTop: 6}} dimension={25}/>
-                            </View>
-                            <Text style={[styles.text, {fontSize: 22}]}>Status: {currentStatus()}</Text>
-                            {status === 'incomplete' &&
+                    <View style={[popupStyles.popupContainer, containerColor(), requirePhoto && status === 'complete' ? {height: '70%'} : {}]}>
+                        <View style={{width: '100%', height: '100%', alignItems: 'flex-start', justifyContent: 'space-between'}}>
+                            <View style={{width: '100%', alignItems: 'flex-start'}}>
+                                <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between'}}>
+                                    <Text style={[styles.text, {fontSize: 22, width: '70%', textAlign: 'left'}]} numberOfLines={1}>Title: {title}</Text>
+                                    <CustomButton
+                                        buttonStyle={[styles.button, {height: 25}]}
+                                        textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                        onPress={() => {props.toggleVisibility(false)}}
+                                    >Close</CustomButton>
+                                </View>
+                                <View style={{flexDirection: 'row'}}>
+                                    <Text style={[styles.text, {fontSize: 22}]}>Points: </Text>
+                                    <Text style={[styles.text, {fontSize: 22, maxWidth: '40%',textAlign: 'left'}]} numberOfLines={1}>{points}</Text>
+                                    <CoinIcon style={{marginLeft: 3, marginTop: 6}} dimension={25}/>
+                                </View>
+                                <Text style={[styles.text, {fontSize: 22}]}>Status: {currentStatus()}</Text>
+                                {status === 'incomplete' &&
                                 <Text style={[styles.text, {fontSize: 22, height: 30}]}>Due On: {date.toDateString()} {date.toTimeString().substr(0,5)}</Text>
-                            }
+                                }
+                            </View>
+
+                            {requirePhoto && <View style={{width: '100%', alignItems: 'center'}}>
+                                <Image
+                                    source={{uri: photoURL}}
+                                    style={{ width: 250 + fontScale*30, height: 220 + fontScale*30, borderRadius: 5 }}
+                                    PlaceholderContent={<Text style={[styles.text, {fontSize: 22}]}>
+                                        Loading Image...
+                                    </Text>}
+                                    placeholderStyle={{backgroundColor: colors.button2}}
+                                />
+                            </View>}
                             <View style={{width: '100%', alignItems: 'center'}}>
                                 <PopupButton/>
                             </View>

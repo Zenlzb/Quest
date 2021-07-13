@@ -135,8 +135,8 @@ const CustomPopup = (props) => {
                             visible={uploading}
                         >
                             <View style={styles.container}>
-                                <View style={[styles.popupContainer, {backgroundColor: colors.background}]}>
-                                    <Text style={styles.titleText}>Uploading...</Text>
+                                <View style={[styles.popupContainer, {backgroundColor: colors.background, alignItems: 'center'}]}>
+                                    <Text style={[styles.titleText, {color: 'black'}]}>Uploading...</Text>
                                 </View>
                             </View>
                         </Modal>
@@ -194,7 +194,7 @@ const CustomPopup = (props) => {
                                     buttonStyle={{marginHorizontal: 8, backgroundColor: colors.button2}}
                                     textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                                     onPress={() => {
-                                        Quests.completeQuest(parentUserId, childName, item.id)
+                                        Quests.completeQuest(parentUserId, childName, item.id, "")
                                         setCompleteQuest(false)
                                     }}
                                 >Complete</CustomButton>
