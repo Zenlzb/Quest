@@ -2,13 +2,13 @@ import firebase from "./firebase";
 
 const db = firebase.database();
 
-const newQuest = (id, title, dueDate, points, status, priority, requirePhoto) => ({id, title, dueDate, points, status, priority, requirePhoto})
+const newQuest = (id, title, dueDate, points, status, priority, requirePhoto, photoURL) => ({id, title, dueDate, points, status, priority, requirePhoto, photoURL})
 
 export const createQuest = async (userId, childName, questTitle, questDueDate, questPoints, requirePhoto) => {
     try {
         const quest = db.ref(`users/${userId}/children/${childName}/quests`).push()
         const priority = (await getHighestIncompletePriority(userId, childName)) + 1
-        await quest.set(newQuest(quest.key, questTitle, questDueDate, questPoints, 'incomplete', priority, requirePhoto))
+        await quest.set(newQuest(quest.key, questTitle, questDueDate, questPoints, 'incomplete', priority, requirePhoto, ""))
 
     } catch (e) {
         console.error(e)
@@ -41,8 +41,10 @@ export const questListSubscribe = (userId, childName, onValueChanged) => {
     }
 }
 
-export const completeQuest = async (userId, childName, questId) => {
+export const completeQuest = async (userId, childName, questId, photoURL) => {
     try {
+        const URL = db.ref(`users/${userId}/children/${childName}/quests/${questId}/photoURL`)
+        await URL.set(photoURL)
         const status = db.ref(`users/${userId}/children/${childName}/quests/${questId}/status`)
         await status.set('complete')
         const priority = db.ref(`users/${userId}/children/${childName}/quests/${questId}/priority`)

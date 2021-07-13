@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-import {Pressable, Text, View, StyleSheet} from "react-native";
+import React, {useEffect, useState} from 'react'
+import {Pressable, Text, View, StyleSheet, Platform} from "react-native";
 import CustomButton from "./Button";
 import * as Quests from "../../api/quest";
 import colors from "../../assets/themes/colors";
@@ -7,6 +7,7 @@ import {Icon} from "react-native-elements";
 import CoinIcon from "./CoinIcon";
 import {caregiverExpireQuest} from "../../api/quest";
 import CustomPopup from "./Popup";
+import * as ImagePicker from "expo-image-picker";
 
 const calculateTimeLeft = (date) => {
     const timeLeft = date - new Date()
@@ -44,70 +45,6 @@ const QuestListItem = (props) => {
         const date = new Date(item.dueDate)
         const timeLeft = calculateTimeLeft(date)
         const QuestStatus = () => {
-            const CompleteQuestPopup = () => {
-                if (item.requirePhoto) {
-                    return (
-                        <CustomPopup
-                            visibility={completeQuest}
-                            titleText={'Test'}
-                            bodyText={`Are you sure you want to complete '${item.title}' ?`}
-                            numberOfLines={2}
-                            containerStyle={{backgroundColor: colors.button2}}
-                            textStyle={{textAlign: 'center'}}
-                            buttonList={() => {
-                                return (
-                                    <View style={{flexDirection: 'row',}}>
-                                        <CustomButton
-                                            buttonStyle={{marginHorizontal: 8, backgroundColor: colors.button2}}
-                                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                                            onPress={() => {
-                                                Quests.completeQuest(parentUserId, childName, item.id)
-                                                setCompleteQuest(false)
-                                            }}
-                                        >Complete</CustomButton>
-                                        <CustomButton
-                                            buttonStyle={{backgroundColor: colors.button2}}
-                                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                                            onPress={() => setCompleteQuest(false)}
-                                        >Cancel</CustomButton>
-                                    </View>
-                                )
-                            }}
-                        />
-                    )
-                } else {
-                    return (
-                        <CustomPopup
-                            visibility={completeQuest}
-                            titleText={'Complete Quest'}
-                            bodyText={`Are you sure you want to complete '${item.title}' ?`}
-                            numberOfLines={2}
-                            containerStyle={{backgroundColor: colors.button2}}
-                            textStyle={{textAlign: 'center'}}
-                            buttonList={() => {
-                                return (
-                                    <View style={{flexDirection: 'row',}}>
-                                        <CustomButton
-                                            buttonStyle={{marginHorizontal: 8, backgroundColor: colors.button2}}
-                                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                                            onPress={() => {
-                                                Quests.completeQuest(parentUserId, childName, item.id)
-                                                setCompleteQuest(false)
-                                            }}
-                                        >Complete</CustomButton>
-                                        <CustomButton
-                                            buttonStyle={{backgroundColor: colors.button2}}
-                                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                                            onPress={() => setCompleteQuest(false)}
-                                        >Cancel</CustomButton>
-                                    </View>
-                                )
-                            }}
-                        />
-                    )
-                }
-
-            }
             if (item.status === 'incomplete') {
                 const [timeLeftMode, setTimeLeftMode] = useState(true)
                 if (!timeLeft) {
@@ -124,9 +61,26 @@ const QuestListItem = (props) => {
                         </View>
                     )
                 }
+                useEffect(() => {
+                    (async () => {
+                        if (Platform.OS !== 'web') {
+                            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                            if (status !== 'granted') {
+                                alert('Sorry, we need camera roll permissions to make this work!');
+                            }
+                        }
+                    })();
+                }, []);
                 return (
                     <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
-                        <CompleteQuestPopup/>
+                        <CustomPopup
+                            completeQuestMode={true}
+                            item={item}
+                            parentUserId={parentUserId}
+                            childName={childName}
+                            completeQuest={completeQuest}
+                            setCompleteQuest={setCompleteQuest}
+                        />
                         <Pressable
                             style={{flexDirection: 'row', height: 25}}
                             onPress={() => {setTimeLeftMode(!timeLeftMode)}}
