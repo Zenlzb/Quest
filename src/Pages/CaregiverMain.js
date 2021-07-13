@@ -72,6 +72,7 @@ const CaregiverMain = ({ navigation }) => {
             <ChildListItem
                 item={item}
                 userId={userId}
+                fontScale={fontScale}
                 handleRemoveChild={() => {
                     setDeleteChild(item.name)
                     setDeleteChildPopup(true)
