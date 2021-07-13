@@ -44,24 +44,39 @@ const QuestListItem = (props) => {
         const date = new Date(item.dueDate)
         const timeLeft = calculateTimeLeft(date)
         const QuestStatus = () => {
-            if (item.status === 'incomplete') {
-                const [timeLeftMode, setTimeLeftMode] = useState(true)
-                if (!timeLeft) {
-                    return(
-                        <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
-                            <View style={{backgroundColor: 'grey', borderRadius: 5, paddingHorizontal: 5, height: 25}}>
-                                <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Expired</Text>
-                            </View>
-                            <CustomButton
-                                buttonStyle={styles.button}
-                                textStyle={[styles.text, {paddingVertical: 1, fontSize: 15}]}
-                                onPress={() => {Quests.childExpireQuest(parentUserId, childName, item.id)}}
-                            >Clear</CustomButton>
-                        </View>
+            const CompleteQuestPopup = () => {
+                if (item.requirePhoto) {
+                    return (
+                        <CustomPopup
+                            visibility={completeQuest}
+                            titleText={'Test'}
+                            bodyText={`Are you sure you want to complete '${item.title}' ?`}
+                            numberOfLines={2}
+                            containerStyle={{backgroundColor: colors.button2}}
+                            textStyle={{textAlign: 'center'}}
+                            buttonList={() => {
+                                return (
+                                    <View style={{flexDirection: 'row',}}>
+                                        <CustomButton
+                                            buttonStyle={{marginHorizontal: 8, backgroundColor: colors.button2}}
+                                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                            onPress={() => {
+                                                Quests.completeQuest(parentUserId, childName, item.id)
+                                                setCompleteQuest(false)
+                                            }}
+                                        >Complete</CustomButton>
+                                        <CustomButton
+                                            buttonStyle={{backgroundColor: colors.button2}}
+                                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                            onPress={() => setCompleteQuest(false)}
+                                        >Cancel</CustomButton>
+                                    </View>
+                                )
+                            }}
+                        />
                     )
-                }
-                return (
-                    <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
+                } else {
+                    return (
                         <CustomPopup
                             visibility={completeQuest}
                             titleText={'Complete Quest'}
@@ -89,6 +104,29 @@ const QuestListItem = (props) => {
                                 )
                             }}
                         />
+                    )
+                }
+
+            }
+            if (item.status === 'incomplete') {
+                const [timeLeftMode, setTimeLeftMode] = useState(true)
+                if (!timeLeft) {
+                    return(
+                        <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
+                            <View style={{backgroundColor: 'grey', borderRadius: 5, paddingHorizontal: 5, height: 25}}>
+                                <Text style={[styles.text, {fontSize: 15, color: 'white'}]}>Expired</Text>
+                            </View>
+                            <CustomButton
+                                buttonStyle={styles.button}
+                                textStyle={[styles.text, {paddingVertical: 1, fontSize: 15}]}
+                                onPress={() => {Quests.childExpireQuest(parentUserId, childName, item.id)}}
+                            >Clear</CustomButton>
+                        </View>
+                    )
+                }
+                return (
+                    <View style = {[styles.questStatusChild, {justifyContent: 'space-between'}]}>
+                        <CompleteQuestPopup/>
                         <Pressable
                             style={{flexDirection: 'row', height: 25}}
                             onPress={() => {setTimeLeftMode(!timeLeftMode)}}
@@ -99,13 +137,30 @@ const QuestListItem = (props) => {
                             <Text style={[styles.text, {fontSize: 15, color: 'white', marginLeft: 5}]}>
                                 {timeLeftMode ? timeLeft : date.toDateString() + ' ' + date.toTimeString().substr(0,5)}
                             </Text>
-                            {timeLeftMode && <Icon
-                                name='clock'
-                                type='feather'
-                                color='white'
-                                size={17}
-                                style={{marginTop: 3, marginLeft: 2}}
-                            />}
+                            {timeLeftMode && <View style={{flexDirection: 'row'}}>
+                                <Icon
+                                    name='clock'
+                                    type='feather'
+                                    color='white'
+                                    size={17}
+                                    style={{marginTop: 3, marginLeft: 2}}
+                                />
+                                {item.requirePhoto && <Icon
+                                    name='camera'
+                                    type='feather'
+                                    color='white'
+                                    size={17}
+                                    style={{marginTop: 3, marginLeft: 5}}
+                                />}
+                                {!item.requirePhoto && <Icon
+                                    name='camera-off'
+                                    type='feather'
+                                    color='white'
+                                    size={17}
+                                    style={{marginTop: 3, marginLeft: 5}}
+                                />}
+
+                            </View>}
                         </Pressable>
                         {!swapMode && <View style={{marginTop: 4}}>
                             <Pressable
@@ -168,7 +223,7 @@ const QuestListItem = (props) => {
         return (
             <View style = {styles.questEntriesChild}>
                 <View style={{flexDirection: 'row', width: '100%', height: '60%', paddingHorizontal: 5, justifyContent: 'space-between'}}>
-                    <Text style={[styles.text, {width: '60%', fontSize: 22}]} numberOfLines={2}>{item.title}</Text>
+                    <Text style={[styles.text, { width: '60%', fontSize: 22}]} numberOfLines={2}>{item.title}</Text>
                     <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '30%'}}>
                         <Text style={[styles.text, {fontSize: 22}]} numberOfLines={1}>{item.points}</Text>
                         <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
