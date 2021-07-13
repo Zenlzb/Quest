@@ -121,9 +121,9 @@ const CreateQuestModal = (props) => {
 
     const addPreset = () => {
         if (dueDateMode) {
-            Presets.createPreset(props.userId, presetName, title, points, dueDateMode, year, month, week, day, hour, minute, second)
+            Presets.createPreset(props.userId, presetName, title, points, dueDateMode, requirePhoto, year, month, week, day, hour, minute, second)
         } else {
-            Presets.createPreset(props.userId, presetName, title, points, dueDateMode, 0, 0, 0, selectedDate.getDay(), selectedTime.getHours(), selectedTime.getMinutes(), 0)
+            Presets.createPreset(props.userId, presetName, title, points, dueDateMode, requirePhoto, 0, 0, 0, selectedDate.getDay(), selectedTime.getHours(), selectedTime.getMinutes(), 0)
         }
         toggleAddPresetPopup(false)
     }
@@ -136,6 +136,7 @@ const CreateQuestModal = (props) => {
         setTitle(item.title)
         setPoints(item.points)
         setDueDateMode(item.durationMode)
+        toggleRequirePhoto(item.requirePhoto)
         if (item.durationMode) {
             setYear(item.year)
             setMonth(item.month)
