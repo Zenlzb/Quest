@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
         padding:10,
         borderRadius: 5,
         width: 350,
-        height: '85%',
+        height: 540,
         alignItems: 'center',
     },
     presetContainer: {
