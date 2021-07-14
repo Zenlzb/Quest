@@ -74,6 +74,18 @@ const CustomPopup = (props) => {
         const { item, parentUserId, childName, completeQuest, setCompleteQuest } = props
         const [image, setImage] = useState(null);
         const [uploading, setUploading] = useState(false)
+        const takePhoto = async () => {
+            let result = await ImagePicker.launchCameraAsync({
+                allowsEditing: true,
+                aspect: [4, 3],
+            });
+
+            console.log(result);
+
+            if (!result.cancelled) {
+                setImage(result.uri);
+            }
+        }
         const pickImage = async () => {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -135,7 +147,7 @@ const CustomPopup = (props) => {
                             visible={uploading}
                         >
                             <View style={styles.container}>
-                                <View style={[styles.popupContainer, {backgroundColor: colors.background, alignItems: 'center'}]}>
+                                <View style={[styles.popupContainer, {backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center', height: 80}]}>
                                     <Text style={[styles.titleText, {color: 'black'}]}>Uploading...</Text>
                                 </View>
                             </View>
@@ -149,11 +161,18 @@ const CustomPopup = (props) => {
                                 source={{ uri: image }}
                                 style={{ width: '95%', height: '60%', borderRadius: 5 }}
                             />}
-                            {!image && <CustomButton
-                                buttonStyle={{marginHorizontal: 8, backgroundColor: colors.button1}}
-                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                                onPress={pickImage}
-                            >Pick Image</CustomButton>}
+                            {!image && <View style={{flexDirection: 'row'}}>
+                                <CustomButton
+                                    buttonStyle={{marginHorizontal: 8, backgroundColor: colors.button1}}
+                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                    onPress={pickImage}
+                                >Pick Image</CustomButton>
+                                <CustomButton
+                                    buttonStyle={{backgroundColor: colors.button1}}
+                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                    onPress={takePhoto}
+                                >Take Photo</CustomButton>
+                            </View>}
                             {image && <View style={{flexDirection: 'row'}}>
                                 <CustomButton
                                     buttonStyle={{marginHorizontal: 8, backgroundColor: colors.button1}}
