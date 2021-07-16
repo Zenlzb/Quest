@@ -9,6 +9,7 @@ import * as Presets from '../../api/presets'
 import CustomTooltip from "./Tooltip";
 import CoinIcon from './CoinIcon'
 import CustomPopup from "./Popup";
+import * as Notifs from "../../api/notifications";
 
 const CreateQuestModal = (props) => {
     const [title, setTitle] = useState('')
@@ -77,7 +78,7 @@ const CreateQuestModal = (props) => {
         setSelectedTime(new Date())
         setErrorCode('')
     }
-    const handleCreateQuest = () => {
+    const handleCreateQuest = async () => {
         setErrorCode('')
         if (!validateQuestCreate()) { return }
 
@@ -103,7 +104,8 @@ const CreateQuestModal = (props) => {
         }
 
         for(let i = 0; i < selectedChildren.length; i++) {
-            Quests.createQuest(props.userId, selectedChildren[i], title, date.toJSON(), +points, requirePhoto)
+            await Quests.createQuest(props.userId, selectedChildren[i], title, date.toJSON(), +points, requirePhoto)
+            await Notifs.sendPushNotification(await Notifs.getChildPushToken(props.userId, selectedChildren[i]), "New Quest!", `You have received a new quest!`)
         }
         props.toggleVisibility(false)
 

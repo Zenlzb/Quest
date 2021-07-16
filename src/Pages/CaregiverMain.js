@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, FlatList, Keyboard, Pressable, Dimensions} from "react-native";
+import React, {useEffect, useRef, useState} from 'react';
+import {View, Text, StyleSheet, TextInput, FlatList, Keyboard, Pressable, Dimensions, Platform} from "react-native";
 import CustomButton from "../Components/Button";
 import {auth, signOut, getCurrentUserId} from "../../api/auth";
 import colors from "../../assets/themes/colors";
@@ -10,6 +10,9 @@ import CustomPopup from "../Components/Popup";
 import ChildListItem from "../Components/ChildListItem";
 import {Icon} from "react-native-elements";
 import * as Quests from "../../api/quest";
+import * as Notifications from "expo-notifications";
+import Constants from 'expo-constants';
+import * as Notifs from "../../api/notifications"
 
 const CaregiverMain = ({ navigation }) => {
     const [childList, setChildList] = useState([])
@@ -55,7 +58,6 @@ const CaregiverMain = ({ navigation }) => {
         setErrorCode(null)
         toggleQuestModal(true)
     }
-
     const handleReleaseAll = () => {
         for (let id in childList) {
             Quests.releaseAllRewards(userId, childList[id].name)
@@ -80,7 +82,6 @@ const CaregiverMain = ({ navigation }) => {
             />
         )
     }
-
     const emptyList = () => {
         return (
             <Text style={{fontSize: 20, color: 'grey', textAlign: 'center', fontFamily: 'balsamiq'}}>
@@ -99,6 +100,68 @@ const CaregiverMain = ({ navigation }) => {
         {code: 'alreadyExists', text: 'Child already exists', key:'2'},
         {code: 'noChild', text: 'No child found, add a child first', key:'3'}
     ]
+
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notification, setNotification] = useState(null);
+    const notificationListener = useRef(null);
+    const responseListener = useRef(null);
+
+    Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+        }),
+    });
+
+    useEffect(() => {
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
+        };
+    }, []);
+
+    async function registerForPushNotificationsAsync() {
+        let token;
+        if (Constants.isDevice) {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+            }
+            token = (await Notifications.getExpoPushTokenAsync()).data;
+            await Notifs.setCaregiverPushToken(userId, token)
+            console.log(token);
+        } else {
+            alert('Must use physical device for Push Notifications');
+        }
+
+        if (Platform.OS === 'android') {
+            await Notifications.setNotificationChannelAsync('default', {
+                name: 'default',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+        }
+
+        return token;
+    }
 
     return(
         <View style={styles.container}>
@@ -309,3 +372,4 @@ const styles = StyleSheet.create({
 })
 
 export default CaregiverMain;
+

@@ -6,6 +6,7 @@ import ErrorText from "./ErrorText";
 import {checkNameExists} from "../../api/presets";
 import * as ImagePicker from "expo-image-picker";
 import * as Quests from "../../api/quest";
+import * as Notifs from "../../api/notifications"
 import firebase from "../../api/firebase";
 
 const CustomPopup = (props) => {
@@ -124,16 +125,29 @@ const CustomPopup = (props) => {
             return await snapshot.ref.getDownloadURL();
         }
         const handleCompleteQuest = async () => {
-            setUploading(true)
-            try {
-                const uploadUrl = await uploadImage()
-                await Quests.completeQuest(parentUserId, childName, item.id, uploadUrl)
-            } catch (e) {
-                console.error(e)
-            } finally {
-                setUploading(false)
-                setCompleteQuest(false)
+            if (item.requirePhoto) {
+                setUploading(true)
+                try {
+                    const uploadUrl = await uploadImage()
+                    await Quests.completeQuest(parentUserId, childName, item.id, uploadUrl)
+                    await Notifs.sendPushNotification(await Notifs.getCaregiverPushToken(parentUserId), "Quest Complete!", `${childName} has completed a quest!`)
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    setUploading(false)
+                    setCompleteQuest(false)
+                }
+            } else {
+                try {
+                    await Quests.completeQuest(parentUserId, childName, item.id, "")
+                    await Notifs.sendPushNotification(await Notifs.getCaregiverPushToken(parentUserId), "Quest Complete!", `${childName} has completed a quest!`)
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    setCompleteQuest(false)
+                }
             }
+
         }
         if (item.requirePhoto) {
             return (
@@ -212,10 +226,7 @@ const CustomPopup = (props) => {
                                 <CustomButton
                                     buttonStyle={{marginHorizontal: 8, backgroundColor: colors.button2}}
                                     textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                                    onPress={() => {
-                                        Quests.completeQuest(parentUserId, childName, item.id, "")
-                                        setCompleteQuest(false)
-                                    }}
+                                    onPress={handleCompleteQuest}
                                 >Complete</CustomButton>
                                 <CustomButton
                                     buttonStyle={{backgroundColor: colors.button2}}
