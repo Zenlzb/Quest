@@ -117,7 +117,7 @@ const ChildListItem = (props) => {
                                 }
                             </View>
 
-                            {requirePhoto && <View style={{width: '100%', alignItems: 'center'}}>
+                            {requirePhoto && status === 'complete' && <View style={{width: '100%', alignItems: 'center'}}>
                                 <Image
                                     source={{uri: photoURL}}
                                     style={{ width: 250 + fontScale*30, height: 220 + fontScale*30, borderRadius: 5 }}
