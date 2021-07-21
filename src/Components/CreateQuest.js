@@ -180,7 +180,7 @@ const CreateQuestModal = (props) => {
         } else if (isNaN(+points)) {
             setErrorCode('pointsNaN')
             return false
-        } else if ((+year % 1 !== 0) || (+month % 1 !== 0) || (+week % 1 !== 0) || (+day % 1 !== 0)) {
+        } else if (dueDateMode && ((+year % 1 !== 0) || (+month % 1 !== 0) || (+week % 1 !== 0) || (+day % 1 !== 0))) {
             setErrorCode('decimalYMWD')
             return false
         } else if (+points > 10000000) {
