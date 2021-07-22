@@ -21,6 +21,7 @@ const CaregiverMain = ({ navigation }) => {
     const [signOutConfirm, setSignOutConfirm] = useState(false)
     const [deleteChildPopup, setDeleteChildPopup] = useState(false)
     const [deleteChild, setDeleteChild] = useState()
+    const [questCreated, setQuestCreated] = useState(false)
     const [reloadList, setReloadList] = useState(0)
     const { width, scale } = Dimensions.get("screen")
     const fontScale = (width * scale) / 540
@@ -169,7 +170,23 @@ const CaregiverMain = ({ navigation }) => {
                 userId={userId}
                 visibility={questModalVisible}
                 toggleVisibility={toggleQuestModal}
+                setQuestCreated={setQuestCreated}
                 childList={childList}
+            />
+            <CustomPopup
+                visibility={questCreated}
+                titleText={'Quest Created!'}
+                bodyText={'Quest successfully created'}
+                containerStyle={{backgroundColor:colors.background}}
+                textStyle={{color:'black'}}
+                buttonList={() => {
+                    return (
+                        <CustomButton
+                            textStyle={{fontSize:15, fontFamily: 'balsamiq', color:'black'}}
+                            onPress={() => setQuestCreated(false)}
+                        >Close</CustomButton>
+                    )
+                }}
             />
             <CustomPopup
                 visibility={signOutConfirm}

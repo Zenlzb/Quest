@@ -108,6 +108,7 @@ const CreateQuestModal = (props) => {
             await Notifs.sendPushNotification(await Notifs.getChildPushToken(props.userId, selectedChildren[i]), "New Quest!", `You have received a new quest!`)
         }
         props.toggleVisibility(false)
+        props.setQuestCreated(true)
 
     }
 
