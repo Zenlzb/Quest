@@ -113,7 +113,7 @@ const ChildListItem = (props) => {
                                 </View>
                                 <Text style={[styles.text, {fontSize: 22}]}>Status: {currentStatus()}</Text>
                                 {status === 'incomplete' &&
-                                <Text style={[styles.text, {fontSize: 22, height: 30}]}>Due On: {date.toDateString()} {date.toTimeString().substr(0,5)}</Text>
+                                <Text style={[styles.text, {fontSize: 22, height: 30}]} numberOfLines={1}>Due On: {date.toDateString()} {date.toTimeString().substr(0,5)}</Text>
                                 }
                             </View>
 
