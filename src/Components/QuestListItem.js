@@ -240,11 +240,11 @@ const QuestListItem = (props) => {
         } else if (item.status === 'expired-caregiver') {
             return(
                 <Pressable
-                    style={[styles.questEntriesCaregiver, {backgroundColor: 'grey', alignItems: 'center', flexDirection: 'row'}]}
+                    style={[styles.questEntriesCaregiver, {backgroundColor: 'grey', alignItems: 'center'}]}
                     onPress={() => {caregiverExpireQuest(userId, childName, item.id)}}
                 >
-                    <Text style={[styles.text, {fontSize: 15, textAlign: 'left', width: '50%'}]} numberOfLines={1}>{item.title}</Text>
-                    <Text style={[styles.text, {fontSize: 12, textAlign: 'left', width: '50%'}]} numberOfLines={1}>Expired. Tap to clear</Text>
+                    <Text style={[styles.text, {fontSize: 15, textAlign: 'left', width: '40%'}]} numberOfLines={1}>{item.title}</Text>
+                    <Text style={[styles.text, {fontSize: 13, textAlign: 'right', width: '50%'}]} numberOfLines={1}>Expired. Tap to clear</Text>
                 </Pressable>
             )
         }
