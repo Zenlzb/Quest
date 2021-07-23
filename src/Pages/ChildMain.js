@@ -25,7 +25,7 @@ const ChildMain = ({ name, navigation }) => {
     const [questHistoryModal, setQuestHistoryModal] = useState(false)
 
     useEffect(() => {
-        return Quests.questListSubscribe(parentUserId, name, setQuestList)
+        return Quests.childQuestListSubscribe(parentUserId, name, setQuestList)
     }, [])
     useEffect(() => {
         return Children.childStatSubscribe(parentUserId, name, setChildStats)

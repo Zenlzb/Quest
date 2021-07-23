@@ -41,6 +41,26 @@ export const questListSubscribe = (userId, childName, onValueChanged) => {
     }
 }
 
+export const childQuestListSubscribe = (userId, childName, onValueChanged) => {
+    try {
+        const quests = db.ref(`users/${userId}/children/${childName}/quests`)
+        quests.on("value", (snapshot) => {
+            const val = snapshot.val()
+            const retList = [];
+            for(let id in val) {
+                if (val[id].status === 'incomplete' || val[id].status === 'complete' || val[id].status === 'expired-child') {
+                    retList.push(val[id])
+                }
+            }
+            onValueChanged(retList.sort((a, b) => b.priority - a.priority))
+        })
+        return () => quests.off("value")
+
+    } catch (e) {
+        console.error(e)
+    }
+}
+
 export const completeQuest = async (userId, childName, questId, photoURL) => {
     try {
         const URL = db.ref(`users/${userId}/children/${childName}/quests/${questId}/photoURL`)
