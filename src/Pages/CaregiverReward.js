@@ -8,6 +8,7 @@ import CoinIcon from '../Components/CoinIcon'
 import CreateRewardModal from "../Components/CreateReward";
 import RewardListItem from "../Components/RewardListItem";
 import RewardHistoryModal from "../Components/RewardHistory";
+import CustomTooltip from "../Components/Tooltip";
 
 const CaregiverReward = ({ route, navigation }) => {
     const { userId } = route.params
@@ -117,9 +118,9 @@ const CaregiverReward = ({ route, navigation }) => {
                 </View>
             </View>
             <View style={styles.createRewardContainer}>
-                <Text style={[styles.text, {fontSize: 22, marginLeft: 8, marginBottom: 5}]}>Create Reward</Text>
-                <View style={{width: '100%', height: 100, flexDirection: 'row'}}>
-                    <View style={{width: '70%', marginLeft: 8}}>
+                <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <View style={{width: '70%', alignItems: 'flex-start'}}>
+                        <Text style={[styles.text, {fontSize: 22, marginBottom: 5}]}>Create Reward</Text>
                         <TextInput
                             style={[styles.textInput, {marginBottom: 8}]}
                             placeholder={"Name"}
@@ -152,11 +153,18 @@ const CaregiverReward = ({ route, navigation }) => {
                                 buttonStyle={[
                                     styles.button,
                                     rewardAvailable ? {backgroundColor: colors.button1} : {backgroundColor: colors.button2},
-                                    { marginLeft: 8 }
+                                    { marginHorizontal: 8 }
                                 ]}
                                 textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
                                 onPress={() => {toggleRewardAvailable(false)}}
                             >No</CustomButton>
+                            <CustomTooltip
+                                height={42}
+                                width={330}
+                                circleSize={25}
+                            >
+                                Whether or not your children can see the reward. You can toggle this at any time.
+                            </CustomTooltip>
                         </View>
                         <ErrorText
                             errorCode={errorCode}
@@ -164,13 +172,12 @@ const CaregiverReward = ({ route, navigation }) => {
                             errors={errors}
                         />
                     </View>
-                    <View style={{alignItems: 'center', justifyContent: 'center', width: '30%'}}>
-                        <CustomButton
-                            buttonStyle={[styles.button, {marginLeft: 8, height: 45, width: 45}]}
-                            textStyle={{fontSize:35, fontFamily: 'balsamiq', paddingBottom: 8}}
-                            onPress={handleCreateReward}
-                        >+</CustomButton>
-                    </View>
+
+                    <CustomButton
+                        buttonStyle={[styles.button, {height: 45, width: 45}]}
+                        textStyle={{fontSize:35, fontFamily: 'balsamiq', paddingBottom: 8}}
+                        onPress={handleCreateReward}
+                    >+</CustomButton>
 
                 </View>
             </View>
@@ -206,6 +213,8 @@ const styles = StyleSheet.create({
         borderRadius: 7,
         width: '95%',
         height: 170,
+        paddingHorizontal: 8,
+        paddingVertical: 5,
         alignItems: 'flex-start',
         backgroundColor: colors.background2
     },
