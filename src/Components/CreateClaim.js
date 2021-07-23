@@ -54,17 +54,18 @@ const CreateClaim = (props) => {
                 setRewardName(props.rewardName)
                 setRewardCost(props.rewardCost)
                 setQuantity('')
+                setErrorCode('')
             }}
         >
             <View style={styles.container}>
                 <View style={styles.popupContainer}>
-                    <View style={[styles.textContainer, {height: 30, alignItems: 'flex-end'}]}>
-                        <Text style={[styles.text, {width: '40%', textAlign: 'left'}]} numberOfLines={1}>{rewardName}</Text>
-                        <View style={{flexDirection: 'row', width: '30%'}}>
-                            <Text style={[styles.text, {width: '50%', textAlign: 'right'}]} numberOfLines={1}>{rewardCost}</Text>
+                    <View style={[styles.textContainer, {alignItems: 'flex-start'}]}>
+                        <Text style={[styles.text, {width: '50%', textAlign: 'left'}, rewardName.length>20 ? {fontSize: 18} : {}]} numberOfLines={3}>{rewardName}</Text>
+                        <View style={{flexDirection: 'row', width: '20%', justifyContent: 'flex-end'}}>
+                            <Text style={[styles.text, {width: '80%', textAlign: 'right'}]} numberOfLines={1}>{rewardCost}</Text>
                             <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
                         </View>
-                        <View style={{flexDirection: 'row', width: '30%', justifyContent: 'flex-end'}}>
+                        <View style={{flexDirection: 'row', width: '20%', justifyContent: 'flex-end'}}>
                             <Text style={styles.text} numberOfLines={1}>x</Text>
                             <TextInput
                                 style={styles.quantityTextInput}
@@ -75,23 +76,26 @@ const CreateClaim = (props) => {
                             />
                         </View>
                     </View>
-                    <ErrorText
-                        errorCode={errorCode}
-                        setErrorCode={setErrorCode}
-                        errors={errors}
-                    />
-                    <View style={{flexDirection: 'row', marginTop: 8}}>
-                        <CustomButton
-                            buttonStyle={[styles.button, {marginRight: 8}]}
-                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                            onPress={handleCreateClaim}
-                        >Buy</CustomButton>
-                        <CustomButton
-                            buttonStyle={styles.button}
-                            textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                            onPress={() => {toggleVisibility(false)}}
-                        >Cancel</CustomButton>
+                    <View style={{width: '100%',  alignItems: 'center'}}>
+                        <ErrorText
+                            errorCode={errorCode}
+                            setErrorCode={setErrorCode}
+                            errors={errors}
+                        />
+                        <View style={{flexDirection: 'row', marginTop: 5}}>
+                            <CustomButton
+                                buttonStyle={[styles.button, {marginRight: 8}]}
+                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                onPress={handleCreateClaim}
+                            >Buy</CustomButton>
+                            <CustomButton
+                                buttonStyle={styles.button}
+                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                onPress={() => {toggleVisibility(false)}}
+                            >Cancel</CustomButton>
+                        </View>
                     </View>
+
 
                 </View>
             </View>
@@ -112,7 +116,7 @@ const styles = StyleSheet.create({
         padding:10,
         borderRadius: 5,
         width: '80%',
-        height: 100,
+        height: 150,
         alignItems: 'center',
         justifyContent: 'space-between'
     },
