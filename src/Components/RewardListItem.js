@@ -48,15 +48,33 @@ const RewardListItem = (props) => {
         )
     } else if (props.mode === 'childReward') {
         const { onPress } = props
+        const calcWidth = () => {
+            const length = item.cost.toString().length
+            switch (length) {
+                case 1:
+                    return '85%'
+                case 2:
+                    return '83%'
+                case 3:
+                    return '77%'
+                case 4:
+                    return '74%'
+                case 5:
+                    return '69%'
+                case 6:
+                    return '65%'
+            }
+
+        }
         return (
             <Pressable
                 style={[styles.container, {height: 45}]}
                 onPress={onPress}
             >
                 <View style={[styles.textContainer, {height: 30, alignItems: 'flex-end'}]}>
-                    <Text style={[styles.text, {maxWidth: '40%'}]} numberOfLines={1}>{item.name}</Text>
+                    <Text style={[styles.text, {maxWidth: calcWidth()}]} numberOfLines={1}>{item.name}</Text>
                     <View style={{flexDirection: 'row'}}>
-                        <Text style={[styles.text, {width: 80, textAlign: 'right'}]} numberOfLines={1}>{item.cost}</Text>
+                        <Text style={[styles.text, {textAlign: 'right'}]} numberOfLines={1}>{item.cost}</Text>
                         <CoinIcon style={{marginLeft: 2, marginTop: 5}} dimension={25}/>
                     </View>
                 </View>
