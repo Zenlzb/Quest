@@ -1,5 +1,16 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, FlatList, Keyboard, Pressable, Dimensions, Platform} from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    FlatList,
+    Keyboard,
+    Pressable,
+    Dimensions,
+    Platform,
+    Modal
+} from "react-native";
 import CustomButton from "../Components/Button";
 import {auth, signOut, getCurrentUserId} from "../../api/auth";
 import colors from "../../assets/themes/colors";
@@ -22,6 +33,7 @@ const CaregiverMain = ({ navigation }) => {
     const [deleteChildPopup, setDeleteChildPopup] = useState(false)
     const [deleteChild, setDeleteChild] = useState()
     const [questCreated, setQuestCreated] = useState(false)
+    const [moreHelp, setMoreHelp] = useState(false)
     const [reloadList, setReloadList] = useState(0)
     const { width, scale } = Dimensions.get("screen")
     const fontScale = (width * scale) / 540
@@ -85,13 +97,67 @@ const CaregiverMain = ({ navigation }) => {
     }
     const emptyList = () => {
         return (
-            <Text style={{fontSize: 20, color: 'grey', textAlign: 'center', fontFamily: 'balsamiq'}}>
-                Welcome! {'\n'}
-                Getting Started: {'\n'}
-                1. Add a Child! {'\n'}
-                2. Add <Text style={{color: colors.button3}}>Rewards</Text>!{'\n'}
-                3. Create a Quest! {'\n'}
-            </Text>
+            <View>
+                <Modal
+                    transparent={true}
+                    visible={moreHelp}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={[styles.modalPopupContainer, {justifyContent: 'space-between'}]}>
+                            <View style={{width: '100%', height: '80%', alignItems: 'flex-start'}}>
+                                <Text style={[styles.text, {fontSize: 20}]}>1) Add a Child!</Text>
+                                <Text style={[styles.text, {fontSize: 12, textAlign: 'left'}]}>
+                                    Input your child's name in the Add Child box on the main page and Tap Add. Then, log into your child's mobile device{'\n'}
+                                </Text>
+                                <Text style={[styles.text, {fontSize: 20}]}>2) Add Rewards!</Text>
+                                <Text style={[styles.text, {fontSize: 12, textAlign: 'left'}]}>
+                                    Tap Rewards on the main page to go to the rewards page.
+                                    Here, you can set up rewards for your children to buy once they have accumulated enough points!
+                                    Simply enter the reward details i.e. Name and Cost and tap the + button{'\n'}
+                                </Text>
+                                <Text style={[styles.text, {fontSize: 20}]}>3) Create a Quest!</Text>
+                                <Text style={[styles.text, {fontSize: 12, textAlign: 'left'}]}>
+                                    Quests are how your children will accumulate points.
+                                    To create a quest, simply tap the Create Quest button at the top right of the main page.
+                                    From there, fill in the details of the quest which include:{'\n'}
+                                    - <Text style={{color: colors.button1}}>Title</Text>: Title of the quest{'\n'}
+                                    - <Text style={{color: colors.button1}}>Points</Text>: How many points completing the quest will reward your child{'\n'}
+                                    - <Text style={{color: colors.button1}}>Duration/Due Date</Text>: When the quest is to be completed by. You can either choose a
+                                    duration (e.g. this quest must be done in 5 hours) or a due date (e.g. this quest must be done by Sunday the 20th at 7PM){'\n'}
+                                    - <Text style={{color: colors.button1}}>Require Photo</Text>: You can require photo evidence from your child upon completing a quest. If yes is selected, your child will need to
+                                    upload a photo when he is completing the quest, which you can then check to verify that the quest was completed successfully{'\n'}
+                                    <Text style={{color: colors.button1}}>Presets</Text> are a tool to help you if you need to assign the same quest over and over. To find out more about presets, tap the question mark
+                                    next to the + button in the create quest popup.
+                                </Text>
+                            </View>
+
+                            <View style={{width: '100%', alignItems: 'center'}}>
+                                <CustomButton
+                                    buttonStyle={{backgroundColor: colors.button1, justifyContent: 'center',}}
+                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                    onPress={() => setMoreHelp(false)}
+                                >Close</CustomButton>
+                            </View>
+
+                        </View>
+                    </View>
+
+                </Modal>
+                <Text style={{fontSize: 20, color: 'grey', textAlign: 'center', fontFamily: 'balsamiq'}}>
+                    Welcome! {'\n'}
+                    Getting Started: {'\n'}
+                    1. Add a Child! {'\n'}
+                    2. Add <Text style={{color: colors.button3}}>Rewards</Text>!{'\n'}
+                    3. Create a Quest! {'\n'}
+
+                </Text>
+                <Pressable onPress={() => {setMoreHelp(true)}}>
+                    <Text style={{fontSize: 20, color: 'grey', textAlign: 'center', fontFamily: 'balsamiq', marginTop: 15}}>{'> More Help <'}</Text>
+                </Pressable>
+
+
+            </View>
+
         )
     }
 
@@ -385,7 +451,22 @@ const styles = StyleSheet.create({
         width: '95%',
         height: '70%',
         marginTop:8
-    }
+    },
+    modalContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: colors.transparentBackground,
+    },
+    modalPopupContainer: {
+        backgroundColor: colors.background,
+        padding:10,
+        borderRadius: 5,
+        width: 350,
+        height: '90%',
+        alignItems: 'center',
+    },
 })
 
 export default CaregiverMain;
