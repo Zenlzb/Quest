@@ -5,6 +5,7 @@ import CustomButton from "./Button";
 import CoinIcon from "./CoinIcon";
 import ErrorText from "./ErrorText";
 import * as Rewards from '../../api/rewards'
+import * as Notifs from "../../api/notifications";
 
 const CreateClaim = (props) => {
     const { parentUserId, childName, childBalance, visibility, toggleVisibility } = props
@@ -12,7 +13,7 @@ const CreateClaim = (props) => {
     const [rewardCost, setRewardCost] = useState('')
     const [quantity, setQuantity] = useState('')
     const handleQuantityUpdate = (text) => setQuantity(text)
-    const handleCreateClaim = () => {
+    const handleCreateClaim = async () => {
         setErrorCode('')
         if (isNaN(+quantity)) {
             setErrorCode('quantityNaN')
@@ -33,7 +34,8 @@ const CreateClaim = (props) => {
             setErrorCode('notEnoughPoints')
             return
         }
-        Rewards.createRewardClaim(parentUserId, quantity, childName, rewardName, rewardCost, new Date().toJSON())
+        await Rewards.createRewardClaim(parentUserId, quantity, childName, rewardName, rewardCost, new Date().toJSON())
+        await Notifs.sendPushNotification(await Notifs.getCaregiverPushToken(parentUserId), "Reward Purchased!", `${childName} has purchased '${rewardName}'!`)
         toggleVisibility(false)
     }
 
