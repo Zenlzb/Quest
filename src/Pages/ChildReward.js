@@ -79,7 +79,7 @@ const ChildReward = ({ route, navigation }) => {
                 </View>
 
             </View>
-            <View style={{width: '95%', height: '80%', borderWidth: 2, borderRadius: 10, alignItems: 'center'}}>
+            <View style={{width: '95%', height: '80%', borderWidth: 2, borderRadius: 10, alignItems: 'center', paddingBottom: 5}}>
                 <FlatList
                     style={{width: '95%'}}
                     data={rewardList}
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     titleContainer: {
         flexDirection: 'row',
         width: '100%',
-        height: 70,
+        height: '10%',
         paddingHorizontal: 8,
         justifyContent: 'space-between',
         marginTop: 45

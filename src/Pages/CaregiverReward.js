@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Keyboard, StyleSheet, Text, TextInput, View} from "react-native";
+import {FlatList, Keyboard, ScrollView, StyleSheet, Text, TextInput, View} from "react-native";
 import colors from "../../assets/themes/colors";
 import CustomButton from "../Components/Button";
 import ErrorText from "../Components/ErrorText";
@@ -117,77 +117,80 @@ const CaregiverReward = ({ route, navigation }) => {
                     >Main ></CustomButton>
                 </View>
             </View>
-            <View style={styles.createRewardContainer}>
-                <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <View style={{width: '70%', alignItems: 'flex-start'}}>
-                        <Text style={[styles.text, {fontSize: 22, marginBottom: 5}]}>Create Reward</Text>
-                        <TextInput
-                            style={[styles.textInput, {marginBottom: 8}]}
-                            placeholder={"Name"}
-                            onChangeText={handleRewardNameUpdate}
-                            value={rewardName}
-                        />
-                        <View style={{flexDirection: 'row', marginBottom: 8}}>
-                            <Text style={[styles.text]}>Point Cost</Text>
+            <ScrollView style={{width: '100%', height: '90%', marginBottom: 5}} contentContainerStyle={{alignItems: 'center'}}>
+                <View style={styles.createRewardContainer}>
+                    <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <View style={{width: '70%', alignItems: 'flex-start'}}>
+                            <Text style={[styles.text, {fontSize: 22, marginBottom: 5}]}>Create Reward</Text>
                             <TextInput
-                                style={[styles.textInput, {width: '50%', marginHorizontal: 8}]}
-                                onChangeText={handleRewardCostUpdate}
-                                value={rewardCost}
-                                keyboardType='numeric'
-                                textAlign='right'
+                                style={[styles.textInput, {marginBottom: 8}]}
+                                placeholder={"Name"}
+                                onChangeText={handleRewardNameUpdate}
+                                value={rewardName}
                             />
-                            <CoinIcon dimension={30}/>
+                            <View style={{flexDirection: 'row', marginBottom: 8}}>
+                                <Text style={[styles.text]}>Point Cost</Text>
+                                <TextInput
+                                    style={[styles.textInput, {width: '50%', marginHorizontal: 8}]}
+                                    onChangeText={handleRewardCostUpdate}
+                                    value={rewardCost}
+                                    keyboardType='numeric'
+                                    textAlign='right'
+                                />
+                                <CoinIcon dimension={30}/>
+                            </View>
+                            <View style={{flexDirection: 'row', height: 25}}>
+                                <Text style={[styles.text]}>Available?</Text>
+                                <CustomButton
+                                    buttonStyle={[
+                                        styles.button,
+                                        rewardAvailable ? {backgroundColor: colors.button2} : {backgroundColor: colors.button1},
+                                        { marginLeft: 8 }
+                                    ]}
+                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                    onPress={() => {toggleRewardAvailable(true)}}
+                                >Yes</CustomButton>
+                                <CustomButton
+                                    buttonStyle={[
+                                        styles.button,
+                                        rewardAvailable ? {backgroundColor: colors.button1} : {backgroundColor: colors.button2},
+                                        { marginHorizontal: 8 }
+                                    ]}
+                                    textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
+                                    onPress={() => {toggleRewardAvailable(false)}}
+                                >No</CustomButton>
+                                <CustomTooltip
+                                    height={42}
+                                    width={330}
+                                    circleSize={25}
+                                >
+                                    Whether or not your children can see the reward. You can toggle this at any time.
+                                </CustomTooltip>
+                            </View>
+                            <ErrorText
+                                errorCode={errorCode}
+                                setErrorCode={setErrorCode}
+                                errors={errors}
+                            />
                         </View>
-                        <View style={{flexDirection: 'row', height: 25}}>
-                            <Text style={[styles.text]}>Available?</Text>
-                            <CustomButton
-                                buttonStyle={[
-                                    styles.button,
-                                    rewardAvailable ? {backgroundColor: colors.button2} : {backgroundColor: colors.button1},
-                                    { marginLeft: 8 }
-                                ]}
-                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                                onPress={() => {toggleRewardAvailable(true)}}
-                            >Yes</CustomButton>
-                            <CustomButton
-                                buttonStyle={[
-                                    styles.button,
-                                    rewardAvailable ? {backgroundColor: colors.button1} : {backgroundColor: colors.button2},
-                                    { marginHorizontal: 8 }
-                                ]}
-                                textStyle={{fontSize:15, fontFamily: 'balsamiq'}}
-                                onPress={() => {toggleRewardAvailable(false)}}
-                            >No</CustomButton>
-                            <CustomTooltip
-                                height={42}
-                                width={330}
-                                circleSize={25}
-                            >
-                                Whether or not your children can see the reward. You can toggle this at any time.
-                            </CustomTooltip>
-                        </View>
-                        <ErrorText
-                            errorCode={errorCode}
-                            setErrorCode={setErrorCode}
-                            errors={errors}
-                        />
+
+                        <CustomButton
+                            buttonStyle={[styles.button, {height: 45, width: 45}]}
+                            textStyle={{fontSize:35, fontFamily: 'balsamiq', paddingBottom: 8}}
+                            onPress={handleCreateReward}
+                        >+</CustomButton>
+
                     </View>
-
-                    <CustomButton
-                        buttonStyle={[styles.button, {height: 45, width: 45}]}
-                        textStyle={{fontSize:35, fontFamily: 'balsamiq', paddingBottom: 8}}
-                        onPress={handleCreateReward}
-                    >+</CustomButton>
-
                 </View>
-            </View>
-            <View style={{width: '95%', justifyContent: 'center'}}>
-                <FlatList
-                    data={rewardList}
-                    renderItem={rewardItem}
-                    keyExtractor={item => item.id}
-                />
-            </View>
+                <View style={{width: '95%', justifyContent: 'center', marginTop: 5}}>
+                    <FlatList
+                        data={rewardList}
+                        renderItem={rewardItem}
+                        keyExtractor={item => item.id}
+                    />
+                </View>
+            </ScrollView>
+
         </View>
     )
 }
@@ -203,7 +206,7 @@ const styles = StyleSheet.create({
     titleContainer: {
         flexDirection: 'row',
         width: '100%',
-        height: 70,
+        height: '10%',
         paddingHorizontal: 8,
         justifyContent: 'space-between',
         marginTop: 45
